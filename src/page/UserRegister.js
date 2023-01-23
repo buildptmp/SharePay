@@ -10,7 +10,8 @@ export default function UserRegister() {
 
     return(
 
-        <>
+        <View style={Styles.containerRegis}>
+        <Text>Username</Text>
         <TextInput
             style={Styles.input}
             value={username}
@@ -19,6 +20,7 @@ export default function UserRegister() {
             autoCapitalize={"none"}
         />
 
+        <Text>Password</Text>
         <TextInput
             style={Styles.input}
             value={password}
@@ -27,6 +29,7 @@ export default function UserRegister() {
             onChangeText={(text) => setPassword(text)}
         />
 
+        <Text>Phone Number</Text>
         <TextInput
             style={Styles.input}
             value={phonenum}
@@ -40,6 +43,6 @@ export default function UserRegister() {
             <Text style={Styles.text}>Request OTP</Text>
         </TouchableOpacity>
         </View> 
-        </>
+        </View>
     );
 };

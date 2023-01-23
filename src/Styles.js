@@ -15,10 +15,12 @@ export const Styles = StyleSheet.create({
   },
   input: {
       height: 40,
+      width: '60%',
       marginBottom: 10,
       borderWidth: 1,
       borderRadius: 15,
       borderColor: '#B6B6B6',
+      backgroundColor: '#FFFFFF',
 
   },
   btn: {
@@ -27,10 +29,25 @@ export const Styles = StyleSheet.create({
       padding: 10,
       borderRadius: 20,
   },
+
   text: {
       textAlign: 'center',
       color: 'white',
       textTransform: 'uppercase',
       fontWeight: 'bold',
-  }
+  },
+
+  containerLogin: {
+    flex:1, 
+    flexDirection: 'column', 
+    justifyContent: 'center', 
+    alignItems: 'center',
+},
+    containerRegis: {
+    flex:1, 
+    flexDirection: 'column', 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    paddingTop: 70,
+},
 });
