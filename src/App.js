@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Navbar from './components/Navbar';
 import { 
   Button, 
   StyleSheet, 
@@ -16,6 +15,10 @@ import {
 import UserSelect from './page/UserSelect'
 import UserRegister from './page/UserRegister'
 import Login from './page/Login'
+import GroupCreate from './page/GroupCreate';
+import AddingMember from './page/AddingMember';
+import Homepage from './page/Homepage';
+import NavBar from './components/Navbar';
 
 const Stack = createStackNavigator();
 
@@ -23,13 +26,16 @@ const RouteMapping = [
   { name: 'UserSelect', page: UserSelect, },
   { name: 'Login', page: Login, },
   { name: 'UserRegister', page: UserRegister, },
+  { name: 'GroupCreate' , page: GroupCreate,},
+  { name: 'AddingMember' , page: AddingMember,},
+  { name: 'Homepage', page: Homepage,},
 ]
 
 const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName={RouteMapping[0].name} 
+        initialRouteName={RouteMapping[3].name} 
         screenOptions={{
           headerShown: true
         }}>

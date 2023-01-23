@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 export default function Profilepage({page}){
     return(
         <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
@@ -12,3 +12,4 @@ export default function Profilepage({page}){
         </View>
     );
 }
+

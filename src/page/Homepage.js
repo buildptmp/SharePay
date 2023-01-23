@@ -6,7 +6,7 @@ export default function Homepage({page}){
             <Text 
                 onPress={()=> alert('This is "homepage"')}
                 style={{ fontSize: 26, fontWeight:'bold'}}> 
-                Home Screen
+                Home Page
             </Text>
 
         </View>
