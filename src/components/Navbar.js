@@ -2,11 +2,21 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 // Screens
 import Homepage from '../page/Homepage';
 import GroupCreate from '../page/GroupCreate';
 import Profilepage from '../page/Profilepage';
+const NavBar = createBottomTabNavigator();
+// const NavBar = () => {
+//   return(
+//     <Navbar.Navigator>
+//       <Navbar.Screen name="Home" component={Homepage}/>
+//       <Navbar.Screen name="Group Creation" component={GroupCreate}/>
+//       <Navbar.Screen name="Profile" component={Profilepage}/>
+//     </Navbar.Navigator>
+//   )
+// }
+
 
 //Screen names
 const homepageName = "Home";
