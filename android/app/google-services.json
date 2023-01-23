@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "927888254427",
+    "project_id": "sharepay-77c6c",
+    "storage_bucket": "sharepay-77c6c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:927888254427:android:bc2b3ddb87e075072e33fe",
+        "android_client_info": {
+          "package_name": "com.sharepay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "927888254427-2v5j034lqsnj2l18nnalp396fh54vo9o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sharepay",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "927888254427-3jdsjgrfmvarntb613ol1vgndt7dqc00.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpVQDO3EnKaxSfhU5KtYwBpLrw6DgpaZs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "927888254427-3jdsjgrfmvarntb613ol1vgndt7dqc00.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
