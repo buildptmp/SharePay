@@ -3,6 +3,7 @@ import { TextInput, TouchableOpacity, Text, View } from "react-native";
 import { Styles } from "../Styles"
 import SelectDropdown from 'react-native-select-dropdown'
 import auth from '@react-native-firebase/auth';
+import { addUser } from '../../database/DBConnection';
 
 export default function UserRegister({ navigation }) {
     const [phoneNum, setPhoneNum] = useState(null);
@@ -13,6 +14,7 @@ export default function UserRegister({ navigation }) {
 
     function onAuthStateChanged(user) {
         if (user) {
+            addUser(user.uid)
             navigation.navigate('UserInformation');
         }
     }
@@ -23,7 +25,7 @@ export default function UserRegister({ navigation }) {
     }, []);
 
     // Handle the button press
-    async function signInWithPhoneNumber() {
+    async function _signInWithPhoneNumber() {
         const phoneNumber = countryCode + phoneNum
         const confirmation = await auth().signInWithPhoneNumber(phoneNumber, true);
         setConfirm(confirmation);
@@ -31,9 +33,9 @@ export default function UserRegister({ navigation }) {
 
     async function confirmCode() {
         try {
-        await confirm.confirm(code);
+            await confirm.confirm(code);
         } catch (error) {
-        console.log('Invalid code.');
+            console.log('Invalid code.');
         }
     }
     
@@ -67,7 +69,7 @@ export default function UserRegister({ navigation }) {
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3}]}>
                 <TouchableOpacity
                     style={Styles.btn}
-                    onPress={signInWithPhoneNumber}
+                    onPress={_signInWithPhoneNumber}
                 >
                     <Text style={Styles.text}>Request OTP</Text>
                 </TouchableOpacity>
