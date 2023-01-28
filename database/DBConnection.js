@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 // import { getAuth } from 'firebase/auth';
 import { 
-  getFirestore, collection, getDocs, initializeFirestore, addDoc
+  getFirestore, collection, getDocs, initializeFirestore, addDoc, setDoc, doc
 } from "firebase/firestore"
 const firebaseConfig = {
   apiKey: "AIzaSyDGeiVvbQ_zNcXpbrXsGheivJSE5xAqrt0",
@@ -20,6 +20,7 @@ const db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
 });
 const colRefUser = collection(db, 'User')
+// const colRefTestUsers = collection(db, 'Test-Users')
 
 export function getfromUsers(){
   getDocs(colRefUser)
@@ -33,6 +34,14 @@ export function getfromUsers(){
   .catch(err => {
     console.log(err.message)
   })
+}
+
+export function addUser(uid) {
+  // WIP
+  const _data = {
+    bio: 'New User'
+  }
+  setDoc(doc(db, 'Test-Users', uid), _data);
 }
 
 export function addtoUsers(){

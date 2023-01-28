@@ -14,6 +14,7 @@ import {
 // Screens
 import UserSelect from './page/UserSelect'
 import UserRegister from './page/UserRegister'
+import UserInformation from './page/UserInformation'
 import Login from './page/Login'
 import GroupCreate from './page/GroupCreate';
 import AddingMember from './page/AddingMember';
@@ -29,13 +30,14 @@ const RouteMapping = [
   { name: 'GroupCreate' , page: GroupCreate,},
   { name: 'AddingMember' , page: AddingMember,},
   { name: 'Homepage', page: Homepage,},
+  { name: 'UserInformation', page: UserInformation}
 ]
 
 const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName={RouteMapping[3].name} 
+        initialRouteName={RouteMapping[0].name} 
         screenOptions={{
           headerShown: true
         }}>

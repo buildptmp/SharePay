@@ -1,26 +1,29 @@
-import React, { useEffect, useState} from "react";
-import { NavigationScreenProps } from 'react-navigation';
-import { NavigationContainer } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
-import { useHistory } from "react-router-dom";
-import { Button, 
-    StyleSheet, 
+import React, { useEffect } from "react";
+import {
     Text, 
     View, 
-    FlatList, 
-    SafeAreaView, 
     Image,
     TouchableOpacity,
  } from "react-native";
 import { Styles } from "../Styles"
-import Login from '../page/Login';
-import UserRegister from '../page/UserRegister';
+import auth from '@react-native-firebase/auth';
 
 export default function UserSelect({ navigation }) {
     const RouteMapping = [
         { routeName: 'Login', displayText: 'Log in', },
         { routeName: 'UserRegister', displayText: 'Register', },
     ]
+
+    function onAuthStateChanged(user) {
+        if (user) {
+            navigation.navigate('Homepage');
+        }
+    }
+    
+    useEffect(() => {
+        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        return subscriber; // unsubscribe on unmount
+    }, []);
 
     return(
         <View style={Styles.container}>
