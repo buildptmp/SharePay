@@ -6,7 +6,6 @@ import { Styles } from "../Styles"
 export default function Homepage({page, navigation}){
     const [curUser, setUser] = useState(null);
     const [isReady, setReady] = useState(false);
-    
 
     useEffect(() => {
         auth().onAuthStateChanged((user) => {
@@ -48,7 +47,6 @@ export default function Homepage({page, navigation}){
                     <Text>Logout</Text>
                 </TouchableOpacity> 
             }
-
         </View>
     );
 }

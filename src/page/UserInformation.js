@@ -9,7 +9,7 @@ export default function UserInformation({ navigation }) {
     function _setDisplayName() {
         auth().currentUser.updateProfile({
             displayName: name
-        }).then(() => navigation.navigate('Homepage'));
+        }).then(() => navigation.navigate('Root'));
     }
 
     return(
