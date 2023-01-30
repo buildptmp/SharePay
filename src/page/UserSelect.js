@@ -10,8 +10,8 @@ import auth from '@react-native-firebase/auth';
 
 export default function UserSelect({ navigation }) {
     const RouteMapping = [
-        { routeName: 'Login', displayText: 'Log in', },
-        { routeName: 'UserRegister', displayText: 'Register', },
+        //{ routeName: 'Login', displayText: 'Log in', },
+        { routeName: 'UserRegister', displayText: 'Register / Log in', },
     ]
 
     function onAuthStateChanged(user) {
