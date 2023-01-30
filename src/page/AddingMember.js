@@ -26,16 +26,17 @@ import { Button,
 
     return(
         
-        <View style={Styles.container}>
-            <View style={[{ width: '120%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
+        <View style={Styles.containerAddmem}>
+            <View style={[{ width: '120%', paddingHorizontal: 100}]}>
+                <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
                 <TextInput
-                style={Styles.input}
+                style={Styles.inputAddmem}
                 value={PhoneNum}
                 placeholder={"Insert Phone Number"}
                 onChangeText={(text) => setPhoneNum(text)}
                 autoCapitalize={"none"}
                 />
-                <TouchableOpacity style={Styles.btnph}  onPress={() => navigation.navigate('AddingMember')}>
+                <TouchableOpacity style={Styles.btnph}  onPress={()=> alert('Adding member successful!')}>
                     <Text style={Styles.text}> Add Member</Text>
                 </TouchableOpacity>
             </View>

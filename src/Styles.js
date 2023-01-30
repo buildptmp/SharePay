@@ -7,6 +7,15 @@ export const Styles = StyleSheet.create({
         justifyContent: 'center', 
         alignItems: 'center',
     },
+
+    containerAddmem: {
+        flex: 2, 
+        flexDirection: 'column', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: '#F6EFEF'
+    },
+
     logoImg: {
         width: '100%',
         resizeMode: 'contain',
@@ -23,11 +32,33 @@ export const Styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
 
     },
+
+    inputAddmem: {
+        height: 40,
+        width: '90%',
+        marginBottom: 10,
+        marginLeft: 10,
+        borderWidth: 1,
+        borderRadius: 15,
+        borderColor: '#B6B6B6',
+        backgroundColor: '#FFFFFF',
+
+    },
+
     btn: {
         backgroundColor: '#F88C8C',
         marginBottom: 10,
         padding: 10,
         borderRadius: 20,
+    },
+
+    btnph: {
+        backgroundColor: '#F88C8C',
+        width: '50%',
+        marginTop: 20,
+        padding: 10,
+        borderRadius: 20,
+        marginLeft:60 ,
     },
 
     text: {
