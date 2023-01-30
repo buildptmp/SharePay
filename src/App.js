@@ -24,13 +24,13 @@ import NavBar from './components/Navbar';
 const Stack = createStackNavigator();
 
 const RouteMapping = [
-  { name: 'UserSelect', page: UserSelect, },
-  { name: 'Login', page: Login, },
-  { name: 'UserRegister', page: UserRegister, },
-  { name: 'GroupCreate' , page: GroupCreate,},
-  { name: 'AddingMember' , page: AddingMember,},
-  { name: 'Homepage', page: Homepage,},
-  { name: 'UserInformation', page: UserInformation}
+  { name: 'UserSelect', page: UserSelect },
+  { name: 'Login', page: Login },
+  { name: 'UserRegister', page: UserRegister },
+  // { name: 'GroupCreate' , page: GroupCreate },
+  { name: 'AddingMember' , page: AddingMember },
+  // { name: 'Homepage', page: Homepage },
+  { name: 'UserInformation', page: UserInformation }
 ]
 
 const App = () => {
@@ -46,6 +46,7 @@ const App = () => {
             <Stack.Screen key={e.name} name={e.name} component={e.page} />  
           )
         })}
+        <Stack.Screen name='Root' component={NavBar} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

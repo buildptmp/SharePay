@@ -78,7 +78,7 @@ export default function Login({ navigation }) {
 
     function onAuthStateChanged(user) {
         if (user) {
-            navigation.navigate('Homepage');
+            navigation.navigate('Root');
         }
     }
     
