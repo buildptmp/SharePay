@@ -16,7 +16,7 @@ export default function UserSelect({ navigation }) {
 
     function onAuthStateChanged(user) {
         if (user) {
-            navigation.navigate('Homepage');
+            navigation.navigate('Root');
         }
     }
     

@@ -1,13 +1,12 @@
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useEffect } from "react";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/Ionicons';
 // Screens
 import Homepage from '../page/Homepage';
 import GroupCreate from '../page/GroupCreate';
 import Profilepage from '../page/Profilepage';
 const NavBar = createBottomTabNavigator();
-// const NavBar = () => {
+// const Navbar = () => {
 //   return(
 //     <Navbar.Navigator>
 //       <Navbar.Screen name="Home" component={Homepage}/>
@@ -19,49 +18,43 @@ const NavBar = createBottomTabNavigator();
 
 
 //Screen names
-const homepageName = "Home";
-const groupCreateName = "Group Create";
-const profilePageName = "Profile";
+const Screens = [
+  { name: 'Homepage', component: Homepage, icon: 'home-outline' },
+  { name: 'Group Create', component: GroupCreate, icon: 'add-outline' },
+  { name: 'Profile', component: Profilepage, icon: 'person-outline' },
+]
 
 const Tab = createBottomTabNavigator();
 
 function Navbar() {
+  
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName={Homepage}
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName;
-            let rn = route.name;
+    <Tab.Navigator
+      initialRouteName={ Homepage }
+      screenOptions={() => ({
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'grey',
+        tabBarLabelStyle: { paddingBottom: 10, fontSize: 10 },
+        tabBarStyle: { padding: 10, height: 70 },
+        // headerShown: false,
+      })}
+    >
 
-            if (rn === Homepage) {
-              iconName = focused ? 'Home' : 'list-outline';
-
-            } else if (rn === GroupCreate) {
-              iconName = focused ? 'GroupCreate' : 'list-outline';
-
-            } else if (rn === Profilepage) {
-              iconName = focused ? 'Profile' : 'settings-outline';
-            }
-
-            // You can return any component that you like here!
-            return <Ionicons name={iconName} size={size} color={color} />;
-          },
-        })}
-        tabBarOptions={{
-          activeTintColor: 'tomato',
-          inactiveTintColor: 'grey',
-          labelStyle: { paddingBottom: 10, fontSize: 10 },
-          style: { padding: 10, height: 70}
-        }}>
-
-        <Tab.Screen name={homepageName} component={Homepage} />
-        <Tab.Screen name={groupCreateName} component={GroupCreate} />
-        <Tab.Screen name={profilePageName} component={Profilepage} />
-
-      </Tab.Navigator>
-    </NavigationContainer>
+      {Screens.map((e) => {
+        return (
+          <Tab.Screen 
+            key={e.name}
+            name={e.name} 
+            component={e.component} 
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Icon name={e.icon} color={color} size={size} />
+              ),
+            }}
+          />
+        );
+      })}
+    </Tab.Navigator>
   );
 }
 
