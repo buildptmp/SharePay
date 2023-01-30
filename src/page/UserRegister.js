@@ -14,11 +14,15 @@ export default function UserRegister({ navigation }) {
 
     function onAuthStateChanged(user) {
         if (user) {
-            addUser(user.uid)
-            navigation.navigate('UserInformation');
+            if (!user.displayName) {
+                addUser(user.uid);
+                navigation.navigate('UserInformation');
+            } else {
+                navigation.navigate('Root');
+            }
         }
     }
-    
+
     useEffect(() => {
         const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
         return subscriber; // unsubscribe on unmount
@@ -38,8 +42,8 @@ export default function UserRegister({ navigation }) {
             console.log('Invalid code.');
         }
     }
-    
-    return(
+
+    return (
 
         <View style={Styles.containerRegis}>
 
@@ -66,7 +70,7 @@ export default function UserRegister({ navigation }) {
                     onChangeText={(text) => setPhoneNum(text)}
                 />
             </View>
-            <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3}]}>
+            <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3 }]}>
                 <TouchableOpacity
                     style={Styles.btn}
                     onPress={_signInWithPhoneNumber}
@@ -74,12 +78,12 @@ export default function UserRegister({ navigation }) {
                     <Text style={Styles.text}>Request OTP</Text>
                 </TouchableOpacity>
             </View>
-            <TextInput 
+            <TextInput
                 style={Styles.input}
                 value={code}
                 placeholder={"Sent OTP"}
                 onChangeText={(text) => setCode(text)}
-            /> 
+            />
             <TouchableOpacity
                 style={Styles.btn}
                 onPress={confirmCode}

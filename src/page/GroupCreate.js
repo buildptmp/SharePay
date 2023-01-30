@@ -7,7 +7,6 @@ import Homepage from './Homepage';
 import { Styles } from "../Styles"
 import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState } from "react";
-import ImagePicker from 'react-native-image-crop-picker';
 import { Button, 
     StyleSheet, 
     Text,

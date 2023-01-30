@@ -15,22 +15,16 @@ import {
 import UserSelect from './page/UserSelect'
 import UserRegister from './page/UserRegister'
 import UserInformation from './page/UserInformation'
-import Login from './page/Login'
-import GroupCreate from './page/GroupCreate';
 import AddingMember from './page/AddingMember';
-import Homepage from './page/Homepage';
 import NavBar from './components/Navbar';
 
 const Stack = createStackNavigator();
 
 const RouteMapping = [
   { name: 'UserSelect', page: UserSelect },
-  { name: 'Login', page: Login },
   { name: 'UserRegister', page: UserRegister },
-  // { name: 'GroupCreate' , page: GroupCreate },
   { name: 'AddingMember' , page: AddingMember },
-  // { name: 'Homepage', page: Homepage },
-  { name: 'UserInformation', page: UserInformation }
+  { name: 'UserInformation', page: UserInformation },
 ]
 
 const App = () => {
