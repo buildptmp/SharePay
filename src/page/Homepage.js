@@ -7,6 +7,9 @@ export default function Homepage({page, navigation}){
     const [curUser, setUser] = useState(null);
     const [isReady, setReady] = useState(false);
 
+    const RouteMapping = [
+        { routeName: 'GroupInfo', displayText: 'Group Info'},
+    ]
     useEffect(() => {
         auth().onAuthStateChanged((user) => {
             if (user) {
@@ -33,6 +36,19 @@ export default function Homepage({page, navigation}){
                 style={{ fontSize: 26, fontWeight:'bold'}}> 
                 Home Page
             </Text>
+            <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3}]}>
+                {RouteMapping.map((e) => {
+                    return (
+                        <TouchableOpacity 
+                            key={e.routeName}
+                            style={Styles.btn}
+                            onPress={() => navigation.navigate(e.routeName)}
+                        >
+                            <Text style={Styles.text}>{e.displayText}</Text>
+                        </TouchableOpacity>
+                    )
+                })}
+            </View>
             { isReady && 
                 <Text>
                     Test! Welcome { curUser ? curUser.displayName : '' }

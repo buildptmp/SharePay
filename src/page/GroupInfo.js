@@ -18,46 +18,23 @@ import { Button,
     TouchableOpacity,
  } from "react-native";
 
- export default function GroupCreate({ navigation }) {
+ export default function GroupInfo({ navigation }) {
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
     const RouteMapping = [
-        { routeName: 'AddingMember', displayText: 'Add Member', }
+        { routeName: 'AddingExpense', displayText: 'Add Expense', }
     ]
 
     return(
-        
         <View style={Styles.container}>
-            <View style={[{flex:1}]} />
-            <Image 
-                style = {Styles.logoImg}
-                source={require('../assets/AddMem.png')} 
-            />
-        
-       
+            
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
-                <Text style={Styles.textboxtop}>Group Name</Text>
-                <TextInput
-                style={Styles.input}
-                value={GroupName}
-                placeholder={"Insert Group Name"}
-                onChangeText={(text) => setGroupName(text)}
-                autoCapitalize={"none"}
-                />
-                <Text style={Styles.textboxtop}>Group Description</Text>
-                <TextInput
-                style={Styles.ip}
-                value={GroupDesc}
-                placeholder={"(Optional)"}
-                onChangeText={(text) => setGroupDesc(text)}
-                autoCapitalize={"none"}
-                />
                 <TouchableOpacity 
                                 // key={e.routeName}
                                 style={Styles.btn}
-                                onPress={() => navigation.navigate('AddingMember')}
+                                onPress={() => navigation.navigate('AddingExpense')}
                             >
-                                <Text style={Styles.text}> Create Group</Text>
+                                <Text style={Styles.text}> Add Expense</Text>
                 </TouchableOpacity>
             </View>
         </View> 

@@ -24,7 +24,7 @@ export const Styles = StyleSheet.create({
     },
     input: {
         height: 40,
-        width: '60%',
+        width: '100%',
         marginBottom: 10,
         borderWidth: 1,
         borderRadius: 15,
@@ -84,6 +84,15 @@ export const Styles = StyleSheet.create({
     dropDownBtnStyle: {
         height: 40,
         width: '20%',
+        marginBottom: 10,
+        borderWidth: 1,
+        borderRadius: 15,
+        borderColor: '#B6B6B6',
+        backgroundColor: '#FFFFFF',
+    },
+    dropDownCredBtnStyle: {
+        height: 40,
+        width: '100%',
         marginBottom: 10,
         borderWidth: 1,
         borderRadius: 15,
