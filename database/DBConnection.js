@@ -1,7 +1,13 @@
 import { initializeApp } from "firebase/app";
-// import { getAuth } from 'firebase/auth';
 import { 
-  getFirestore, collection, getDocs, initializeFirestore, addDoc, setDoc, doc
+  getFirestore, 
+  collection, 
+  initializeFirestore, 
+  doc, 
+  getDocs, 
+  addDoc, 
+  setDoc, 
+  updateDoc,
 } from "firebase/firestore"
 const firebaseConfig = {
   apiKey: "AIzaSyDGeiVvbQ_zNcXpbrXsGheivJSE5xAqrt0",
@@ -14,14 +20,32 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// const auth = getAuth(app);
 // const db = getFirestore();
 const db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
 });
-const colRefUser = collection(db, 'User')
+// const colRefUser = collection(db, 'User')
 // const colRefTestUsers = collection(db, 'Test-Users')
 
+export function addUser(uid, phoneNum) {
+  // WIP
+  const _data = {
+    bio: 'New User',
+    phoneNum: phoneNum
+  };
+  setDoc(doc(db, 'Test-Users', uid), _data);
+}
+export function updateUser(uid, displayName, userImage, bio?) {
+  let _data = {
+    name : displayName,
+    userImage : userImage
+  }
+  if(bio){
+    _data.bio = bio
+  }
+  console.log(_data)
+  if(Object.keys(_data).length > 0){updateDoc(doc(db, 'Test-Users', uid), _data);}
+}
 export function getfromUsers(){
   getDocs(colRefUser)
   .then((snapshot) => {
@@ -35,15 +59,6 @@ export function getfromUsers(){
     console.log(err.message)
   })
 }
-
-export function addUser(uid) {
-  // WIP
-  const _data = {
-    bio: 'New User'
-  }
-  setDoc(doc(db, 'Test-Users', uid), _data);
-}
-
 export function addtoUsers(){
   const data = {
     Password: 'demo2',
@@ -62,5 +77,3 @@ export function addtoUsers(){
     })
 
 }
-  
-export default colRefUser

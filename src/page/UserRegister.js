@@ -15,7 +15,7 @@ export default function UserRegister({ navigation }) {
     function onAuthStateChanged(user) {
         if (user) {
             if (!user.displayName) {
-                addUser(user.uid);
+                addUser(user.uid, user.phoneNumber);
                 navigation.navigate('UserInformation');
             } else {
                 navigation.navigate('Root');
