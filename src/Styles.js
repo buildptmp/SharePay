@@ -6,6 +6,7 @@ export const Styles = StyleSheet.create({
         flexDirection: 'column', 
         justifyContent: 'center', 
         alignItems: 'center',
+        backgroundColor: '#F6EFEF'
     },
 
     containerAddmem: {
@@ -31,6 +32,25 @@ export const Styles = StyleSheet.create({
         borderColor: '#B6B6B6',
         backgroundColor: '#FFFFFF',
 
+    },
+    inputgroup: {
+        height: 40,
+        width: '100%',
+        marginBottom: 10,
+        borderWidth: 1,
+        borderRadius: 15,
+        borderColor: '#B6B6B6',
+        backgroundColor: '#FFFFFF',
+    },
+
+    descinput: {
+        height: 80,
+        width: '100%',
+        marginBottom: 10,
+        borderWidth: 1,
+        borderRadius: 15,
+        borderColor: '#B6B6B6',
+        backgroundColor: '#FFFFFF',
     },
 
     inputAddmem: {

@@ -17,6 +17,10 @@ import UserRegister from './page/UserRegister'
 import UserInformation from './page/UserInformation'
 import AddingMember from './page/AddingMember';
 import NavBar from './components/Navbar';
+import AddingExpense from './page/AddingExpense'
+import GroupInfo from './page/GroupInfo';
+import Profilepage from './page/Profilepage';
+import AddingSlip from './page/AddingSlip';
 
 const Stack = createStackNavigator();
 
@@ -25,6 +29,10 @@ const RouteMapping = [
   { name: 'UserRegister', page: UserRegister },
   { name: 'AddingMember' , page: AddingMember },
   { name: 'UserInformation', page: UserInformation },
+  { name: 'AddingExpense' , page: AddingExpense },
+  { name: 'GroupInfo' , page: GroupInfo },
+  { name: 'Profilepage' , page: Profilepage },
+  { name: 'AddingSlip' , page: AddingSlip }
 ]
 
 const App = () => {
