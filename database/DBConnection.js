@@ -29,35 +29,6 @@ const db = initializeFirestore(app, {
 });
 // const colRefUser = collection(db, 'User')
 // const colRefTestUsers = collection(db, 'Test-Users')
-export const inviteStatus = {
-  pending: 'pending',
-  accepted: 'accepted',
-  declined: 'declined',
-  cancelled: 'cancelled',
-}
-export function addUser(uid, phoneNum) {
-  // WIP
-  const _data = {
-    bio: 'New User',
-    phoneNum: phoneNum
-  };
-  setDoc(doc(db, 'Test-Users', uid), _data)
-  .catch(error => {
-    console.log(error);
-})
-}
-export function updateUser(uid, displayName, userImage, bio?) {
-  let _data = {
-    name : displayName,
-    userImage : userImage
-  }
-  if(bio){
-    _data.bio = bio
-  }
-  console.log(_data)
-  if(Object.keys(_data).length > 0){updateDoc(doc(db, 'Test-Users', uid), _data)
-  .catch(error => {console.log(error);})}
-}
 export function getfromUsers(){
   getDocs(colRefUser)
   .then((snapshot) => {
@@ -89,14 +60,44 @@ export function addtoUsers(){
     })
 
 } 
-export async function addGroup(GroupName, photoURL, GroupDesc? ){
+
+export const invStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  cancelled: 'cancelled',
+}
+export function addUser(uid, phoneNum) {
+  // WIP
+  const _data = {
+    bio: 'New User',
+    phoneNum: phoneNum
+  };
+  setDoc(doc(db, 'Test-Users', uid), _data)
+  .catch(error => {
+    console.log(error);
+})
+}
+export function updateUser(uid, name, image, bio="") {
+  let _data = {
+    name : name,
+    image : image
+  }
+  if(bio){
+    _data.bio = bio
+  }
+  console.log(_data)
+  if(Object.keys(_data).length > 0){updateDoc(doc(db, 'Test-Users', uid), _data)
+  .catch(error => {console.log(error);})}
+}
+export async function addGroup(name, image, desription="" ){
   const colRef = collection(db, 'Test-Groups');
   let _data={
-    name: GroupName, 
-    photoURL: photoURL
+    name: name, 
+    image: image
   };
-  if(GroupDesc){
-    _data.desription = GroupDesc;
+  if(desription){
+    _data.desription = desription;
   }
   const groupid = await addDoc(colRef, _data)
   .then(docRef => {
@@ -109,7 +110,7 @@ export async function addGroup(GroupName, photoURL, GroupDesc? ){
 
   return groupid
 }
-export async function getUserFromPhoneNum(phoneNum: String){
+export async function getUserFromPhoneNum(phoneNum){
   const colRef = collection(db,'Test-Users');
   const q = query(colRef,where("phoneNum","==","+66"+phoneNum.slice(1, 10)));
 
@@ -118,7 +119,7 @@ export async function getUserFromPhoneNum(phoneNum: String){
   docsSnap.forEach(doc => {
     debtorids.push({ uid: doc.id, ...doc.data()})
   })
-  console.log(debtorids);
+  // console.log(debtorids);
   return debtorids;
 }
 export async function getGroupListByUid(uid){
@@ -128,54 +129,23 @@ export async function getGroupListByUid(uid){
 
   const docsSnap = await getDocs(q);
   let gidList = [];
-  // const getGroup = async (gid) => {
-  //   const group = await getDoc(doc(db,'Test-Groups',gid))
-  //   return group
-  // }
   docsSnap.forEach( doc => {
-    // let group = await getGroup({...doc.data()}.gid)
-    // console.log({ gid: group.id, ...group.data()})
-    // docs.push({ gid: group.id, ...group.data()})
     gidList.push({...doc.data()}.gid)
   })
+
   let groupList = [];
   for(let gid of gidList){
     let group = await getDoc(doc(db,'Test-Groups',gid))
-
     groupList.push({gid:group.id, ...group.data()})
   }
+
   return groupList;
 }
-export class Group {
-  gid: String;
-  name: String;
-  desc: String | null;
-  url: String;
-
-  invStatus = {
-    pending: 'pending',
-    accepted: 'accepted',
-    declined: 'declined',
-    cancelled: 'cancelled',
-  }
-  
-  constructor(groupId,groupName,groupURL, groupDesc, uid){
-    this.gid = groupId;
-    this.name = groupName;
-    this.url = groupURL;
-    this.desc = groupDesc;
-    // console.log(this.invStatus.accepted)
-    this.addGroupMember(uid,this.invStatus["accepted"])
-  }
-
-  setGroupInfo(groupName: String, groupURL: String, groupDesc=""){
-    this.groupName = groupName;
-    this.groupURL = groupURL;
-    this.groupDesc = groupDesc;
-    updateDoc(doc(db,'Test-Groups',this.gid),{name:this.name, groupImage:this.url, description: this.desc}).catch(error => {console.log(error)});
-  }
-
-  addGroupMember(uid:String,invStatus:String){
-    setDoc(doc(db,'Test-UserGroup','('+this.gid+','+uid+')'),{uid: uid,gid:this.gid, status: invStatus}).catch(error => {console.log(error)});
-  }
+export function addEditGroupMember(gid,uid,status){
+  setDoc(doc(db,'Test-UserGroup','('+gid+','+uid+')'),{uid: uid,gid:gid, status: status}).catch(error => {console.log(error)});
+}
+export async function isInGroup(gid,uid){
+  const check = await getDoc(doc(db,'Test-UserGroup','('+gid+','+uid+')'))
+  console.log({isInGroup:{...check.data()}.status == "accepted", status: {...check.data()}.status})
+  return {isInGroup:({...check.data()}.status == "accepted"), status: {...check.data()}.status}
 }
