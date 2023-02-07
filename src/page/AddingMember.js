@@ -79,7 +79,7 @@ import { Button,
                 }}>
                 {isNotNewuser ? (
                     <View>
-                        <Image source = {{uri:member.userImage}} style={{width: 200, height: 200, paddingBottom: 10}}/>
+                        <Image source = {{uri:member.image}} style={{width: 200, height: 200, paddingBottom: 10}}/>
                         <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}>{member.name}</Text>
                         <Text style={{ color: 'pink', fontSize: 12 }}>{member.bio}</Text>
                     </View>
