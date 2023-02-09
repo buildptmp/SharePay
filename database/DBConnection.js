@@ -61,12 +61,8 @@ export function addtoUsers(){
 
 } 
 
-export const invStatus = {
-  pending: 'pending',
-  accepted: 'accepted',
-  declined: 'declined',
-  cancelled: 'cancelled',
-}
+/* User management*/
+
 export function addUser(uid, phoneNum) {
   // WIP
   const _data = {
@@ -90,26 +86,6 @@ export function updateUser(uid, name, image, bio="") {
   if(Object.keys(_data).length > 0){updateDoc(doc(db, 'Test-Users', uid), _data)
   .catch(error => {console.log(error);})}
 }
-export async function addGroup(name, image, desription="" ){
-  const colRef = collection(db, 'Test-Groups');
-  let _data={
-    name: name, 
-    image: image
-  };
-  if(desription){
-    _data.desription = desription;
-  }
-  const groupid = await addDoc(colRef, _data)
-  .then(docRef => {
-    console.log("The group id "+docRef.id+" has been added successfully");
-    return docRef.id;
-  })
-  .catch(error => {
-    console.log(error);
-  })
-
-  return groupid
-}
 export async function getUserFromPhoneNum(phoneNum){
   const colRef = collection(db,'Test-Users');
   const q = query(colRef,where("phoneNum","==","+66"+phoneNum.slice(1, 10)));
@@ -122,9 +98,37 @@ export async function getUserFromPhoneNum(phoneNum){
   // console.log(debtorids);
   return debtorids;
 }
+
+/* Group management*/
+
+export const invStatus = {
+  pending: 'pending',
+  accepted: 'accepted',
+  declined: 'declined',
+  cancelled: 'cancelled',
+}
+export async function addGroup(name, image, description="" ){
+  const colRef = collection(db, 'Test-Groups');
+  let _data={
+    name: name, 
+    image: image
+  };
+  if(desription){
+    _data.description = description;
+  }
+  const groupid = await addDoc(colRef, _data)
+  .then(docRef => {
+    console.log("The group id "+docRef.id+" has been added successfully");
+    return docRef.id;
+  })
+  .catch(error => {
+    console.log(error);
+  })
+
+  return groupid
+}
 export async function getGroupListByUid(uid){
   const UserGroupRef = collection(db, 'Test-UserGroup');
-  const GroupsRef = collection(db, 'Test-Groups');
   const q = query(UserGroupRef,where("uid","==",uid));
 
   const docsSnap = await getDocs(q);
@@ -141,6 +145,9 @@ export async function getGroupListByUid(uid){
 
   return groupList;
 }
+
+/* User and Group */
+
 export function addEditGroupMember(gid,uid,status){
   setDoc(doc(db,'Test-UserGroup','('+gid+','+uid+')'),{uid: uid,gid:gid, status: status}).catch(error => {console.log(error)});
 }
@@ -148,4 +155,55 @@ export async function isInGroup(gid,uid){
   const check = await getDoc(doc(db,'Test-UserGroup','('+gid+','+uid+')'))
   console.log({isInGroup:{...check.data()}.status == "accepted", status: {...check.data()}.status})
   return {isInGroup:({...check.data()}.status == "accepted"), status: {...check.data()}.status}
+}
+export async function getMemberListByGid(gid){
+  const UserGroupRef = collection(db, 'Test-UserGroup');
+  const q = query(UserGroupRef,where("gid","==",gid));
+
+  const docsSnap = await getDocs(q);
+  let uidList = [];
+  docsSnap.forEach( doc => {
+    uidList.push({...doc.data()}.uid);
+  })
+
+  let memberList = [];
+  for(let uid of uidList){
+    let member = await getDoc(doc(db,'Test-Groups',uid));
+    memberList.push({uid:member.id, ...member.data()});
+  }
+
+  return memberList;
+}
+
+/* Expense management*/ 
+
+export async function addExpense(name, image, price, description=""){
+  let _data = {
+    name: name,
+    image: image,
+    "price (Baht)": price
+  }
+  if(description){
+    _data.description = description
+  }
+
+  const eid = await addDoc(collection(db,'Test-Items'),_data)
+  .then(docRef => {
+    console.log("The expense item id "+docRef.id+" has been added successfully");
+    return docRef.id;
+  }).catch(error => {console.log(error)})
+  
+  return eid
+}
+export async function getExpenseListByGid(gid){
+  const ItemRef = collection(db,'Test-Items',gid);
+  const q = query(ItemRef,where("gid","==",gid));
+
+  const docsnap = await getDocs(q);
+  let expenseList = [];
+  docsnap.forEach( doc => {
+    expenseList.push({eid:doc.id, ...doc.data()})
+  })
+
+  return expenseList
 }
