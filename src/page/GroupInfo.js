@@ -27,7 +27,7 @@ import { Button,
     ]
 
     return(
-        <View style={Styles.container}>
+        <View style={Styles.containerginfo}>
             
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
                 <TouchableOpacity 

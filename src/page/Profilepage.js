@@ -46,7 +46,7 @@ export default function Profilepage({page, navigation}){
                     style={Styles.btn}
                     onPress={_signOut}
                 >
-                    <Text>Logout</Text>
+                    <Text style={Styles.text}>Logout</Text>
                 </TouchableOpacity> 
             }
         </View>

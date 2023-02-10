@@ -42,7 +42,7 @@ import { Button,
                 <Text style={Styles.textboxtop}> Amount: 'Price' </Text>
                 <TouchableOpacity 
                                 // key={e.routeName}
-                                style={Styles.btn}
+                                style={Styles.btnslip}
                                 onPress={()=> alert('Upload Successfully')}
 
                             >

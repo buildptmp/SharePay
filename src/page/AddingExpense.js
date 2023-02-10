@@ -37,13 +37,13 @@ import { Button,
     const Member = ["Buildkin", "Prai", "Pop"]
     return(
         
-        <View style={Styles.container}>
+        <View style={Styles.containeraddex}>
         
        
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
                 <Text style={Styles.textboxtop}>Item Name</Text>
                 <TextInput
-                style={Styles.input}
+                style={Styles.inputaddex}
                 value={ItemName}
                 placeholder={"Insert item"}
                 onChangeText={(text) => setItemName(text)}
@@ -51,7 +51,7 @@ import { Button,
                 />
                 <Text style={Styles.textboxtop}>Price</Text>
                 <TextInput
-                style={Styles.input}
+                style={Styles.inputaddex}
                 value={ItemPrice}
                 placeholder={"Insert Price"}
                 onChangeText={(text) => setItemPrice(text)}
@@ -85,7 +85,7 @@ import { Button,
 
                 <TouchableOpacity 
                                 // key={e.routeName}
-                                style={Styles.btn}
+                                style={Styles.btnaddex}
                                 onPress={() => navigation.navigate('')}
                             >
                                 <Text style={Styles.text}> Add Expense</Text>
