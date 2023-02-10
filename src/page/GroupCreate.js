@@ -57,7 +57,7 @@ import { addGroup, addEditGroupMember } from "../../database/DBConnection";
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
                 <Text style={Styles.textboxtop}>Group Name</Text>
                 <TextInput
-                style={Styles.input}
+                style={Styles.inputgroup}
                 value={GroupName}
                 placeholder={"Insert Group Name"}
                 onChangeText={(text) => setGroupName(text)}

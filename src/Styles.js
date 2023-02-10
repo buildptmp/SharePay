@@ -9,6 +9,24 @@ export const Styles = StyleSheet.create({
         backgroundColor: '#F6EFEF'
     },
 
+    containeraddex: {
+        flex:1,
+        paddingTop: 30, 
+        flexDirection: 'column', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: '#F6EFEF'
+    },
+
+    containerginfo: {
+        flex:1,
+        paddingTop: 30, 
+        flexDirection: 'column', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: '#F6EFEF'
+    },
+
     containerAddmem: {
         flex: 2, 
         flexDirection: 'column', 
@@ -55,9 +73,19 @@ export const Styles = StyleSheet.create({
 
     inputAddmem: {
         height: 40,
-        width: '90%',
-        marginBottom: 10,
+        width: '100%',
         marginLeft: 10,
+        borderWidth: 1,
+        borderRadius: 15,
+        borderColor: '#B6B6B6',
+        backgroundColor: '#FFFFFF',
+
+    },
+
+    inputaddex: {
+        height: 40,
+        width: '100%',
+        marginBottom: 10,
         borderWidth: 1,
         borderRadius: 15,
         borderColor: '#B6B6B6',
@@ -70,12 +98,35 @@ export const Styles = StyleSheet.create({
         marginBottom: 10,
         padding: 10,
         borderRadius: 20,
+    }, 
+    
+    btnaddex: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        marginTop: 20,
+    },
+
+    btngif: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        marginTop: 20,
+    },
+
+     btnslip: {
+        backgroundColor: '#F88C8C',
+        marginTop: 20,
+        padding: 10,
+        borderRadius: 20,
     },
 
     btnph: {
         backgroundColor: '#F88C8C',
         width: '50%',
-        marginTop: 20,
+        marginTop: 10,
         padding: 10,
         borderRadius: 20,
         marginLeft:60 ,
