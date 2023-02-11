@@ -3,8 +3,27 @@ import { StyleSheet } from "react-native";
 export const Styles = StyleSheet.create({
     container: {
         flex:1, 
+        paddingTop: 30, 
         flexDirection: 'column', 
-        justifyContent: 'center', 
+        // justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: '#F6EFEF'
+    },
+
+    containeraddex: {
+        flex:1,
+        paddingTop: 30, 
+        flexDirection: 'column', 
+        // justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: '#F6EFEF'
+    },
+
+    containerginfo: {
+        flex:1,
+        paddingTop: 30, 
+        flexDirection: 'column', 
+        // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF'
     },
@@ -29,8 +48,9 @@ export const Styles = StyleSheet.create({
 
     containerAddmem: {
         flex: 2, 
+        paddingTop: 30, 
         flexDirection: 'column', 
-        justifyContent: 'center', 
+        // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF'
     },
@@ -161,5 +181,45 @@ export const Styles = StyleSheet.create({
         borderColor: '#B6B6B6',
         backgroundColor: '#FFFFFF',
     },
+    
+    list_container: {
+        // flex: 1,
+        paddingTop: 5,
+        backgroundColor: '#F6EFEF',
+      },
+    sectionHeader: {
+        paddingTop: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    sectionHeaderwithsub: {
+        paddingTop: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 5,
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+    },
 
+    // drop down style
+    dropdownBtnStyle: {
+        width: '80%',
+        height: 50,
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: '#444',
+        },
+    dropdownBtnTxtStyle: {color: '#444', textAlign: 'left'},
+    dropdownDropdownStyle: {backgroundColor: '#EFEFEF'},
+    dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
+    dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},
 });

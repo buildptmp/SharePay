@@ -4,7 +4,6 @@ import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
 
 export default function Profilepage({page, navigation}){
-    console.log("This is Profile page")
     const [curUser, setUser] = useState(null);
     const [isReady, setReady] = useState(false);
     const RouteMapping = [
