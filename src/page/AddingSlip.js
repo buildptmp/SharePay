@@ -44,7 +44,6 @@ import { Button,
                     // key={e.routeName}
                     style={Styles.btnslip}
                     onPress={()=> alert('Upload Successfully')}
-
                 >
                     <Text style={Styles.text}> Confirm </Text>
                 </TouchableOpacity>
