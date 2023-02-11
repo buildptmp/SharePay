@@ -1,11 +1,11 @@
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { useHistory } from "react-router-dom";
-import { createStackNavigator } from '@react-navigation/stack';
-import Homepage from './Homepage';
+// import { useNavigation } from '@react-navigation/native';
+// import { useHistory } from "react-router-dom";
+// import { createStackNavigator } from '@react-navigation/stack';
+// import Homepage from './Homepage';
 import { Styles } from "../Styles"
-import { NavigationScreenProps } from "react-navigation";
+// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState } from "react";
 import { Button, 
     StyleSheet, 
@@ -21,13 +21,12 @@ import { Button,
  import { getUserFromPhoneNum, addEditGroupMember, isInGroup} from "../../database/DBConnection";
 
  export default function AddingMember({ route, navigation }) {
-    console.log("AddingMember Page")
+    const { gid , gname} = route.params
     const [PhoneNum, setPhoneNum] = useState("");
     const [member, setMember] = useState({});
     const [showUser, setshowUser] = useState(false);
     const [isNotNewuser, setIsNotNewuser] = useState(false);
-    const { gid , gname} = route.params
-
+    
     async function checkMember(){
         const m = await getUserFromPhoneNum(PhoneNum)
         if(m.length != 0){
@@ -42,7 +41,7 @@ import { Button,
 }
     // console.log(gid)
     useEffect(() =>{
-        console.log(PhoneNum)
+        // console.log(PhoneNum)
         if(PhoneNum.length == 10){
             checkMember()
         }

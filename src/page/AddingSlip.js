@@ -1,11 +1,11 @@
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { useHistory } from "react-router-dom";
-import { createStackNavigator } from '@react-navigation/stack';
+// import { useNavigation } from '@react-navigation/native';
+// import { useHistory } from "react-router-dom";
+// import { createStackNavigator } from '@react-navigation/stack';
 import Homepage from './Homepage';
 import { Styles } from "../Styles"
-import { NavigationScreenProps } from "react-navigation";
+// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState } from "react";
 import { Button, 
     StyleSheet, 
@@ -41,12 +41,12 @@ import { Button,
                 <Text style={Styles.textboxtop}>To: 'Creditor' </Text>
                 <Text style={Styles.textboxtop}> Amount: 'Price' </Text>
                 <TouchableOpacity 
-                                // key={e.routeName}
-                                style={Styles.btn}
-                                onPress={()=> alert('Upload Successfully')}
+                    // key={e.routeName}
+                    style={Styles.btnslip}
+                    onPress={()=> alert('Upload Successfully')}
 
-                            >
-                                <Text style={Styles.text}> Confirm </Text>
+                >
+                    <Text style={Styles.text}> Confirm </Text>
                 </TouchableOpacity>
             </View>
         </View> 
