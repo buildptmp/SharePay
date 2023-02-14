@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import app from './FirebaseConfig'
 import { 
   getFirestore, 
   collection, 
@@ -12,21 +12,11 @@ import {
   query,
   where
 } from "firebase/firestore"
-const firebaseConfig = {
-  apiKey: "AIzaSyDGeiVvbQ_zNcXpbrXsGheivJSE5xAqrt0",
-  authDomain: "sharepay-77c6c.firebaseapp.com",
-  databaseURL: "https://sharepay-77c6c.firebaseio.com",
-  projectId: "sharepay-77c6c",
-  storageBucket: "sharepay-77c6c.appspot.com",
-  messagingSenderId: "G-9ME2LJGL9Q",
-  appId: "1:927888254427:android:bc2b3ddb87e075072e33fe"
-};
 
-const app = initializeApp(firebaseConfig);
-// const db = getFirestore();
-const db = initializeFirestore(app, {
-    experimentalForceLongPolling: true,
-});
+const db = getFirestore(app);
+// const db = initializeFirestore(app, {
+//     experimentalForceLongPolling: true,
+// });
 
 /* User management*/
 
