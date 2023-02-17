@@ -13,10 +13,10 @@ import {
   where
 } from "firebase/firestore"
 
-const db = getFirestore(app);
-// const db = initializeFirestore(app, {
-//     experimentalForceLongPolling: true,
-// });
+// const db = getFirestore(app);
+const db = initializeFirestore(app, {
+    experimentalForceLongPolling: true,
+});
 
 /* User management*/
 
@@ -59,6 +59,17 @@ export async function getUserFromPhoneNum(phoneNum){
 
   // console.log(member);
   
+}
+export async function getUserFromUid(uid){
+  const docRef = doc(db,'Test-Users',uid);
+  
+  try{
+    const docsnap = await getDoc(docRef);
+    const user = { uid: docsnap.id, ...docsnap.data()}
+    return user;
+  } catch (error){
+    console.log(error);
+  }
 }
 
 /* Group management*/
