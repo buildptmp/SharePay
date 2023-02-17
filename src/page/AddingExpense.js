@@ -11,6 +11,7 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
+    ScrollView
  } from "react-native";
 //  import CheckBox from 'react-native-check-box';
 import SectionList from 'react-native/Libraries/Lists/SectionList';
@@ -18,17 +19,14 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Fontisto';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnection'
+// import Selection from '../components/option';
 
- export default function AddingExpense({ route, navigation }) {
+export default function AddingExpense({ route, navigation }) {
     const { gid, gname } = route.params
     const [ItemName, setItemName] = useState("");
     const [ItemPrice, setItemPrice] = useState(0);
     const [Creditor, setCreditor] = useState("");
     const [memberList, setMemberList] = useState([{}]);
-
-    const RouteMapping = [
-        { routeName: 'AddingMember', displayText: 'Add Member', }
-    ] 
 
     // onPress={()=>{ dropdownRef.current.reset() }}; 
 
@@ -70,11 +68,31 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
         // const debtorIds = await addDebtor(debtorList,itemId,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
     }
 
+    Checkbox = (props) => {
+        const [checker, setChecker] = useState(false)
+        const data = props.data
+        return(
+            <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:data.uid}} onPress={()=>setChecker(!checker)}>
+            <View style={{
+                width: '100%',
+                height: 50,
+                backgroundColor: '#FFFFFF',
+                borderBottomWidth: 1,
+                borderColor: '#7E828A',
+                flexDirection: 'row'
+                }}>
+                    <Icon name={(checker ? 'checkbox-active':'checkbox-passive')} size={35} style={{margin:6.5, width:40}}></Icon>
+                    <Image style={{borderRadius: 50, height:35, width:35,margin:6.5 }} source={props.source}/>
+                    <Text style={Styles.item}>{props.name}</Text>
+            </View>
+            </TouchableOpacity>
+        );
+    }
     // const Member = ["Buildkin", "Prai", "Pop"]
     return(
-        
+        <ScrollView>
         <View style={Styles.containeraddex}>
-            <View style={{ width: '100%', paddingHorizontal: 10, backgroundColor: '#F6EFEF',}}>
+            <View style={{ width: '100%', paddingHorizontal: 10,}}>
                 <Text style={Styles.textboxtop}>Item Name</Text>
                 <TextInput
                     style={Styles.inputaddex}
@@ -84,7 +102,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                     autoCapitalize={"none"}
                 />
             </View>
-            <View style={{ width: '100%', paddingHorizontal: 10, backgroundColor: '#F6EFEF',}}>
+            <View style={{ width: '100%', paddingHorizontal: 10, }}>
                 <Text style={Styles.textboxtop}>Price</Text>
                 <TextInput
                     style={Styles.inputaddex}
@@ -95,6 +113,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                     autoCapitalize={"none"}
                 />
             </View>
+            <View style={{paddingBottom:10}}>
             <Text style={Styles.textboxtop}>Creditor</Text>
             <SelectDropdown
                 data={memberList}
@@ -122,40 +141,20 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 dropdownStyle={Styles.dropdownDropdownStyle}
                 rowStyle={Styles.dropdownRowStyle}
                 rowTextStyle={Styles.dropdownRowTxtStyle}
-                // buttonStyle={Styles.dropDownCredBtnStyle}
-            />
-            
+            /></View>
+            {/* <Selection name={"Method"}/> */}
+
             <View style={{alignSelf:'flex-start', paddingTop:10}}>
                 <Text style={Styles.sectionHeaderwithsub}>Debtor</Text>
                 <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
             </View>
                     
-                
-            {/* <CheckBox 
-            isChecked={isChecked.Build} 
-            onClick={()=> setIscheck(!isChecked)}
-            rightText="Build"
-            checkedCheckBoxColor='green'
-            //uncheckedCheckBoxColor='red'
-            /> */}
             <SafeAreaView style={Styles.list_container, {width:"100%"}}><SectionList
                 sections={[
                     {title: 'Select the debtor', data: memberList},
                 ]}
                 renderItem={({item, index}) => 
-                    <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:item.uid}} onPress={() => handleChange(item.uid)}>
-                        <View style={{
-                            width: '100%',
-                            height: 50,
-                            backgroundColor: '#FFFFFF',
-                            borderBottomWidth: 1,
-                            borderColor: '#7E828A',
-                            flexDirection: 'row'
-                            }}>
-                            <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/>
-                            <Text style={Styles.item}>{item.name}</Text>
-                        </View>
-                    </TouchableOpacity>
+                   <Checkbox source={{uri:item.image}} name={item.name} data={item}></Checkbox>
                 }
                 keyExtractor={(item, index) => item + index}
             /></SafeAreaView>
@@ -167,6 +166,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 <Text style={Styles.text}> Add Expense</Text>
             </TouchableOpacity>
         </View> 
+        </ScrollView>
     );
 };
 

@@ -32,7 +32,7 @@ export const Styles = StyleSheet.create({
         flex:1,
         paddingTop: 30, 
         flexDirection: 'column', 
-        justifyContent: 'center', 
+        // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF'
     },
@@ -41,7 +41,7 @@ export const Styles = StyleSheet.create({
         flex:1,
         paddingTop: 30, 
         flexDirection: 'column', 
-        justifyContent: 'center', 
+        // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF'
     },
