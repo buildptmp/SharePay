@@ -168,7 +168,7 @@ export const Styles = StyleSheet.create({
     containerRegis: {
         flex:1, 
         flexDirection: 'column', 
-        justifyContent: 'center', 
+        // justifyContent: 'center', 
         alignItems: 'center',
         paddingTop: 70,
     },
@@ -222,4 +222,11 @@ export const Styles = StyleSheet.create({
     dropdownDropdownStyle: {backgroundColor: '#EFEFEF'},
     dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
     dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},
+
+    //image picker style
+    image_picker: {
+        width: 200, 
+        height: 200, 
+        borderRadius: 100 
+    }
 });

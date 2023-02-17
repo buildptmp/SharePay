@@ -36,7 +36,7 @@ export default function Profilepage({page, navigation}){
     
     return(
         <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
-            <Image style={{borderRadius: 500,height:250, width:250 }} source={userPicture}/>
+            <Image style={Styles.image_picker} source={userPicture}/>
             <Text style={Styles.sectionHeader}>{userName}</Text>
             {RouteMapping.map((e) => {
                 return (
@@ -51,7 +51,7 @@ export default function Profilepage({page, navigation}){
             })}
             <TouchableOpacity
                 style={Styles.btn}
-                // onPress={() => {navigation.navigate('PersonalProfilePage')}}
+                onPress={() => {navigation.navigate('ProfileInfo')}}
             >
                 <Text style={Styles.text}>View user profile</Text>
             </TouchableOpacity> 

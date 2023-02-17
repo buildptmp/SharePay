@@ -30,7 +30,7 @@ export default function UserSelect({ navigation }) {
             <View style={[{flex:1}]} />
             <Image 
                 style = {Styles.logoImg}
-                source={require('../assets/Logo.png')} 
+                source={{uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2FLogo.png?alt=media&token=40b8c923-1f01-4b69-942e-748cc8f03475"}} 
             />   
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3}]}>
                 {RouteMapping.map((e) => {

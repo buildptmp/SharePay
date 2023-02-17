@@ -19,21 +19,29 @@ import { Button,
  } from "react-native";
 import auth from '@react-native-firebase/auth';
 import { addGroup, addEditGroupMember } from "../../database/DBConnection";
- 
- export default function GroupCreate({ navigation }) {
+import { imagePicker, uploadGroupImg } from '../../database/Storage';
+
+export default function GroupCreate({ navigation }) {
+    const user = auth().currentUser;
     const [GroupName, setGroupName] = useState("");
     const [GroupDesc, setGroupDesc] = useState("");
-    const [photoURL, setPhotoURL] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2FAddMem.png?alt=media&token=713f3955-809a-47e6-9f4c-4e93ac53dcd9"})
-
+    const [pickerRes, setPickerRes] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2FAddMem.png?alt=media&token=713f3955-809a-47e6-9f4c-4e93ac53dcd9"});
+    
+    async function chooseFile() {
+        const response = await imagePicker()
+        if (!response.didCancel){
+            setPickerRes(response)
+        }
+    };
+    
     async function _createGroup() {
         if(GroupName==""){
             alert("what is your group name?");
         }
         else{
-            const user = auth().currentUser;
-            const groupId = await addGroup(GroupName, photoURL.uri, GroupDesc);
+            const photoURL = (pickerRes.fileName != undefined ? await uploadGroupImg(pickerRes.fileName,pickerRes.uri,pickerRes.type):pickerRes.uri)
+            const groupId = await addGroup(GroupName, photoURL, GroupDesc);
             addEditGroupMember(groupId,user.uid,'accepted')
-            
             navigation.navigate('AddingMember',{gid:groupId, gname:GroupName})
         }
     }
@@ -41,14 +49,12 @@ import { addGroup, addEditGroupMember } from "../../database/DBConnection";
     return(
         
         <View style={Styles.container}>
-            <View style={[{flex:1}]} />
-            <Image 
-                style = {Styles.logoImg}
-                source={require('../assets/AddMem.png')} 
-            />
-        
-       
-            <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
+            {/* <View style={[{flex:1}]} /> */}
+            <TouchableOpacity onPress={chooseFile}>
+                <Image style = {Styles.image_picker} source={{uri: pickerRes.uri}}></Image>
+            </TouchableOpacity>
+            
+            <View style={[{ width: '100%', paddingHorizontal: 100, backgroundColor: '#F6EFEF'}]}>
                 <Text style={Styles.textboxtop}>Group Name</Text>
                 <TextInput
                 style={Styles.inputgroup}
