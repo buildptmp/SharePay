@@ -22,6 +22,7 @@ import GroupInfo from './page/GroupInfo';
 import Profilepage from './page/Profilepage';
 import AddingSlip from './page/AddingSlip';
 import ProfileInfo from './page/ProfileInfo';
+import Selection from './components/option';
 
 const Stack = createStackNavigator();
 
@@ -34,14 +35,15 @@ const RouteMapping = [
   { name: 'GroupInfo' , page: GroupInfo },
   { name: 'Profilepage' , page: Profilepage },
   { name: 'AddingSlip' , page: AddingSlip },
-  { name: 'ProfileInfo', page: ProfileInfo }
+  { name: 'ProfileInfo', page: ProfileInfo },
+  { name: 'Selection', page: Selection },
 ]
 
 const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName={RouteMapping[0].name} 
+        initialRouteName={RouteMapping[9].name} 
         screenOptions={{
           headerShown: true
         }}>

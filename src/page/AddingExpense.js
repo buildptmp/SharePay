@@ -1,11 +1,6 @@
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-// import { useNavigation } from '@react-navigation/native';
-// import { useHistory } from "react-router-dom";
-// import { createStackNavigator } from '@react-navigation/stack';
-// import Homepage from './Homepage';
 import { Styles } from "../Styles"
-// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState, useRef } from "react";
 import { Button, 
     StyleSheet, 
@@ -33,13 +28,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
 
     const RouteMapping = [
         { routeName: 'AddingMember', displayText: 'Add Member', }
-    ]
-    // const [isChecked, setIscheck] = useState({
-    //     Build: false,
-    //     Prai: false,
-    //     Pop: false,
-    // });
-    // const dropdownRef = useRef({}); 
+    ] 
 
     // onPress={()=>{ dropdownRef.current.reset() }}; 
 
@@ -76,9 +65,9 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
     }
 
     async function _addExpense(){
-        const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid,gid);
-        const countSplitEquallyMember = await _countSplitEquallyMember(debtorList);
-        const debtorids = await addDebtor(debtorList,itemid,gid,creditorid,ItemPrice, countSplitEquallyMember)
+        // const itemId = await addExpense(ItemName,ItemPrice,Creditor.uid,gid);
+        // const countSplitEquallyMember = await _countSplitEquallyMember(debtorList);
+        // const debtorIds = await addDebtor(debtorList,itemId,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
     }
 
     // const Member = ["Buildkin", "Prai", "Pop"]
@@ -106,81 +95,77 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                     autoCapitalize={"none"}
                 />
             </View>
-                <Text style={Styles.textboxtop}>Creditor</Text>
-                <SelectDropdown
-                    // defaultValue={Creditor}
-                    data={memberList}
-                    // ref={dropdownRef}
-                    defaultButtonText={'Select a Creditor'}
-                    onSelect={(selectedItem) => {
-                        setCreditor(selectedItem)
-                        // console.log(selectedItem.uid)
-                    }} 
-                    buttonTextAfterSelection={(selectedItem) => {
-                        return selectedItem.name
-                    }}
-                    rowTextForSelection={(member) => {
-                        return member.name
-                    }} 
-                    search={true}
-                    searchPlaceHolder={"Search for a name"}
-                    renderSearchInputLeftIcon={()=>{
-                        return(<Icon name="search"/>);
-                    }}
-                    buttonStyle={Styles.dropdownBtnStyle}
-                    buttonTextStyle={Styles.dropdownBtnTxtStyle}
-                    renderDropdownIcon={(selectedItem) => {
-                        return (<Icon name={selectedItem ? 'angle-up':'angle-down'}/>);
-                    }}
-                    dropdownIconPosition={'right'}
-                    dropdownStyle={Styles.dropdownDropdownStyle}
-                    rowStyle={Styles.dropdownRowStyle}
-                    rowTextStyle={Styles.dropdownRowTxtStyle}
-                    // buttonStyle={Styles.dropDownCredBtnStyle}
-                />
-                
-                <View style={{alignSelf:'flex-start', paddingTop:10}}>
-                    <Text style={Styles.sectionHeaderwithsub}>Debtor</Text>
-                    <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
-                </View>
-                        
-                   
-                {/* <CheckBox 
-                isChecked={isChecked.Build} 
-                onClick={()=> setIscheck(!isChecked)}
-                rightText="Build"
-                checkedCheckBoxColor='green'
-                //uncheckedCheckBoxColor='red'
-                /> */}
-                <SafeAreaView style={Styles.list_container, {width:"100%"}}><SectionList
-                    sections={[
-                        {title: 'Select the debtor', data: memberList},
-                    ]}
-                    renderItem={({item, index}) => 
-                        <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:item.uid}} onPress={() => handleChange(item.uid)}>
-                            <View style={{
-                                width: '100%',
-                                height: 50,
-                                backgroundColor: '#FFFFFF',
-                                borderBottomWidth: 1,
-                                borderColor: '#7E828A',
-                                flexDirection: 'row'
-                                }}>
-                                <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/>
-                                <Text style={Styles.item}>{item.name}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    }
-                    keyExtractor={(item, index) => item + index}
-                /></SafeAreaView>
-                <TouchableOpacity 
-                    style={Styles.btnaddex}
-                    // onPress= {_addExpense}
+            <Text style={Styles.textboxtop}>Creditor</Text>
+            <SelectDropdown
+                data={memberList}
+                defaultButtonText={'Select a Creditor'}
+                onSelect={(selectedItem) => {
+                    setCreditor(selectedItem)
+                }} 
+                buttonTextAfterSelection={(selectedItem) => {
+                    return selectedItem.name
+                }}
+                rowTextForSelection={(member) => {
+                    return member.name
+                }} 
+                search={true}
+                searchPlaceHolder={"Search for a name"}
+                renderSearchInputLeftIcon={()=>{
+                    return(<Icon name="search"/>);
+                }}
+                buttonStyle={Styles.dropdownBtnStyle}
+                buttonTextStyle={Styles.dropdownBtnTxtStyle}
+                renderDropdownIcon={(selectedItem) => {
+                    return (<Icon name={selectedItem ? 'angle-up':'angle-down'}/>);
+                }}
+                dropdownIconPosition={'right'}
+                dropdownStyle={Styles.dropdownDropdownStyle}
+                rowStyle={Styles.dropdownRowStyle}
+                rowTextStyle={Styles.dropdownRowTxtStyle}
+                // buttonStyle={Styles.dropDownCredBtnStyle}
+            />
+            
+            <View style={{alignSelf:'flex-start', paddingTop:10}}>
+                <Text style={Styles.sectionHeaderwithsub}>Debtor</Text>
+                <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
+            </View>
                     
-                >
-                    <Text style={Styles.text}> Add Expense</Text>
-                </TouchableOpacity>
-            {/* </View> */}
+                
+            {/* <CheckBox 
+            isChecked={isChecked.Build} 
+            onClick={()=> setIscheck(!isChecked)}
+            rightText="Build"
+            checkedCheckBoxColor='green'
+            //uncheckedCheckBoxColor='red'
+            /> */}
+            <SafeAreaView style={Styles.list_container, {width:"100%"}}><SectionList
+                sections={[
+                    {title: 'Select the debtor', data: memberList},
+                ]}
+                renderItem={({item, index}) => 
+                    <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:item.uid}} onPress={() => handleChange(item.uid)}>
+                        <View style={{
+                            width: '100%',
+                            height: 50,
+                            backgroundColor: '#FFFFFF',
+                            borderBottomWidth: 1,
+                            borderColor: '#7E828A',
+                            flexDirection: 'row'
+                            }}>
+                            <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/>
+                            <Text style={Styles.item}>{item.name}</Text>
+                        </View>
+                    </TouchableOpacity>
+                }
+                keyExtractor={(item, index) => item + index}
+            /></SafeAreaView>
+            <TouchableOpacity 
+                style={Styles.btnaddex}
+                // onPress= {_addExpense}
+                
+            >
+                <Text style={Styles.text}> Add Expense</Text>
+            </TouchableOpacity>
         </View> 
     );
 };
