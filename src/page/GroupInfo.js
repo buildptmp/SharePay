@@ -24,15 +24,9 @@ import { Button,
 
  export default function GroupInfo({ route, navigation }) {
     const { gid , gname} = route.params
-    const [curUser, setUser] = useState(null);
-    const [isReady, setReady] = useState(false);
     const [memberList, setMemberList] = useState([{}]);
     const [expenseList, setExpenseList] = useState([{}]);
-
-    const RouteMapping = [
-        { routeName: 'AddingExpense', displayText: 'Add Expense', }
-    ]
-
+    
     async function _showMemberList(){
         let mList = await getMemberListByGid(gid);
         setMemberList(mList)
@@ -46,19 +40,9 @@ import { Button,
     };
 
     useEffect(() => {
-        auth().onAuthStateChanged((user) => {
-            if (user) {
-                setUser(user);
-                setReady(true);
-                _showMemberList();
-                _showExpenseList();
-            } else {
-                setUser(null);
-                setReady(false);
-            }
-        });
-        // console.log(curUser)
-    }, [curUser])
+        _showMemberList();
+        _showExpenseList();
+    },[])
 
     return(
         // <View style={Styles.containerginfo}>
@@ -95,17 +79,6 @@ import { Button,
                     </View>
                 </TouchableOpacity>
             }
-            // renderSectionHeader={({section}) => ( 
-            //     <Text style={Styles.sectionHeader}>{section.title}
-            //     <Text style={{paddingLeft: 50}}/>
-            //     <Icon
-            //         name="plus"
-            //         color="#F88C8C"
-            //         size={30}
-            //         style={{alignSelf:'flex-end', direction:'rtl'}}
-            //         onPress={() => navigation.navigate('AddingExpense', {gid:gid, gname:gname})}>
-            //     </Icon></Text>
-            // )}
             keyExtractor={(item, index) => item + index}
         />
         <View style={{flexDirection:'row', paddingTop:10}}>
@@ -114,7 +87,6 @@ import { Button,
                 name="plus"
                 color="#F88C8C"
                 size={30}
-                // style={{marginTop: 2, marginLeft: 275}}
                 onPress={() => navigation.navigate('AddingMember', {gid:gid, gname:gname})}>
             </Icon>
         </View>
@@ -140,16 +112,6 @@ import { Button,
                     </View>
                 </TouchableOpacity>
             }
-            // renderSectionHeader={({section}) => ( 
-            //     <Text style={Styles.sectionHeader}>{section.title}
-            //     <Icon
-            //         name="plus"
-            //         color="#F88C8C"
-            //         size={30}
-            //         style={{alignSelf:'flex-end', direction:'rtl'}}
-            //         onPress={() => navigation.navigate('AddingMember', {gid:gid, gname:gname})}>
-            //     </Icon></Text>
-            // )}
             keyExtractor={(item, index) => item + index}
         /></SafeAreaView>
         // </View>

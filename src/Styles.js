@@ -28,15 +28,6 @@ export const Styles = StyleSheet.create({
         backgroundColor: '#F6EFEF'
     },
 
-    containeraddex: {
-        flex:1,
-        paddingTop: 30, 
-        flexDirection: 'column', 
-        justifyContent: 'center', 
-        alignItems: 'center',
-        backgroundColor: '#F6EFEF'
-    },
-
     containerginfo: {
         flex:1,
         paddingTop: 30, 

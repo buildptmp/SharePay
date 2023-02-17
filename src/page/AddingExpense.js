@@ -30,34 +30,27 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
     const [ItemName, setItemName] = useState("");
     const [ItemPrice, setItemPrice] = useState(0);
     const [Creditor, setCreditor] = useState("");
-    const [memberList, setMemberList] = useState([{}]);
+    const [memberList, setMemberList] = useState([]);
+    const [debtorList, setDebtorList] = useState([]);
+    let debtorListTemp = [];
 
     async function seeMember(){
         const mList = await getMemberListByGid(gid);
         setMemberList(mList)
-        // console.log(mList)
     } 
     useEffect(() => {
         seeMember()
     },[])
     
-    const debtorList = [{uid:"1tmvjTfbUSRTCdTMldSpVZXhXLP2",isSplitEqully:false,percentage:50},
-    {uid:"KAFwUHfoEBe1VQwXCcX1wxgYAfF2",isSplitEqully:true,percentage:0},
-    {uid:"NZA9HHxQTmaGyANy0071ybo7WDr2",isSplitEqully:true,percentage:0},
-    {uid:"dzbzw8RQeXX2jsnd0HHZ2P6txC22",isSplitEqully:true,percentage:0}
-    ]
+    // const debtorList = [{uid:"1tmvjTfbUSRTCdTMldSpVZXhXLP2",isSplitEqully:false,percentage:50},
+    // {uid:"KAFwUHfoEBe1VQwXCcX1wxgYAfF2",isSplitEqully:true,percentage:0},
+    // {uid:"NZA9HHxQTmaGyANy0071ybo7WDr2",isSplitEqully:true,percentage:0},
+    // {uid:"dzbzw8RQeXX2jsnd0HHZ2P6txC22",isSplitEqully:true,percentage:0}
+    // ]
     function handleChange(item) {
         console.log(item)
       };
-    /* 
-    price = 200
-    100
-    33.34 * 3
-    [{ "name": "J", "phoneNum": "+66979524698", "uid": "1tmvjTfbUSRTCdTMldSpVZXhXLP2"}, 
-    {"name": "buildkin", "phoneNum": "+66959499155", "uid": "KAFwUHfoEBe1VQwXCcX1wxgYAfF2"}, 
-    {"name": "Pop", "phoneNum": "+66972359505", "uid": "NZA9HHxQTmaGyANy0071ybo7WDr2"}, 
-    {"name": "eieiza", "phoneNum": "+66123456789", "uid": "dzbzw8RQeXX2jsnd0HHZ2P6txC22"}]
-    */
+
     async function _countSplitEquallyMember(debtors){
         let count = 0;
         for(debtor of debtors){ if(debtor.isSplitEqully) count++; }
@@ -66,15 +59,29 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
 
     async function _addExpense(){
         const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid,gid);
-        const countSplitEquallyMember = await _countSplitEquallyMember(debtorList);
-        const debtorids = await addDebtor(debtorList,itemid,gid,creditorid,ItemPrice, countSplitEquallyMember)
+        const countSplitEquallyMember = await _countSplitEquallyMember(debtorListTemp);
+        const debtorids = await addDebtor(debtorListTemp,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
+        setDebtorList({itemid:itemid,debtorids:debtorids})
+        alert("Successfully added")
     }
-
+    
     Checkbox = (props) => {
         const [checker, setChecker] = useState(false)
         const data = props.data
         return(
-            <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:data.uid}} onPress={()=>setChecker(!checker)}>
+            <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:data.uid}} 
+                onPress={()=>{
+                    let debtor;
+                    if(!checker){
+                        debtorListTemp.push({uid:data.uid, isSplitEqully:true, percentage:0})
+                        debtor = debtorListTemp
+                    }else{
+                        debtor = debtorListTemp.filter(debtorList => debtorList.uid != data.uid)
+                    }
+                    console.log(debtor)
+                    setChecker(!checker)
+                    debtorListTemp = debtor
+            }}>
             <View style={{
                 width: '100%',
                 height: 50,
@@ -156,7 +163,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
             /></SafeAreaView>
             <TouchableOpacity 
                 style={Styles.btnaddex}
-                // onPress= {_addExpense} 
+                onPress= {_addExpense} 
             >
                 <Text style={Styles.text}> Add Expense</Text>
             </TouchableOpacity>
