@@ -43,7 +43,7 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName={RouteMapping[9].name} 
+        initialRouteName={RouteMapping[0].name} 
         screenOptions={{
           headerShown: true
         }}>

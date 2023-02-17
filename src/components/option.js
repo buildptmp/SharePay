@@ -22,11 +22,14 @@ import SplitE from './opt_splitE';
 import UserInputNumber from './opt_userInputNumber'
 import PercentageShare from './opt_percentageShare';
 
-export default function Selection() {
+export default function Selection(props) {
     const [option, setOption] = useState("");
+    const name = props.name;
     const methods = ["Split Equally", "Input a price myself", "Percentage Share"]
     return(
-    <View style={Styles.container}>
+    // <View style={Styles.container}>
+    <View>
+        <Text style={Styles.textboxtop}>{name}</Text>
         <SelectDropdown
             data={methods}
             defaultButtonText={'Select spliting method'}
@@ -49,9 +52,9 @@ export default function Selection() {
             rowStyle={Styles.dropdownRowStyle}
             rowTextStyle={Styles.dropdownRowTxtStyle}
         />
-        { option == "Split Equally" ? <SplitE data={user}/>:null}
+        {/* { option == "Split Equally" ? <SplitE />:null}
         { option == "Input a price myself" ? <UserInputNumber/>:null}
-        { option == "Percentage Share" ? <PercentageShare/>:null}
+        { option == "Percentage Share" ? <PercentageShare/>:null} */}
         </View>
     );
 };
