@@ -187,6 +187,14 @@ export const Styles = StyleSheet.create({
         paddingTop: 5,
         backgroundColor: '#F6EFEF',
       },
+
+    list_container2:{
+        // flex: 1,
+        paddingTop: 5,
+        backgroundColor: '#F6EFEF',
+        width:'100%',
+    },
+
     sectionHeader: {
         paddingTop: 2,
         paddingLeft: 10,

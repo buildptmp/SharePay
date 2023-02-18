@@ -152,7 +152,8 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 checkedCheckBoxColor='green'
                 //uncheckedCheckBoxColor='red'
                 /> */}
-                <SafeAreaView style={Styles.list_container, {width:"100%"}}><SectionList
+                <SafeAreaView style={Styles.list_container2}>
+                    <SectionList
                     sections={[
                         {title: 'Select the debtor', data: memberList},
                     ]}
