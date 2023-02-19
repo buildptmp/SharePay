@@ -80,7 +80,7 @@ export default function GroupInfo({ route, navigation }) {
             color="white"
             size={25}
             style={{alignSelf:'center', marginVertical:3.5}}
-            onPress={() => navigation.navigate('AddingExpense', {gid:gid, gname:gname})}>
+            onPress={() => navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
         </Icon>
         </View>
     </View>)
