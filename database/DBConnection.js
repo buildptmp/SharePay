@@ -86,7 +86,7 @@ export async function addGroup(name, image, description="" ){
     name: name, 
     image: image
   };
-  if(desription){
+  if(description){
     _data.description = description;
   }
   const groupid = await addDoc(colRef, _data)
@@ -119,7 +119,28 @@ export async function getGroupListByUid(uid){
     console.log(error);
   }
 }
-
+export function editGroup(gid, name, image, description="" ){
+  let _data={
+    name: name, 
+    image: image
+  };
+  if(description){
+    _data.description = description;
+  }
+  setDoc(doc(db, 'Test-Groups', gid), _data).catch(err => {console.log(err.message)})
+}
+export async function getGroupByGid(gid){
+  try {
+    const groupInfo = await getDoc(doc(db,'Test-Groups', gid));
+    if(groupInfo.exists()) {
+    } else {
+        console.log("Document does not exist")
+    }
+    return groupInfo.data();
+  } catch(error) {
+      console.log(error)
+  }
+}
 /* User and Group */
 
 export function addEditGroupMember(gid,uid,status){

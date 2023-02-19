@@ -17,7 +17,6 @@ export default function Homepage({page, navigation}){
     async function _showGroupList(){
         let gList = await getGroupListByUid(auth().currentUser.uid);
         setGroupList(gList)
-        // console.log(groupList)
     };
     
     useEffect(() => {
@@ -31,7 +30,6 @@ export default function Homepage({page, navigation}){
                 setReady(false);
             }
         });
-        // console.log(curUser)
     }, [curUser])
 
     return(
@@ -42,7 +40,7 @@ export default function Homepage({page, navigation}){
                 ]}
                 renderItem={({item}) => 
                     <TouchableOpacity key={'GroupInfo'} style ={{flex: 1}} onPress={() => 
-                        navigation.navigate('GroupInfo',{gid:item.gid, gname:item.name})
+                        navigation.navigate('GroupInfo',{gid:item.gid})
                     }>
                         <View style={{
                             width: '100%',
