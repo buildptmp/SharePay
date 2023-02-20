@@ -152,7 +152,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
             </View>
 
-            <SafeAreaView style={Styles.list_container, {width:"100%"}}><SectionList
+            <SafeAreaView style={Styles.list_container2}><SectionList
                 sections={[
                     {title: 'Select the debtor', data: memberList},
                 ]}
