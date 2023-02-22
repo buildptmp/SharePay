@@ -62,7 +62,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
         const countSplitEquallyMember = await _countSplitEquallyMember(debtorListTemp);
         const debtorids = await addDebtor(debtorListTemp,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
         setDebtorList({itemid:itemid,debtorids:debtorids})
-        alert("Successfully added")
+        alert("Successfully added.")
     }
     
     Checkbox = (props) => {
