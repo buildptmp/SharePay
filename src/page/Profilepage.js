@@ -17,10 +17,10 @@ export default function Profilepage({page, navigation}){
 
     async function _showDebtAndDebtorList(uid){
         const list = await getPersonalDebtAndDebtorList(uid);
-        setDebtorList(list[0][0]);
-        setDebtList(list[1][0]);
-        console.log(list[0][0].data)
-        console.log(list[1][0].data)
+        setDebtorList(list[0]);
+        setDebtList(list[1]);
+        // console.log(list[0][0])
+        // console.log(list[1][0])
     }
     useEffect(() => {
         auth().onAuthStateChanged((user) => {
