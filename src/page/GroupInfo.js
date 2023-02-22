@@ -13,7 +13,8 @@ import { Button,
     TouchableOpacity,
  } from "react-native";
 import auth from '@react-native-firebase/auth';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
+import AntDesign from 'react-native-vector-icons/AntDesign'; 
 import { getGroupByGid, getMemberListByGid, getExpenseListByGid } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
 import { editGroup } from '../../database/DBConnection';
@@ -26,8 +27,10 @@ export default function GroupInfo({ route, navigation }) {
     const [gname, setgName] = useState("")
     const [gdesc, setgDesc] = useState("")
     const [pickerRes, setPickerRes] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2FAddMem.png?alt=media&token=713f3955-809a-47e6-9f4c-4e93ac53dcd9"})
+    const [editGroupView, setEditGroupView] = useState(false)
     const textInputRefname = useRef(null);
     const textInputRefdesc = useRef(null);
+    const listRef = useRef(null);
 
     async function _showGroupInfo(){
         const groupInfo = await getGroupByGid(gid)
@@ -37,24 +40,25 @@ export default function GroupInfo({ route, navigation }) {
     };
     async function _showMemberList(){
         let mList = await getMemberListByGid(gid);
-        setMemberList(mList)
+        setMemberList(mList);
         // console.log(mList)
     };
     async function _showExpenseList(){
         let eList = await getExpenseListByGid(gid);
-        setExpenseList(eList)
+        setExpenseList(eList);
         // console.log(eList)
     };
     function _editGroup(){
-        textInputRefname.current.focus();
+        setEditGroupView(true);
     };
     async function _saveEditGroup(){
-        const photoURL = (pickerRes.fileName != undefined ? await uploadGroupImg(pickerRes.fileName,pickerRes.uri,pickerRes.type):pickerRes.uri)
-        editGroup(gid,gname, photoURL,gdesc)
-        alert("Successfully edited.")
+        const photoURL = (pickerRes.fileName != undefined ? await uploadGroupImg(pickerRes.fileName,pickerRes.uri,pickerRes.type):pickerRes.uri);
+        editGroup(gid,gname, photoURL,gdesc);
+        alert("Successfully edited.");
+        setEditGroupView(false);
     }
     useEffect(() => {
-        _showGroupInfo()
+        _showGroupInfo();
         _showMemberList();
         _showExpenseList();
     },[]);
@@ -72,18 +76,19 @@ export default function GroupInfo({ route, navigation }) {
         textInputRefdesc.current.focus();
     }
     ListHeader = (props) => {
-        return(<View style={{flexDirection:'row', paddingTop:10, justifyContent:'space-between'}}>
-        <Text style={Styles.sectionHeader}>{props.title}</Text>
-        <View style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", marginRight:10}}>
-        <Icon
-            name="plus"
-            color="white"
-            size={25}
-            style={{alignSelf:'center', marginVertical:3.5}}
-            onPress={() => navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
-        </Icon>
-        </View>
-    </View>)
+        return(
+        <View style={{flexDirection:'row', paddingTop:10, justifyContent:'space-between'}}>
+            <Text style={Styles.sectionHeader}>{props.title}</Text>
+            <View style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", marginRight:10}}>
+            <FontAwesome
+                name="plus"
+                color="white"
+                size={25}
+                style={{alignSelf:'center', marginVertical:3.5}}
+                onPress={() => navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
+            </FontAwesome>
+            </View>
+        </View>)
     };
     RenderItem = (props) => {
         return (
@@ -125,6 +130,7 @@ export default function GroupInfo({ route, navigation }) {
     };
     return(
         <SafeAreaView style={Styles.list_container}>
+            {editGroupView ? 
             <View style={{width:'100%', height: 120,flexDirection:'row', backgroundColor:'#f7a8a8'}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <View style={{flexDirection:'column',marginLeft:10}}>
@@ -141,12 +147,19 @@ export default function GroupInfo({ route, navigation }) {
                             <TouchableOpacity onPress={editDesc}><Text style={{marginTop:8,marginLeft:5}}>edit</Text></TouchableOpacity>
                         </View>
                     </View>
+                    
                 </View>
-                <View style={{alignSelf:'flex-end', paddingLeft:50, paddingBottom:10}}>
-                    <TouchableOpacity onPress={_saveEditGroup} style={{borderRadius:10, borderWidth:0.5, backgroundColor:'#00a7d1',width:70}}><Text style={{padding:2, color:'white', alignSelf:'center'}}>Save edit</Text></TouchableOpacity>
+                <View style={{flexDirection:'column', alignItems:'flex-end', right:10, position:'absolute',justifyContent:'space-between', }}>
+                    <AntDesign name="close" color="black" size={25} style={{ marginTop:10, marginBottom:50}} onPress={() => 
+                        setEditGroupView(false)} />
+                
+                    <TouchableOpacity onPress={_saveEditGroup} style={{ marginBottom:10,borderRadius:10, borderWidth:0.5, backgroundColor:'#00a7d1',width:70}}><Text style={{padding:2, color:'white', alignSelf:'center'}}>Save edit</Text></TouchableOpacity>
                 </View> 
             </View>
+            : null}
+            
             <SectionList
+            ref={listRef}
             sections={[
                 {title: 'Expense item', data: expenseList},
                 {title: 'Member', data: memberList},
