@@ -127,7 +127,14 @@ export const Styles = StyleSheet.create({
         marginTop: 20,
     },
 
-     btnslip: {
+    btnslip: {
+        backgroundColor: '#F88C8C',
+        marginTop: 20,
+        padding: 10,
+        borderRadius: 20,
+    },
+
+    btndetail: {
         backgroundColor: '#F88C8C',
         marginTop: 20,
         padding: 10,

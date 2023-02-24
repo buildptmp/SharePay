@@ -8,6 +8,7 @@ export default function Profilepage({page, navigation}){
     const [isReady, setReady] = useState(false);
     const [userPicture, setUserPicture] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2Fuser-icon.png?alt=media&token=c034dd07-a8b2-4538-9494-9e65f63bdc51"})
     const [userName, setUserName] = useState("")
+    const [active, setActive] = useState("")
     const RouteMapping = [
         { routeName: 'AddingSlip', displayText: 'Add Slip'},
     ]
@@ -59,10 +60,28 @@ export default function Profilepage({page, navigation}){
                 style={Styles.btn}
                 // onPress={() => {navigation.navigate('PersonalNotificationPage')}}
             >
-                <Text style={Styles.text}>VIew notification</Text>
+                <Text style={Styles.text}>View notification</Text>
             </TouchableOpacity> 
-            <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Creditor List</Text>
-            <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Debtor List</Text>
+            
+           {/* Show Debt list and Debtor list */}
+            <TouchableOpacity
+            style={Styles.btn}
+            // onPress={() => setActive()}
+            >
+            <Text style={Styles.text}>Debt List</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+            style={Styles.btn}
+            // onPress={() => setActive()}
+            >
+            <Text style={Styles.text}>Debtor List</Text>
+            </TouchableOpacity>
+
+            
+             {/* /* <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Creditor List</Text>
+            <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Debtor List</Text> */ }
+            
             { curUser && 
                 <TouchableOpacity
                     style={Styles.btn}
