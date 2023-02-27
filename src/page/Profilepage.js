@@ -65,14 +65,14 @@ export default function Profilepage({page, navigation}){
             
            {/* Show Debt list and Debtor list */}
             <TouchableOpacity
-            style={Styles.btn}
+            style={Styles.btnlist}
             // onPress={() => setActive()}
             >
             <Text style={Styles.text}>Debt List</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-            style={Styles.btn}
+            style={Styles.btnlist}
             // onPress={() => setActive()}
             >
             <Text style={Styles.text}>Debtor List</Text>

@@ -109,6 +109,13 @@ export const Styles = StyleSheet.create({
         marginBottom: 10,
         padding: 10,
         borderRadius: 20,
+    },
+    
+    btnlist: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 10,
     }, 
     
     btnaddex: {
