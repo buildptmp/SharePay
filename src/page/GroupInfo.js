@@ -83,8 +83,8 @@ export default function GroupInfo({ route, navigation }) {
             <FontAwesome
                 name="plus"
                 color="white"
-                size={25}
-                style={{alignSelf:'center', marginVertical:3.5}}
+                size={20}
+                style={{alignSelf:'center', marginVertical:5}}
                 onPress={() => navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
             </FontAwesome>
             </View>
@@ -112,15 +112,15 @@ export default function GroupInfo({ route, navigation }) {
     };
     RenderFooter = (props) => {
         return(
-        <View style={{height:220}}>
+        <View style={{height:220, alignItems: 'center'}}>
             <TouchableOpacity 
-                style={Styles.btn}
+                style={Styles.btnginfo}
                 onPress={_editGroup}
             >
                 <Text style={Styles.text}>Edit group</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-                style={Styles.btn}
+                style={Styles.btnginfo}
                 // onPress={_createGroup}
             >
                 <Text style={Styles.text}>Leave group</Text>
@@ -129,9 +129,9 @@ export default function GroupInfo({ route, navigation }) {
         )
     };
     return(
-        <SafeAreaView style={Styles.list_container}>
+        <SafeAreaView style={Styles.list_container3}>
             {editGroupView ? 
-            <View style={{width:'100%', height: 120,flexDirection:'row', backgroundColor:'#f7a8a8'}}>
+            <View style={{width:'100%', height: 120,flexDirection:'row', backgroundColor:'#FDCECE'}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <View style={{flexDirection:'column',marginLeft:10}}>
                         <Image style={{ borderRadius: 40, height:80, width:80}} source={{uri:pickerRes.uri}}/>
@@ -139,11 +139,11 @@ export default function GroupInfo({ route, navigation }) {
                     </View>
                     <View style={{flexDirection:'column',marginLeft:10}}>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <TextInput ref={textInputRefname} onChangeText={(text) => setgName(text)} style={{marginLeft:20, fontWeight:'bold', fontSize:26, borderBottomColor:'black', borderBottomWidth:1}}>{gname}</TextInput>
+                            <TextInput ref={textInputRefname} onChangeText={(text) => setgName(text)} style={{marginLeft:20, fontWeight:'bold', fontSize:25, borderBottomColor:'black', borderBottomWidth:1}}>{gname}</TextInput>
                             <TouchableOpacity onPress={editName}><Text style={{marginTop:8,marginLeft:5}}>edit</Text></TouchableOpacity>
                         </View>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <TextInput ref={textInputRefdesc} onChangeText={(text) => setgDesc(text)} style={{marginLeft:20, fontSize:16}}>{gdesc}</TextInput>
+                            <TextInput ref={textInputRefdesc} onChangeText={(text) => setgDesc(text)} style={{marginLeft:20, fontSize:16, color:'#555454'}}>{gdesc}</TextInput>
                             <TouchableOpacity onPress={editDesc}><Text style={{marginTop:8,marginLeft:5}}>edit</Text></TouchableOpacity>
                         </View>
                     </View>
@@ -153,7 +153,7 @@ export default function GroupInfo({ route, navigation }) {
                     <AntDesign name="close" color="black" size={25} style={{ marginTop:10, marginBottom:50}} onPress={() => 
                         setEditGroupView(false)} />
                 
-                    <TouchableOpacity onPress={_saveEditGroup} style={{ marginBottom:10,borderRadius:10, borderWidth:0.5, backgroundColor:'#00a7d1',width:70}}><Text style={{padding:2, color:'white', alignSelf:'center'}}>Save edit</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={_saveEditGroup} style={{ marginBottom:10,borderRadius:10, borderColor:'#DE7272',borderWidth:1, backgroundColor:'#EB9090',width:75}}><Text style={{padding:2, color:'#F6EFEF', alignSelf:'center', fontWeight:'bold'}}>Save edit</Text></TouchableOpacity>
                 </View> 
             </View>
             : null}
