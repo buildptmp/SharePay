@@ -25,8 +25,8 @@ export default function UserInformation({ navigation }) {
             displayName: name,
             photoURL: photoURL
         });
-        
         updateUser(user.uid,name,photoURL,bio)
+        alert("Successfully saved.")
         navigation.navigate('Root');
     }
 

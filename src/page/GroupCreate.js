@@ -1,11 +1,5 @@
-import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-// import { useNavigation } from '@react-navigation/native';
-// import { useHistory } from "react-router-dom";
-// import { createStackNavigator } from '@react-navigation/stack';
-// import Homepage from './Homepage';
 import { Styles } from "../Styles"
-// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState } from "react";
 import { Button, 
     StyleSheet, 
@@ -42,6 +36,7 @@ export default function GroupCreate({ navigation }) {
             const photoURL = (pickerRes.fileName != undefined ? await uploadGroupImg(pickerRes.fileName,pickerRes.uri,pickerRes.type):pickerRes.uri)
             const groupId = await addGroup(GroupName, photoURL, GroupDesc);
             addEditGroupMember(groupId,user.uid,'accepted')
+            console.log("Successfully created a group.")
             navigation.navigate('AddingMember',{gid:groupId, gname:GroupName})
         }
     }
@@ -57,22 +52,21 @@ export default function GroupCreate({ navigation }) {
             <View style={[{ width: '100%', paddingHorizontal: 100, backgroundColor: '#F6EFEF'}]}>
                 <Text style={Styles.textboxtop}>Group Name</Text>
                 <TextInput
-                style={Styles.inputgroup}
-                value={GroupName}
-                placeholder={"Insert Group Name"}
-                onChangeText={(text) => setGroupName(text)}
-                autoCapitalize={"none"}
+                    style={Styles.inputgroup}
+                    value={GroupName}
+                    placeholder={"Insert Group Name"}
+                    onChangeText={(text) => setGroupName(text)}
+                    autoCapitalize={"none"}
                 />
                 <Text style={Styles.textboxtop}>Group Description</Text>
                 <TextInput
-                style={Styles.descinput}
-                value={GroupDesc}
-                placeholder={"(Optional)"}
-                onChangeText={(text) => setGroupDesc(text)}
-                autoCapitalize={"none"}
+                    style={Styles.descinput}
+                    value={GroupDesc}
+                    placeholder={"(Optional)"}
+                    onChangeText={(text) => setGroupDesc(text)}
+                    autoCapitalize={"none"}
                 />
                 <TouchableOpacity 
-                    // key={e.routeName}
                     style={Styles.btn}
                     onPress={_createGroup}
                 >

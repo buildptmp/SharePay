@@ -49,7 +49,8 @@ const textInputRefbio = useRef(null);
             photoURL: photoURL
         });
         updateUser(user.uid,displayName,photoURL,bio)
-        getUserInfo()
+        alert("Successfully changed profile.");
+        getUserInfo();
     }
 
     return (
