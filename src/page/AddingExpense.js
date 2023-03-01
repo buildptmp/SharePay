@@ -11,7 +11,7 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
-    ScrollViewComponent
+    ScrollView
  } from "react-native";
 //  import CheckBox from 'react-native-check-box';
 import SectionList from 'react-native/Libraries/Lists/SectionList';

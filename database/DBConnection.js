@@ -350,7 +350,12 @@ export async function getExpenseListByGid(gid){
       expenseList.push({eid:doc.id, ...doc.data()})
     })
     
-    return expenseList;
+    let expenseListandCreditorname = [];
+    for(expense of expenseList){
+      const creditorInfo = await getDoc(doc(db,'Test-Users', expense.creditorid))
+      expenseListandCreditorname.push({...expense, creditor:{...creditorInfo.data()}})
+    }
+    return expenseListandCreditorname;
 
   } catch (error){
     console.log(error);

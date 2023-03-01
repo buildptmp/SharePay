@@ -222,6 +222,11 @@ export const Styles = StyleSheet.create({
         fontSize: 18,
         height: 44,
     },
+    itemDesc: {
+        padding: 10,
+        fontSize: 12,
+        // height: 44,
+    },
 
     // drop down style
     dropdownBtnStyle: {

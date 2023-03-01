@@ -22,6 +22,8 @@ import { async } from '@firebase/util';
 
 export default function GroupInfo({ route, navigation }) {
     const { gid } = route.params
+    const [isReadyM, setReadyM] = useState(false);
+    const [isReadyE, setReadyE] = useState(false);
     const [memberList, setMemberList] = useState([{}]);
     const [expenseList, setExpenseList] = useState([{}]);
     const [gname, setgName] = useState("")
@@ -41,12 +43,14 @@ export default function GroupInfo({ route, navigation }) {
     async function _showMemberList(){
         let mList = await getMemberListByGid(gid);
         setMemberList(mList);
+        setReadyM(true)
         // console.log(mList)
     };
     async function _showExpenseList(){
         let eList = await getExpenseListByGid(gid);
         setExpenseList(eList);
         // console.log(eList)
+        setReadyE(true)
     };
     function _editGroup(){
         setEditGroupView(true);
@@ -58,6 +62,8 @@ export default function GroupInfo({ route, navigation }) {
         setEditGroupView(false);
     }
     useEffect(() => {
+        setReadyE(false)
+        setReadyM(false)
         _showGroupInfo();
         _showMemberList();
         _showExpenseList();
@@ -83,8 +89,8 @@ export default function GroupInfo({ route, navigation }) {
             <FontAwesome
                 name="plus"
                 color="white"
-                size={20}
-                style={{alignSelf:'center', marginVertical:5}}
+                size={18}
+                style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
                 onPress={() => navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
             </FontAwesome>
             </View>
@@ -97,15 +103,22 @@ export default function GroupInfo({ route, navigation }) {
                 // navigation.navigate('ItemInfo',{eid:item.eid, ename:item.name})
             }>
                 <View style={{
-                    width: '100%',
-                    height: 50,
+                    // width: '100%',
+                    // height: 50,
+                    paddingVertical:5,
                     backgroundColor: '#FFFFFF',
                     borderBottomWidth: 1,
                     borderColor: '#7E828A',
-                    flexDirection: 'row'
+                    flexDirection: 'row',
                     }}>
-                    {props.title == "Expense item" ? <Text style={Styles.item}>{props.index + 1}</Text>:<Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>}    
-                    <Text style={Styles.item}>{props.item.name}</Text>
+                    <View style={{width: '80%',flexDirection: 'row',}}>
+                        {props.title == "Expense item" ? <Text style={Styles.item}>{props.index + 1}</Text>:<Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>}    
+                        <View style={{}}>
+                            <Text style={Styles.item}>{props.item.name}</Text> 
+                            {props.title == "Expense item" ? <Text style={Styles.itemDesc}>Creditor name {props.item.creditor.name}</Text> : null }
+                        </View>
+                    </View>
+                    {props.title == "Expense item" ? <Text style={[Styles.item,]}>{props.item.price}</Text>:null}    
                 </View>
             </TouchableOpacity>
         )
@@ -130,6 +143,7 @@ export default function GroupInfo({ route, navigation }) {
     };
     return(
         <SafeAreaView style={Styles.list_container3}>
+            
             {editGroupView ? 
             <View style={{width:'100%', height: 120,flexDirection:'row', backgroundColor:'#FDCECE'}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -157,24 +171,27 @@ export default function GroupInfo({ route, navigation }) {
                 </View> 
             </View>
             : null}
-            
-            <SectionList
-            ref={listRef}
-            sections={[
-                {title: 'Expense item', data: expenseList},
-                {title: 'Member', data: memberList},
-            ]}
-            renderItem={({item, index, section}) => 
-                <RenderItem item={item} title={section.title} index={index}/>
+            {
+                isReadyE && isReadyM && 
+                <SectionList
+                ref={listRef}
+                sections={[
+                    {title: 'Expense item', data: expenseList},
+                    {title: 'Member', data: memberList},
+                ]}
+                renderItem={({item, index, section}) => 
+                    <RenderItem item={item} title={section.title} index={index}/>
+                }
+                keyExtractor={(item, index) => item + index}
+                // ListEmptyComponent={()=>{
+                //     <Text>There is nothing in the list.</Text>
+                // }}
+                renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
+                ListFooterComponent={ () => <RenderFooter />}
+                ListFooterComponentStyle={{paddingTop:20}}
+                />
             }
-            keyExtractor={(item, index) => item + index}
-            // ListEmptyComponent={()=>{
-            //     <Text>There is nothing in the list.</Text>
-            // }}
-            renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
-            ListFooterComponent={ () => <RenderFooter />}
-            ListFooterComponentStyle={{paddingTop:20}}
-        />
+            
         </SafeAreaView> 
     );
 };
