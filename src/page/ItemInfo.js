@@ -35,16 +35,16 @@ import { Button,
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
                 <Text style={Styles.textboxtop}>Item Name: {ename}</Text>
                 <Text style={Styles.textboxtop}>Item Price: {price} </Text>
-                <Text style={Styles.textboxtop}>Creditor: 'Creditor' </Text>
-                <Text style={Styles.textboxtop}> Debtor: 'Price' </Text>
+                <Text style={Styles.textboxtop}>Creditor: ' ' </Text>
+                <Text style={Styles.textboxtop}> Debtor: ' ' </Text>
                 <TouchableOpacity 
                     // key={e.routeName}
                     style={Styles.btnslip}
-                    
+                   // onPress={() => navigation.navigate('GroupInfo')}
                 >
 
                     <Text style={Styles.text}> Done </Text>
-                    {/* navigation.navigate('GroupInfo'); */}
+                    
                 </TouchableOpacity>
             </View>
         </View> 
