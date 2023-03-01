@@ -22,6 +22,7 @@ import GroupInfo from './page/GroupInfo';
 import Profilepage from './page/Profilepage';
 import AddingSlip from './page/AddingSlip';
 import ProfileInfo from './page/ProfileInfo';
+import ItemInfo from './page/ItemInfo';
 
 const Stack = createStackNavigator();
 
@@ -34,7 +35,8 @@ const RouteMapping = [
   { name: 'GroupInfo' , page: GroupInfo },
   { name: 'Profilepage' , page: Profilepage },
   { name: 'AddingSlip' , page: AddingSlip },
-  { name: 'ProfileInfo', page: ProfileInfo }
+  { name: 'ProfileInfo', page: ProfileInfo },
+  { name: 'ItemInfo' , page: ItemInfo },
 ]
 
 const App = () => {
