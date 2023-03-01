@@ -32,7 +32,7 @@ export const Styles = StyleSheet.create({
         flex:1,
         paddingTop: 30, 
         flexDirection: 'column', 
-        justifyContent: 'center', 
+        // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF'
     },
@@ -206,7 +206,7 @@ export const Styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         paddingBottom: 10,
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold',
     },
     sectionHeaderwithsub: {
@@ -221,6 +221,11 @@ export const Styles = StyleSheet.create({
         padding: 10,
         fontSize: 18,
         height: 44,
+    },
+    itemDesc: {
+        padding: 10,
+        fontSize: 12,
+        // height: 44,
     },
 
     // drop down style

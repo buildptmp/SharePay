@@ -17,11 +17,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
 import { getGroupByGid, getMemberListByGid, getExpenseListByGid } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
-import { editGroup } from '../../database/DBConnection';
+import { editGroup, checkAllowToleave, addEditGroupMember } from '../../database/DBConnection';
 import { async } from '@firebase/util';
 
 export default function GroupInfo({ route, navigation }) {
     const { gid } = route.params
+    const uid = auth().currentUser.uid
+    const [isReadyM, setReadyM] = useState(false);
+    const [isReadyE, setReadyE] = useState(false);
     const [memberList, setMemberList] = useState([{}]);
     const [expenseList, setExpenseList] = useState([{}]);
     const [gname, setgName] = useState("")
@@ -41,13 +44,25 @@ export default function GroupInfo({ route, navigation }) {
     async function _showMemberList(){
         let mList = await getMemberListByGid(gid);
         setMemberList(mList);
+        setReadyM(true)
         // console.log(mList)
     };
     async function _showExpenseList(){
         let eList = await getExpenseListByGid(gid);
         setExpenseList(eList);
         // console.log(eList)
+        setReadyE(true)
     };
+    
+    useEffect(() => {
+        setReadyE(false)
+        setReadyM(false)
+        _showGroupInfo();
+        _showMemberList();
+        _showExpenseList();
+    },[]);
+
+    // Start edit group section
     function _editGroup(){
         setEditGroupView(true);
     };
@@ -57,12 +72,6 @@ export default function GroupInfo({ route, navigation }) {
         alert("Successfully edited.");
         setEditGroupView(false);
     }
-    useEffect(() => {
-        _showGroupInfo();
-        _showMemberList();
-        _showExpenseList();
-    },[]);
-
     async function chooseFile() {
         const response = await imagePicker()
         if (!response.didCancel){
@@ -75,16 +84,45 @@ export default function GroupInfo({ route, navigation }) {
     editDesc = () => {
         textInputRefdesc.current.focus();
     }
+    // End edit group section
+
+    // Start leave group section
+    async function _leaveGroup(){
+        const checker = await checkAllowToleave(uid,gid);
+        let text = "";
+        if(!checker.creditor){
+            text += "Warn! You are being the creditor in uncompleted recalling the debt yet.";
+        }
+        if(!checker.debtor){
+            text += "Warn! You are being the debtor in some expense, Please reimburse your debt before you go.";
+        }
+        if(checker.creditor && checker.debtor){
+            addEditGroupMember(gid,uid,"left");
+            getMemberListByGid(gid).then(result =>{
+                if(result==false){
+                    
+                }
+            })
+            alert("Leaving successfully.");
+        }
+        else{
+           alert(text);
+        }
+        
+    }
+    // End leave group section
+
+    // Start render list section
     ListHeader = (props) => {
         return(
-        <View style={{flexDirection:'row', paddingTop:10, justifyContent:'space-between'}}>
+        <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignContent:'center'}}>
             <Text style={Styles.sectionHeader}>{props.title}</Text>
-            <View style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", marginRight:10}}>
+            <View style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}}>
             <FontAwesome
                 name="plus"
                 color="white"
-                size={20}
-                style={{alignSelf:'center', marginVertical:5}}
+                size={18}
+                style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
                 onPress={() => navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
             </FontAwesome>
             </View>
@@ -98,15 +136,24 @@ export default function GroupInfo({ route, navigation }) {
                 //navigation.navigate('ItemInfo')
             }>
                 <View style={{
-                    width: '100%',
-                    height: 50,
+                    // width: '100%',
+                    // height: 50,
+                    paddingVertical:3,
                     backgroundColor: '#FFFFFF',
                     borderBottomWidth: 1,
                     borderColor: '#7E828A',
-                    flexDirection: 'row'
+                    flexDirection: 'row',
                     }}>
-                    {props.title == "Expense item" ? <Text style={Styles.item}>{props.index + 1}</Text>:<Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>}    
-                    <Text style={Styles.item}>{props.item.name}</Text>
+                    <View style={{width: '80%',flexDirection: 'row',}}>
+                        {props.title == "Expense item" ? <Text style={Styles.item}>{props.index + 1}</Text>:<Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>}    
+                        <View style={{}}>
+                            <Text style={Styles.item}>{props.item.name}</Text> 
+                            {props.title == "Expense item" ? <Text style={Styles.itemDesc}>Creditor name {props.item.creditor.name}</Text> : null }
+                        </View>
+                    </View>
+                    <View style={{width: '20%',justifyContent:'center'}}>
+                        {props.title == "Expense item" ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.price}</Text>:null}
+                    </View>
                 </View>
             </TouchableOpacity>
         )
@@ -122,15 +169,18 @@ export default function GroupInfo({ route, navigation }) {
             </TouchableOpacity>
             <TouchableOpacity 
                 style={Styles.btnginfo}
-                // onPress={_createGroup}
+                // onPress={_leaveGroup}
             >
                 <Text style={Styles.text}>Leave group</Text>
             </TouchableOpacity>
             </View>
         )
     };
+    // End render list section
+    
     return(
         <SafeAreaView style={Styles.list_container3}>
+            
             {editGroupView ? 
             <View style={{width:'100%', height: 120,flexDirection:'row', backgroundColor:'#FDCECE'}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -158,24 +208,27 @@ export default function GroupInfo({ route, navigation }) {
                 </View> 
             </View>
             : null}
-            
-            <SectionList
-            ref={listRef}
-            sections={[
-                {title: 'Expense item', data: expenseList},
-                {title: 'Member', data: memberList},
-            ]}
-            renderItem={({item, index, section}) => 
-                <RenderItem item={item} title={section.title} index={index}/>
+            {
+                isReadyE && isReadyM && 
+                <SectionList
+                ref={listRef}
+                sections={[
+                    {title: 'Expense item', data: expenseList},
+                    {title: 'Member', data: memberList},
+                ]}
+                renderItem={({item, index, section}) => 
+                    <RenderItem item={item} title={section.title} index={index}/>
+                }
+                keyExtractor={(item, index) => item + index}
+                // ListEmptyComponent={()=>{
+                //     <Text>There is nothing in the list.</Text>
+                // }}
+                renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
+                ListFooterComponent={ () => <RenderFooter />}
+                ListFooterComponentStyle={{paddingTop:20}}
+                />
             }
-            keyExtractor={(item, index) => item + index}
-            // ListEmptyComponent={()=>{
-            //     <Text>There is nothing in the list.</Text>
-            // }}
-            renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
-            ListFooterComponent={ () => <RenderFooter />}
-            ListFooterComponentStyle={{paddingTop:20}}
-        />
+            
         </SafeAreaView> 
     );
 };
