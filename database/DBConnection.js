@@ -10,7 +10,8 @@ import {
   setDoc, 
   updateDoc,
   query,
-  where
+  where,
+  deleteDoc
 } from "firebase/firestore"
 
 // const db = getFirestore(app);
@@ -242,7 +243,7 @@ export async function addGroup(name, image, description="" ){
 }
 export async function getGroupListByUid(uid){
   const UserGroupRef = collection(db, 'Test-UserGroup');
-  const q = query(UserGroupRef,where("uid","==",uid));
+  const q = query(UserGroupRef,where("uid","==",uid), where("status","==", "accepted"));
   try {
     const docsSnap = await getDocs(q);
     let gidList = [];
@@ -289,12 +290,26 @@ export async function checkAllowToleave(uid, gid){
   const DebtorRef = collection(db, 'Test-Debtors');
 
   const q1 = query(ItemRef,where("gid","==",gid),where("creditorid","==",uid));
-  const q2 = query(DebtorRef,where("gid","==",gid),where("debtorid","==",uid));
+  const q2 = query(DebtorRef,where("gid","==",gid),where("debtorid","==",uid),where("debtstatus","==","pending"));
 
   try {
     const creditorSnap = await getDocs(q1);
     const debtorSnap = await getDocs(q2);
+    let itemids = [];
 
+    if(!creditorSnap.empty){
+      creditorSnap.forEach(doc => {
+        itemids.push(doc.id);
+      })
+      for(id in itemids){
+        const q3 = query(DebtorRef,where("gid","==",gid),where("itemid","==",id),where("debtstatus","==","pending"));
+        const debtorSnap_2 = await getDocs(q3)
+        if(!debtorSnap_2.empty){
+          return {creditor:debtorSnap_2.empty, debtor:debtorSnap.empty}
+        }
+      }
+      return {creditor:true, debtor:debtorSnap.empty}
+    }
     return {creditor:creditorSnap.empty, debtor:debtorSnap.empty}; // True if empty.
 
   } catch (error){
@@ -339,15 +354,32 @@ export async function getMemberListByGid(gid){
 export async function deleteGroup(gid){
   const ItemRef = collection(db,'Test-Items');
   const q1 = query(ItemRef, where("gid","==",gid));
-
+  const DebtorRef = collection(db,'Test-Debtors');
+  const q2 = query(DebtorRef, where("gid","==",gid));
+  const UserGroupRef = collection(db, 'Test-UserGroup');
+  const q3 = query(UserGroupRef,where("gid", "==", gid));
+  
   try{
-    const ItemSnap = await getDocs(q1);
 
-    let itemids = [];
-    ItemSnap.forEach((doc)=>{
-      itemids.push(doc.id)
-      setDoc(doc(db, 'Test-Items', doc.id), _data).catch(err => {console.log(err.message)})
+    const ItemSnap = await getDocs(q1);
+    ItemSnap.forEach((res)=>{
+      // updateDoc(doc(db, 'Test-Items', doc.id), {status:'disabled'}).catch(err => {console.log(err.message)})
+      deleteDoc(doc(db,'Test-Items', res.id));
     })
+
+    const DebtorSnap = await getDocs(q2);
+    DebtorSnap.forEach((res)=>{
+      deleteDoc(doc(db,'Test-Debtors', res.id));
+    })
+
+    const UserGroupSnap = await getDocs(q3);
+    UserGroupSnap.forEach(res=>{
+      deleteDoc(doc(db,'Test-UserGroup',res.id));
+    })
+
+    deleteDoc(doc(db,'Test-Groups', gid));
+    console.log("The group ",gid," has been deleted.")
+
   } catch (error){
     console.log(error);
   }

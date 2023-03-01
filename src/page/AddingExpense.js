@@ -54,18 +54,23 @@ export default function AddingExpense({ route, navigation }) {
     }
 
     async function _addExpense(){
-        const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid,gid);
-        const countSplitEquallyMember = await _countSplitEquallyMember(debtorListTemp);
-        const debtorids = await addDebtor(debtorListTemp,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
-        setDebtorList({itemid:itemid,debtorids:debtorids})
-        alert("Successfully added.")
+        if(debtorListTemp.length>=1){
+            const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid,gid);
+            const countSplitEquallyMember = await _countSplitEquallyMember(debtorListTemp);
+            const debtorids = await addDebtor(debtorListTemp,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
+            setDebtorList({itemid:itemid,debtorids:debtorids})
+            alert("Successfully added.")
+        }
+        else{
+            alert("Please select the debtor.")
+        }
     }
     
     Checkbox = (props) => {
         const [checker, setChecker] = useState(false)
         const data = props.data
         return(
-            <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:data.uid}} 
+            <TouchableOpacity style ={{flex: 1}} 
                 onPress={()=>{
                     let debtor;
                     if(!checker){
@@ -74,10 +79,10 @@ export default function AddingExpense({ route, navigation }) {
                     }else{
                         debtor = debtorListTemp.filter(debtorList => debtorList.uid != data.uid)
                     }
-                    console.log(debtor)
+                    console.log("selected debtor",debtor)
                     setChecker(!checker)
                     debtorListTemp = debtor
-            }}>
+                }}>
             <View style={{
                 width: '100%',
                 height: 50,
@@ -94,29 +99,8 @@ export default function AddingExpense({ route, navigation }) {
         );
     }
 
-    Checkbox = (props) => {
-        const [checker, setChecker] = useState(false)
-        const data = props.data
-        return(
-            <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:data.uid}} onPress={()=>setChecker(!checker)}>
-            <View style={{
-                width: '100%',
-                height: 50,
-                backgroundColor: '#FFFFFF',
-                borderBottomWidth: 1,
-                borderColor: '#7E828A',
-                flexDirection: 'row'
-                }}>
-                    <Icon name={(checker ? 'checkbox-active':'checkbox-passive')} size={35} style={{margin:6.5, width:40}}></Icon>
-                    <Image style={{borderRadius: 50, height:35, width:35,margin:6.5 }} source={props.source}/>
-                    <Text style={Styles.item}>{props.name}</Text>
-            </View>
-            </TouchableOpacity>
-        );
-    }
-    // const Member = ["Buildkin", "Prai", "Pop"]
     return(
-        <ScrollView>
+        // <ScrollView>
         <View style={Styles.containeraddex}>
             <View style={{ width: '100%', paddingHorizontal: 10}}>
                 <Text style={Styles.textboxtop}>Item Name</Text>
@@ -189,7 +173,7 @@ export default function AddingExpense({ route, navigation }) {
                 <Text style={Styles.text}> Add Expense</Text>
             </TouchableOpacity>
         </View> 
-        </ScrollView>
+        // </ScrollView>
     );
 };
 

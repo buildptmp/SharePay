@@ -17,7 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
 import { getGroupByGid, getMemberListByGid, getExpenseListByGid } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
-import { editGroup, checkAllowToleave, addEditGroupMember } from '../../database/DBConnection';
+import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
 
 export default function GroupInfo({ route, navigation }) {
@@ -91,27 +91,30 @@ export default function GroupInfo({ route, navigation }) {
         const checker = await checkAllowToleave(uid,gid);
         let text = "";
         if(!checker.creditor){
-            text += "Warn! You are being the creditor in uncompleted recalling the debt yet.";
+            text += "Warn! You are being the creditor in uncompleted recalling the debt yet.\n\n";
         }
         if(!checker.debtor){
             text += "Warn! You are being the debtor in some expense, Please reimburse your debt before you go.";
         }
         if(checker.creditor && checker.debtor){
             addEditGroupMember(gid,uid,"left");
-            getMemberListByGid(gid).then(result =>{
-                if(result==false){
-                    
-                }
-            })
             alert("Leaving successfully.");
+            _checkEmptyMemberInGroup();
         }
         else{
            alert(text);
         }
-        
     }
     // End leave group section
 
+    function _checkEmptyMemberInGroup(){
+        getMemberListByGid(gid).then(result =>{
+            // console.log(result)
+            if(result==false){
+                deleteGroup(gid)
+            }
+        })
+    }
     // Start render list section
     ListHeader = (props) => {
         return(
@@ -169,15 +172,14 @@ export default function GroupInfo({ route, navigation }) {
             </TouchableOpacity>
             <TouchableOpacity 
                 style={Styles.btnginfo}
-                // onPress={_leaveGroup}
+                onPress={_leaveGroup}
             >
                 <Text style={Styles.text}>Leave group</Text>
             </TouchableOpacity>
             </View>
         )
     };
-    // End render list section
-    
+    // Start render list section
     return(
         <SafeAreaView style={Styles.list_container3}>
             
@@ -221,7 +223,7 @@ export default function GroupInfo({ route, navigation }) {
                 }
                 keyExtractor={(item, index) => item + index}
                 // ListEmptyComponent={()=>{
-                //     <Text>There is nothing in the list.</Text>
+                //     <Text>There is no member in this group.</Text>
                 // }}
                 renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
                 ListFooterComponent={ () => <RenderFooter />}
