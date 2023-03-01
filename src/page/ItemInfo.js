@@ -18,9 +18,10 @@ import { Button,
     TouchableOpacity,
  } from "react-native";
 
- export default function ItemInfo({ navigation }) {
+ export default function ItemInfo({ route,navigation }) {
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
+    const {eid,ename,gid,price } = route.params
     const RouteMapping = [
         { routeName: 'AddingMember', displayText: 'Add Member', }
     ]
@@ -29,23 +30,21 @@ import { Button,
         
         <View style={Styles.container}>
             <View style={[{flex:1}]} />
-            <Image 
-                style = {Styles.logoImg}
-                source={require('../assets/AddMem.png')} 
-            />
-        
+            
        
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
-                <Text style={Styles.textboxtop}>Group: (wait for data)</Text>
-                <Text style={Styles.textboxtop}>From: 'Debtor'</Text>
-                <Text style={Styles.textboxtop}>To: 'Creditor' </Text>
-                <Text style={Styles.textboxtop}> Amount: 'Price' </Text>
+                <Text style={Styles.textboxtop}>Item Name: {ename}</Text>
+                <Text style={Styles.textboxtop}>Item Price: {price} </Text>
+                <Text style={Styles.textboxtop}>Creditor: 'Creditor' </Text>
+                <Text style={Styles.textboxtop}> Debtor: 'Price' </Text>
                 <TouchableOpacity 
                     // key={e.routeName}
                     style={Styles.btnslip}
-                    onPress={()=> alert('Upload Successfully')}
+                    
                 >
-                    <Text style={Styles.text}> Confirm </Text>
+
+                    <Text style={Styles.text}> Done </Text>
+                    {/* navigation.navigate('GroupInfo'); */}
                 </TouchableOpacity>
             </View>
         </View> 

@@ -89,8 +89,8 @@ export default function GroupInfo({ route, navigation }) {
         return (
             <TouchableOpacity style ={{flex: 1}} onPress={() => 
                 //console.log(props.item.name)
-                //navigation.navigate('ItemInfo',{eid:item.eid, ename:item.name})
-                navigation.navigate('ItemInfo')
+                navigation.navigate('ItemInfo',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
+                //navigation.navigate('ItemInfo')
             }>
                 <View style={{
                     width: '100%',
