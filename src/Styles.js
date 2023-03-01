@@ -206,7 +206,7 @@ export const Styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         paddingBottom: 10,
-        fontSize: 20,
+        fontSize: 26,
         fontWeight: 'bold',
     },
     sectionHeaderwithsub: {

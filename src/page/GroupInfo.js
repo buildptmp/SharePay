@@ -83,9 +83,9 @@ export default function GroupInfo({ route, navigation }) {
     }
     ListHeader = (props) => {
         return(
-        <View style={{flexDirection:'row', paddingTop:10, justifyContent:'space-between'}}>
+        <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignContent:'center'}}>
             <Text style={Styles.sectionHeader}>{props.title}</Text>
-            <View style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", marginRight:10}}>
+            <View style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}}>
             <FontAwesome
                 name="plus"
                 color="white"
@@ -105,7 +105,7 @@ export default function GroupInfo({ route, navigation }) {
                 <View style={{
                     // width: '100%',
                     // height: 50,
-                    paddingVertical:5,
+                    paddingVertical:3,
                     backgroundColor: '#FFFFFF',
                     borderBottomWidth: 1,
                     borderColor: '#7E828A',
@@ -118,7 +118,9 @@ export default function GroupInfo({ route, navigation }) {
                             {props.title == "Expense item" ? <Text style={Styles.itemDesc}>Creditor name {props.item.creditor.name}</Text> : null }
                         </View>
                     </View>
-                    {props.title == "Expense item" ? <Text style={[Styles.item,]}>{props.item.price}</Text>:null}    
+                    <View style={{width: '20%',justifyContent:'center'}}>
+                        {props.title == "Expense item" ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.price}</Text>:null}
+                    </View>
                 </View>
             </TouchableOpacity>
         )
