@@ -217,7 +217,7 @@ export async function getPersonalDebtAndDebtorList(uid){
 
 /* Group management*/
 
-export const invStatus = {
+const invStatus = {
   pending: 'pending',
   accepted: 'accepted',
   declined: 'declined',
@@ -284,6 +284,24 @@ export async function getGroupByGid(gid){
       console.log(error)
   }
 }
+export async function checkAllowToleave(uid, gid){
+  const ItemRef = collection(db, 'Test-Items');
+  const DebtorRef = collection(db, 'Test-Debtors');
+
+  const q1 = query(ItemRef,where("gid","==",gid),where("creditorid","==",uid));
+  const q2 = query(DebtorRef,where("gid","==",gid),where("debtorid","==",uid));
+
+  try {
+    const creditorSnap = await getDocs(q1);
+    const debtorSnap = await getDocs(q2);
+
+    return {creditor:creditorSnap.empty, debtor:debtorSnap.empty}; // True if empty.
+
+  } catch (error){
+    console.log(error);
+  }
+}
+
 /* User and Group */
 
 export function addEditGroupMember(gid,uid,status){
@@ -300,19 +318,36 @@ export async function getMemberListByGid(gid){
 
   try {
     const docsSnap = await getDocs(q);
-    let uidList = [];
-    docsSnap.forEach( doc => {
-      uidList.push({...doc.data()}.uid);
+    if(!docsSnap.empty){     
+      let uidList = [];     
+      docsSnap.forEach( doc => {
+        uidList.push({...doc.data()}.uid);
+      })
+
+      let memberList = [];
+      for(let uid of uidList){
+        let member = await getDoc(doc(db,'Test-Users',uid)).catch(err => {console.log(err.message)})
+        memberList.push({uid:member.id, ...member.data()});
+      }
+      return memberList;
+    } 
+    return false;
+  } catch (error){
+    console.log(error);
+  }
+} 
+export async function deleteGroup(gid){
+  const ItemRef = collection(db,'Test-Items');
+  const q1 = query(ItemRef, where("gid","==",gid));
+
+  try{
+    const ItemSnap = await getDocs(q1);
+
+    let itemids = [];
+    ItemSnap.forEach((doc)=>{
+      itemids.push(doc.id)
+      setDoc(doc(db, 'Test-Items', doc.id), _data).catch(err => {console.log(err.message)})
     })
-
-    let memberList = [];
-    for(let uid of uidList){
-      let member = await getDoc(doc(db,'Test-Users',uid)).catch(err => {console.log(err.message)})
-      memberList.push({uid:member.id, ...member.data()});
-    }
-
-    return memberList;
-
   } catch (error){
     console.log(error);
   }
@@ -350,7 +385,12 @@ export async function getExpenseListByGid(gid){
       expenseList.push({eid:doc.id, ...doc.data()})
     })
     
-    return expenseList;
+    let expenseListandCreditorname = [];
+    for(expense of expenseList){
+      const creditorInfo = await getDoc(doc(db,'Test-Users', expense.creditorid))
+      expenseListandCreditorname.push({...expense, creditor:{...creditorInfo.data()}})
+    }
+    return expenseListandCreditorname;
 
   } catch (error){
     console.log(error);

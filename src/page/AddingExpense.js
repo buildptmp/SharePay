@@ -1,11 +1,6 @@
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-// import { useNavigation } from '@react-navigation/native';
-// import { useHistory } from "react-router-dom";
-// import { createStackNavigator } from '@react-navigation/stack';
-// import Homepage from './Homepage';
 import { Styles } from "../Styles"
-// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState, useRef } from "react";
 import { Button, 
     StyleSheet, 
@@ -16,7 +11,7 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
-    ScrollViewComponent
+    ScrollView
  } from "react-native";
 //  import CheckBox from 'react-native-check-box';
 import SectionList from 'react-native/Libraries/Lists/SectionList';
@@ -24,8 +19,9 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Fontisto';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnection'
+// import Selection from '../components/option';
 
- export default function AddingExpense({ route, navigation }) {
+export default function AddingExpense({ route, navigation }) {
     const { gid, gname } = route.params
     const [ItemName, setItemName] = useState("");
     const [ItemPrice, setItemPrice] = useState(0);
@@ -98,9 +94,29 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
         );
     }
 
+    Checkbox = (props) => {
+        const [checker, setChecker] = useState(false)
+        const data = props.data
+        return(
+            <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:data.uid}} onPress={()=>setChecker(!checker)}>
+            <View style={{
+                width: '100%',
+                height: 50,
+                backgroundColor: '#FFFFFF',
+                borderBottomWidth: 1,
+                borderColor: '#7E828A',
+                flexDirection: 'row'
+                }}>
+                    <Icon name={(checker ? 'checkbox-active':'checkbox-passive')} size={35} style={{margin:6.5, width:40}}></Icon>
+                    <Image style={{borderRadius: 50, height:35, width:35,margin:6.5 }} source={props.source}/>
+                    <Text style={Styles.item}>{props.name}</Text>
+            </View>
+            </TouchableOpacity>
+        );
+    }
     // const Member = ["Buildkin", "Prai", "Pop"]
     return(
-        
+        <ScrollView>
         <View style={Styles.containeraddex}>
             <View style={{ width: '100%', paddingHorizontal: 10}}>
                 <Text style={Styles.textboxtop}>Item Name</Text>
@@ -136,6 +152,11 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 rowTextForSelection={(member) => {
                     return member.name
                 }} 
+                search={true}
+                searchPlaceHolder={"Search for a name"}
+                renderSearchInputLeftIcon={()=>{
+                    return(<Icon name="search"/>);
+                }}
                 buttonStyle={Styles.dropdownBtnStyle}
                 buttonTextStyle={Styles.dropdownBtnTxtStyle}
                 renderDropdownIcon={(selectedItem) => {
@@ -168,6 +189,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 <Text style={Styles.text}> Add Expense</Text>
             </TouchableOpacity>
         </View> 
+        </ScrollView>
     );
 };
 

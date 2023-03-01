@@ -43,8 +43,9 @@ export default function Homepage({page, navigation}){
                         navigation.navigate('GroupInfo',{gid:item.gid})
                     }>
                         <View style={{
-                            width: '100%',
-                            height: 50,
+                            // width: '100%',
+                            // height: 50,
+                            paddingVertical:3,
                             backgroundColor: '#FFFFFF',
                             borderBottomWidth: 1,
                             borderColor: '#7E828A',
