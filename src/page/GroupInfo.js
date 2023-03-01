@@ -17,11 +17,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
 import { getGroupByGid, getMemberListByGid, getExpenseListByGid } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
-import { editGroup } from '../../database/DBConnection';
+import { editGroup, checkAllowToleave, addEditGroupMember } from '../../database/DBConnection';
 import { async } from '@firebase/util';
 
 export default function GroupInfo({ route, navigation }) {
     const { gid } = route.params
+    const uid = auth().currentUser.uid
     const [isReadyM, setReadyM] = useState(false);
     const [isReadyE, setReadyE] = useState(false);
     const [memberList, setMemberList] = useState([{}]);
@@ -52,6 +53,16 @@ export default function GroupInfo({ route, navigation }) {
         // console.log(eList)
         setReadyE(true)
     };
+    
+    useEffect(() => {
+        setReadyE(false)
+        setReadyM(false)
+        _showGroupInfo();
+        _showMemberList();
+        _showExpenseList();
+    },[]);
+
+    // Start edit group section
     function _editGroup(){
         setEditGroupView(true);
     };
@@ -61,14 +72,6 @@ export default function GroupInfo({ route, navigation }) {
         alert("Successfully edited.");
         setEditGroupView(false);
     }
-    useEffect(() => {
-        setReadyE(false)
-        setReadyM(false)
-        _showGroupInfo();
-        _showMemberList();
-        _showExpenseList();
-    },[]);
-
     async function chooseFile() {
         const response = await imagePicker()
         if (!response.didCancel){
@@ -81,6 +84,35 @@ export default function GroupInfo({ route, navigation }) {
     editDesc = () => {
         textInputRefdesc.current.focus();
     }
+    // End edit group section
+
+    // Start leave group section
+    async function _leaveGroup(){
+        const checker = await checkAllowToleave(uid,gid);
+        let text = "";
+        if(!checker.creditor){
+            text += "Warn! You are being the creditor in uncompleted recalling the debt yet.";
+        }
+        if(!checker.debtor){
+            text += "Warn! You are being the debtor in some expense, Please reimburse your debt before you go.";
+        }
+        if(checker.creditor && checker.debtor){
+            addEditGroupMember(gid,uid,"left");
+            getMemberListByGid(gid).then(result =>{
+                if(result==false){
+                    
+                }
+            })
+            alert("Leaving successfully.");
+        }
+        else{
+           alert(text);
+        }
+        
+    }
+    // End leave group section
+
+    // Start render list section
     ListHeader = (props) => {
         return(
         <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignContent:'center'}}>
@@ -136,13 +168,14 @@ export default function GroupInfo({ route, navigation }) {
             </TouchableOpacity>
             <TouchableOpacity 
                 style={Styles.btnginfo}
-                // onPress={_createGroup}
+                // onPress={_leaveGroup}
             >
                 <Text style={Styles.text}>Leave group</Text>
             </TouchableOpacity>
             </View>
         )
     };
+    // Start render list section
     return(
         <SafeAreaView style={Styles.list_container3}>
             
