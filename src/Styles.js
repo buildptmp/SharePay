@@ -110,6 +110,14 @@ export const Styles = StyleSheet.create({
         padding: 10,
         borderRadius: 20,
     }, 
+
+    btnginfo: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        width: '60%',
+    }, 
     
     btnaddex: {
         backgroundColor: '#F88C8C',
@@ -163,6 +171,7 @@ export const Styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 70,
     },
+
     dropDownBtnStyle: {
         height: 40,
         width: '20%',
@@ -177,14 +186,20 @@ export const Styles = StyleSheet.create({
         // flex: 1,
         paddingTop: 5,
         backgroundColor: '#F6EFEF',
-      },
+    },
 
-      list_container2: {
+    list_container2: {
         // flex: 1,
         paddingTop: 5,
         backgroundColor: '#F6EFEF',
         width:"100%",
-      },
+    },
+
+    list_container3: {
+        // flex: 1,
+        backgroundColor: '#F6EFEF',
+        width:"100%",
+    },
 
     sectionHeader: {
         paddingTop: 2,
