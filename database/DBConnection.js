@@ -428,7 +428,21 @@ export async function getExpenseListByGid(gid){
     console.log(error);
   }
 }
+export async function getExpenseInfo(gid, eid){
+  const itemDoc = await getDoc(doc(db,'Test-Items',eid));
+  let itemInfo = {
+    eid: itemDoc.id,
+    ...itemDoc.data()
+  };
 
+  const creditorInfo = await getDoc(doc(db,'Test-Users',itemInfo.creditorid));
+  itemInfo.creditor = {...creditorInfo.data()};
+
+  const debtorInfo = await getDebtorsByItemId(eid,gid);
+  itemInfo.debtor = debtorInfo;
+  
+  return itemInfo
+}
 /* Debtor management*/
 
 const debtstatus_enum = {
