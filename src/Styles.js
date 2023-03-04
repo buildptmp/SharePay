@@ -19,6 +19,11 @@ export const Styles = StyleSheet.create({
         backgroundColor: '#F6EFEF'
     },
 
+    containerdlist: {
+        flexDirection: 'row',
+        backgroundColor: '#F6EFEF'
+    },
+
     containerginfo: {
         flex:1,
         paddingTop: 30, 
@@ -110,6 +115,13 @@ export const Styles = StyleSheet.create({
         padding: 10,
         borderRadius: 20,
     }, 
+
+    btnlist: {
+        backgroundColor: '#F1D2D2',
+        marginBottom: 10,
+        padding: 15,
+        width: '50%',
+    }, 
     
     btnaddex: {
         backgroundColor: '#F88C8C',
@@ -149,6 +161,15 @@ export const Styles = StyleSheet.create({
         borderRadius: 20,
         marginLeft:60 ,
     },
+
+    selected: {
+        backgroundColor: '#F88C8C',
+        borderWidth: 0,
+    },
+
+    selectedLabel: {
+        color: 'white',
+      },
 
     text: {
         textAlign: 'center',

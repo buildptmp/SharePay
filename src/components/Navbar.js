@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Homepage from '../page/Homepage';
 import GroupCreate from '../page/GroupCreate';
 import Profilepage from '../page/Profilepage';
+import Debtlist from '../page/Debtlist';
 const NavBar = createBottomTabNavigator();
 // const Navbar = () => {
 //   return(
@@ -21,7 +22,9 @@ const NavBar = createBottomTabNavigator();
 const Screens = [
   { name: 'Homepage', component: Homepage, icon: 'home-outline' },
   { name: 'Group Create', component: GroupCreate, icon: 'add-outline' },
+  { name: 'Debt/Debtor', component: Debtlist, icon: 'wallet-outline' },
   { name: 'Profile', component: Profilepage, icon: 'person-outline' },
+  
 ]
 
 const Tab = createBottomTabNavigator();

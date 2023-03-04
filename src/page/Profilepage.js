@@ -63,22 +63,6 @@ export default function Profilepage({page, navigation}){
                 <Text style={Styles.text}>View notification</Text>
             </TouchableOpacity> 
             
-           {/* Show Debt list and Debtor list */}
-            <TouchableOpacity
-            style={Styles.btn}
-            // onPress={() => setActive()}
-            >
-            <Text style={Styles.text}>Debt List</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-            style={Styles.btn}
-            // onPress={() => setActive()}
-            >
-            <Text style={Styles.text}>Debtor List</Text>
-            </TouchableOpacity>
-
-            
              {/* /* <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Creditor List</Text>
             <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Debtor List</Text> */ }
             
