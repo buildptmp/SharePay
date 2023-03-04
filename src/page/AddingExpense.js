@@ -70,22 +70,26 @@ export default function AddingExpense({ route, navigation }) {
         return(
             <View>
                 <Text style={Styles.sectionHeaderwithsub}>Item Name</Text>
-                <TextInput
-                    style={Styles.itemInput}
+                <View style={Styles.itemInput}>
+                    <TextInput
                     value={ItemName}
-                    placeholder={"     Insert item"}
+                    placeholder={"Insert item"}
                     onChangeText={(text) => setItemName(text)}
                     autoCapitalize={"none"}
-                />
+                    />
+                </View>
+                
 
                 <Text style={Styles.sectionHeaderwithsub}>Price (Baht)</Text>
-                <TextInput
-                    style={Styles.itemInput}
+                <View style={Styles.itemInput}>
+                    <TextInput
                     value={ItemPrice}
                     keyboardType={'number-pad'}
-                    placeholder={"     Insert Price"}
+                    placeholder={"Insert Price"}
                     onChangeText={(text) => setItemPrice(text)}
-                />
+                    />
+                </View>
+                
 
                 <Text style={Styles.sectionHeaderwithsub}>Creditor</Text>
                 <SelectDropdown
@@ -182,7 +186,7 @@ export default function AddingExpense({ route, navigation }) {
     }
     return(
         <View style={[Styles.containeraddex,Styles.shadowProp]}>
-            <SafeAreaView style={Styles.list_container2}><SectionList
+            <SafeAreaView style={Styles.list_container}><SectionList
                 sections={[
                     {title: 'Select the debtor', data: memberList},
                 ]}

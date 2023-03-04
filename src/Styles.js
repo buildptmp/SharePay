@@ -13,12 +13,15 @@ export const Styles = StyleSheet.create({
     containeraddex: {
         flex:1,
         paddingTop: 20, 
+        paddingBottom: 20,
         flexDirection: 'column', 
         // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF',
         borderWidth: 1,
         borderRadius: 20,
+        marginTop: 10,
+        marginBottom:10
     },
 
     containerginfo: {
@@ -187,8 +190,9 @@ export const Styles = StyleSheet.create({
     
     list_container: {
         // flex: 1,
-        paddingTop: 5,
+        paddingTop: 10,
         backgroundColor: '#F6EFEF',
+        paddingBottom: 10,
     },
 
     list_container2: {
@@ -240,9 +244,11 @@ export const Styles = StyleSheet.create({
         height: 50,
         backgroundColor: '#FFF',
         borderRadius: 20,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: '#fabbbb',
         marginBottom: 10,
+        paddingLeft:10,
+        paddingRight:10,
     },
 
     shadowProp: {  
@@ -258,7 +264,7 @@ export const Styles = StyleSheet.create({
         height: 50,
         backgroundColor: '#FFF',
         borderRadius: 20,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: '#fabbbb',
         marginBottom: 10,
         },
