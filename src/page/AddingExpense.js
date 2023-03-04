@@ -66,11 +66,79 @@ export default function AddingExpense({ route, navigation }) {
         }
     }
     
+    SetItemInfo = (props) => {
+        return(
+            <View>
+                <Text style={Styles.sectionHeaderwithsub}>Item Name</Text>
+                <TextInput
+                    style={Styles.itemInput}
+                    value={ItemName}
+                    placeholder={"     Insert item"}
+                    onChangeText={(text) => setItemName(text)}
+                    autoCapitalize={"none"}
+                />
+
+                <Text style={Styles.sectionHeaderwithsub}>Price (Baht)</Text>
+                <TextInput
+                    style={Styles.itemInput}
+                    value={ItemPrice}
+                    keyboardType={'number-pad'}
+                    placeholder={"     Insert Price"}
+                    onChangeText={(text) => setItemPrice(text)}
+                />
+
+                <Text style={Styles.sectionHeaderwithsub}>Creditor</Text>
+                <SelectDropdown
+                    data={memberList}
+                    defaultButtonText={'Select a Creditor'}
+                    onSelect={(selectedItem) => {
+                        setCreditor(selectedItem)
+                    }} 
+                    buttonTextAfterSelection={(selectedItem) => {
+                        return selectedItem.name
+                    }}
+                    rowTextForSelection={(member) => {
+                        return member.name
+                    }} 
+                    search={true}
+                    searchPlaceHolder={"Search for a name"}
+                    renderSearchInputLeftIcon={()=>{
+                        return(<Icon name="search"/>);
+                    }}
+                    buttonStyle={Styles.dropdownBtnStyle}
+                    buttonTextStyle={Styles.dropdownBtnTxtStyle}
+                    renderDropdownIcon={(selectedItem) => {
+                        return (<Icon name={selectedItem ? 'angle-up':'angle-down'}/>);
+                    }}
+                    dropdownIconPosition={'right'}
+                    dropdownStyle={Styles.dropdownDropdownStyle}
+                    rowStyle={Styles.dropdownRowStyle}
+                    rowTextStyle={Styles.dropdownRowTxtStyle}
+                />
+                <Text style={Styles.sectionHeaderwithsub}>Spliting Method</Text>
+
+            </View>
+        )
+    }
+
+    ListHeader = (props) => {
+        return(
+            <View style={{marginLeft:10}}>
+                <SetItemInfo />
+                <View style={{paddingTop:10}}>
+                    <Text style={Styles.sectionHeaderwithsub}>Debtor</Text>
+                    <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
+                </View>
+            </View>
+        );
+    }
+
     Checkbox = (props) => {
         const [checker, setChecker] = useState(false)
         const data = props.data
         return(
-            <TouchableOpacity style ={{flex: 1}} 
+            <View style ={{flex: 1, paddingHorizontal:20}} >
+                <TouchableOpacity 
                 onPress={()=>{
                     let debtor;
                     if(!checker){
@@ -84,10 +152,11 @@ export default function AddingExpense({ route, navigation }) {
                     debtorListTemp = debtor
                 }}>
             <View style={{
-                width: '100%',
-                height: 50,
+                // width: '100%',
+                // height: 50,
                 backgroundColor: '#FFFFFF',
                 borderBottomWidth: 1,
+                borderTopWidth: 1,
                 borderColor: '#7E828A',
                 flexDirection: 'row'
                 }}>
@@ -96,84 +165,37 @@ export default function AddingExpense({ route, navigation }) {
                     <Text style={Styles.item}>{props.name}</Text>
             </View>
             </TouchableOpacity>
+            </View>
+            
         );
     }
 
+    ListFooter = (props) => {
+        return(
+        <TouchableOpacity 
+            style={Styles.btnaddex}
+            onPress= {_addExpense} 
+        >
+            <Text style={Styles.text}> Add Expense</Text>
+        </TouchableOpacity>
+        ) 
+    }
     return(
-        // <ScrollView>
-        <View style={Styles.containeraddex}>
-            <View style={{ width: '100%', paddingHorizontal: 10}}>
-                <Text style={Styles.textboxtop}>Item Name</Text>
-                <TextInput
-                    style={Styles.inputaddex}
-                    value={ItemName}
-                    placeholder={"Insert item"}
-                    onChangeText={(text) => setItemName(text)}
-                    autoCapitalize={"none"}
-                />
-            </View>
-            <View style={{ width: '100%', paddingHorizontal: 10}}>
-                <Text style={Styles.textboxtop}>Price</Text>
-                <TextInput
-                    style={Styles.inputaddex}
-                    value={ItemPrice}
-                    keyboardType={'number-pad'}
-                    placeholder={"Insert Price"}
-                    onChangeText={(text) => setItemPrice(text)}
-                    autoCapitalize={"none"}
-                />
-            </View>
-            <Text style={Styles.textboxtop}>Creditor</Text>
-            <SelectDropdown
-                data={memberList}
-                defaultButtonText={'Select a Creditor'}
-                onSelect={(selectedItem) => {
-                    setCreditor(selectedItem)
-                }} 
-                buttonTextAfterSelection={(selectedItem) => {
-                    return selectedItem.name
-                }}
-                rowTextForSelection={(member) => {
-                    return member.name
-                }} 
-                search={true}
-                searchPlaceHolder={"Search for a name"}
-                renderSearchInputLeftIcon={()=>{
-                    return(<Icon name="search"/>);
-                }}
-                buttonStyle={Styles.dropdownBtnStyle}
-                buttonTextStyle={Styles.dropdownBtnTxtStyle}
-                renderDropdownIcon={(selectedItem) => {
-                    return (<Icon name={selectedItem ? 'angle-up':'angle-down'}/>);
-                }}
-                dropdownIconPosition={'right'}
-                dropdownStyle={Styles.dropdownDropdownStyle}
-                rowStyle={Styles.dropdownRowStyle}
-                rowTextStyle={Styles.dropdownRowTxtStyle}
-            />
-            
-            <View style={{alignSelf:'flex-start', paddingTop:10}}>
-                <Text style={Styles.sectionHeaderwithsub}>Debtor</Text>
-                <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
-            </View>
-
+        <View style={[Styles.containeraddex,Styles.shadowProp]}>
             <SafeAreaView style={Styles.list_container2}><SectionList
                 sections={[
                     {title: 'Select the debtor', data: memberList},
                 ]}
                 renderItem={({item, index}) => 
-                <Checkbox source={{uri:item.image}} name={item.name} data={item}></Checkbox>
+                    <Checkbox source={{uri:item.image}} name={item.name} data={item}></Checkbox>
                 }
                 keyExtractor={(item, index) => item + index}
+                ListHeaderComponent={() => <ListHeader />}
+                renderSectionFooter={() => <View style={{height:20, marginHorizontal:20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20,backgroundColor:'#F88C8C'}} />}
+                renderSectionHeader={() => <View style={{height:20, marginHorizontal:20, borderTopLeftRadius: 20, borderTopRightRadius: 20,backgroundColor:'#F88C8C'}} />}
+                ListFooterComponent={() => <ListFooter />}
             /></SafeAreaView>
-            <TouchableOpacity 
-                style={Styles.btnaddex}
-                onPress= {_addExpense} 
-            >
-                <Text style={Styles.text}> Add Expense</Text>
-            </TouchableOpacity>
         </View> 
-        // </ScrollView>
     );
 };
 
