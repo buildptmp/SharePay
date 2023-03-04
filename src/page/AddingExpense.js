@@ -1,11 +1,6 @@
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-// import { useNavigation } from '@react-navigation/native';
-// import { useHistory } from "react-router-dom";
-// import { createStackNavigator } from '@react-navigation/stack';
-// import Homepage from './Homepage';
 import { Styles } from "../Styles"
-// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState, useRef } from "react";
 import { Button, 
     StyleSheet, 
@@ -16,7 +11,7 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
-    ScrollViewComponent
+    ScrollView
  } from "react-native";
 //  import CheckBox from 'react-native-check-box';
 import SectionList from 'react-native/Libraries/Lists/SectionList';
@@ -24,8 +19,9 @@ import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Fontisto';
 // import Icon from 'react-native-vector-icons/AntDesign';
 import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnection'
+// import Selection from '../components/option';
 
- export default function AddingExpense({ route, navigation }) {
+export default function AddingExpense({ route, navigation }) {
     const { gid, gname } = route.params
     const [ItemName, setItemName] = useState("");
     const [ItemPrice, setItemPrice] = useState(0);
@@ -58,18 +54,23 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
     }
 
     async function _addExpense(){
-        const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid,gid);
-        const countSplitEquallyMember = await _countSplitEquallyMember(debtorListTemp);
-        const debtorids = await addDebtor(debtorListTemp,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
-        setDebtorList({itemid:itemid,debtorids:debtorids})
-        alert("Successfully added")
+        if(debtorListTemp.length>=1){
+            const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid,gid);
+            const countSplitEquallyMember = await _countSplitEquallyMember(debtorListTemp);
+            const debtorids = await addDebtor(debtorListTemp,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
+            setDebtorList({itemid:itemid,debtorids:debtorids})
+            alert("Successfully added.")
+        }
+        else{
+            alert("Please select the debtor.")
+        }
     }
     
     Checkbox = (props) => {
         const [checker, setChecker] = useState(false)
         const data = props.data
         return(
-            <TouchableOpacity style ={{flex: 1}} defaultValue={{uid:data.uid}} 
+            <TouchableOpacity style ={{flex: 1}} 
                 onPress={()=>{
                     let debtor;
                     if(!checker){
@@ -78,10 +79,10 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                     }else{
                         debtor = debtorListTemp.filter(debtorList => debtorList.uid != data.uid)
                     }
-                    console.log(debtor)
+                    console.log("selected debtor",debtor)
                     setChecker(!checker)
                     debtorListTemp = debtor
-            }}>
+                }}>
             <View style={{
                 width: '100%',
                 height: 50,
@@ -98,9 +99,8 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
         );
     }
 
-    // const Member = ["Buildkin", "Prai", "Pop"]
     return(
-        
+        // <ScrollView>
         <View style={Styles.containeraddex}>
             <View style={{ width: '100%', paddingHorizontal: 10}}>
                 <Text style={Styles.textboxtop}>Item Name</Text>
@@ -136,6 +136,11 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 rowTextForSelection={(member) => {
                     return member.name
                 }} 
+                search={true}
+                searchPlaceHolder={"Search for a name"}
+                renderSearchInputLeftIcon={()=>{
+                    return(<Icon name="search"/>);
+                }}
                 buttonStyle={Styles.dropdownBtnStyle}
                 buttonTextStyle={Styles.dropdownBtnTxtStyle}
                 renderDropdownIcon={(selectedItem) => {
@@ -168,6 +173,7 @@ import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnec
                 <Text style={Styles.text}> Add Expense</Text>
             </TouchableOpacity>
         </View> 
+        // </ScrollView>
     );
 };
 

@@ -2,23 +2,32 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
+import { getPersonalDebtAndDebtorList } from "../../database/DBConnection";
 
 export default function Profilepage({page, navigation}){
     const [curUser, setUser] = useState(null);
     const [isReady, setReady] = useState(false);
     const [userPicture, setUserPicture] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2Fuser-icon.png?alt=media&token=c034dd07-a8b2-4538-9494-9e65f63bdc51"})
-    const [userName, setUserName] = useState("")
-    const [active, setActive] = useState("")
+    const [userName, setUserName] = useState("");
+    const [debtorList, setDebtorList] = useState([{}]);
+    const [debtList, setDebtList] = useState([{}]);
     const RouteMapping = [
         { routeName: 'AddingSlip', displayText: 'Add Slip'},
     ]
 
+    async function _showDebtAndDebtorList(uid){
+        const list = await getPersonalDebtAndDebtorList(uid);
+        setDebtorList(list[0]);
+        setDebtList(list[1]);
+        // console.log(list[0][0])
+        // console.log(list[1][0])
+    }
     useEffect(() => {
         auth().onAuthStateChanged((user) => {
             if (user) {
                 setUser(user);
                 setReady(true);
-                // console.log(user.photoURL)
+                _showDebtAndDebtorList(user.uid)
                 setUserPicture({uri:user.photoURL})
                 setUserName(user.displayName)
             } else {

@@ -13,7 +13,11 @@ export async function uploadProfile(fileName, file, type){
     task.then(() => {
         console.log('Image uploaded to the bucket!');
     });
-    return await reference.getDownloadURL()
+    const url = task.then( async () => {
+        const url = await reference.getDownloadURL()
+        return url
+    })
+    return url
 }
 
 export async function uploadGroupImg(fileName, file, type){
@@ -27,7 +31,11 @@ export async function uploadGroupImg(fileName, file, type){
     task.then(() => {
         console.log('Image uploaded to the bucket!');
     });
-    return await reference.getDownloadURL()
+    const url = task.then( async () => {
+        const url = await reference.getDownloadURL()
+        return url
+    })
+    return url
 }
 
 export async function uploadSlip(fileName, file, type){
@@ -41,7 +49,11 @@ export async function uploadSlip(fileName, file, type){
     task.then(() => {
         console.log('Image uploaded to the bucket!');
     });
-    return await reference.getDownloadURL()
+    const url = task.then( async () => {
+        const url = await reference.getDownloadURL()
+        return url
+    })
+    return url
 }
 
 export async function imagePicker(){

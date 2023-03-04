@@ -36,6 +36,7 @@ export default function GroupCreate({ navigation }) {
             const photoURL = (pickerRes.fileName != undefined ? await uploadGroupImg(pickerRes.fileName,pickerRes.uri,pickerRes.type):pickerRes.uri)
             const groupId = await addGroup(GroupName, photoURL, GroupDesc);
             addEditGroupMember(groupId,user.uid,'accepted')
+            console.log("Successfully created a group.")
             navigation.navigate('AddingMember',{gid:groupId, gname:GroupName})
         }
     }

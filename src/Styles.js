@@ -37,7 +37,7 @@ export const Styles = StyleSheet.create({
         flex:1,
         paddingTop: 30, 
         flexDirection: 'column', 
-        justifyContent: 'center', 
+        // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF'
     },
@@ -121,6 +121,14 @@ export const Styles = StyleSheet.create({
         marginBottom: 10,
         padding: 15,
         width: '50%',
+    },
+    
+    btnginfo: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        width: '60%',
     }, 
     
     btnaddex: {
@@ -191,6 +199,7 @@ export const Styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: 70,
     },
+
     dropDownBtnStyle: {
         height: 40,
         width: '20%',
@@ -205,21 +214,27 @@ export const Styles = StyleSheet.create({
         // flex: 1,
         paddingTop: 5,
         backgroundColor: '#F6EFEF',
-      },
+    },
 
-      list_container2: {
+    list_container2: {
         // flex: 1,
         paddingTop: 5,
         backgroundColor: '#F6EFEF',
         width:"100%",
-      },
+    },
+
+    list_container3: {
+        // flex: 1,
+        backgroundColor: '#F6EFEF',
+        width:"100%",
+    },
 
     sectionHeader: {
         paddingTop: 2,
         paddingLeft: 10,
         paddingRight: 10,
         paddingBottom: 10,
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold',
     },
     sectionHeaderwithsub: {
@@ -234,6 +249,11 @@ export const Styles = StyleSheet.create({
         padding: 10,
         fontSize: 18,
         height: 44,
+    },
+    itemDesc: {
+        padding: 10,
+        fontSize: 12,
+        // height: 44,
     },
 
     // drop down style
@@ -255,5 +275,6 @@ export const Styles = StyleSheet.create({
         width: 200, 
         height: 200, 
         borderRadius: 100 
-    }
+    },
+
 });
