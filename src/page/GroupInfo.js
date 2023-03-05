@@ -50,7 +50,7 @@ export default function GroupInfo({ route, navigation }) {
     async function _showExpenseList(){
         let eList = await getExpenseListByGid(gid);
         setExpenseList(eList);
-        // console.log(eList)
+        //console.log(eList)
         setReadyE(true)
     };
     
