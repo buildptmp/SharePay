@@ -12,11 +12,16 @@ export const Styles = StyleSheet.create({
 
     containeraddex: {
         flex:1,
-        paddingTop: 30, 
+        paddingTop: 20, 
+        paddingBottom: 20,
         flexDirection: 'column', 
         // justifyContent: 'center', 
         alignItems: 'center',
-        backgroundColor: '#F6EFEF'
+        backgroundColor: '#F6EFEF',
+        borderWidth: 1,
+        borderRadius: 20,
+        marginTop: 10,
+        marginBottom:10
     },
 
     containerginfo: {
@@ -125,14 +130,15 @@ export const Styles = StyleSheet.create({
         padding: 10,
         borderRadius: 20,
         marginTop: 20,
+        marginHorizontal:'20%'
     },
 
     btngif: {
         backgroundColor: '#F88C8C',
-        marginBottom: 10,
-        padding: 10,
+        // marginBottom: 10,
+        margin: 10,
         borderRadius: 20,
-        marginTop: 20,
+        // marginTop: 20,
     },
 
      btnslip: {
@@ -184,15 +190,20 @@ export const Styles = StyleSheet.create({
     
     list_container: {
         // flex: 1,
-        paddingTop: 5,
+        paddingTop: 10,
         backgroundColor: '#F6EFEF',
+        paddingBottom: 10,
     },
 
     list_container2: {
         // flex: 1,
-        paddingTop: 5,
+        // paddingTop: 5,
         backgroundColor: '#F6EFEF',
-        width:"100%",
+        // width:"90%",
+        padding: 10,
+        // borderRadius: 20,
+        // borderWidth:1,
+
     },
 
     list_container3: {
@@ -228,17 +239,37 @@ export const Styles = StyleSheet.create({
         // height: 44,
     },
 
+    itemInput: {
+        width: '80%',
+        height: 50,
+        backgroundColor: '#FFF',
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: '#fabbbb',
+        marginBottom: 10,
+        paddingLeft:10,
+        paddingRight:10,
+    },
+
+    shadowProp: {  
+        shadowOffset: {width: 0, height: -3},  
+        shadowColor: '#171717',  
+        shadowOpacity: 0.2,  
+        shadowRadius: 3,  
+    },
+
     // drop down style
     dropdownBtnStyle: {
         width: '80%',
         height: 50,
         backgroundColor: '#FFF',
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#444',
+        borderRadius: 20,
+        borderWidth: 2,
+        borderColor: '#fabbbb',
+        marginBottom: 10,
         },
     dropdownBtnTxtStyle: {color: '#444', textAlign: 'left'},
-    dropdownDropdownStyle: {backgroundColor: '#EFEFEF'},
+    dropdownDropdownStyle: {backgroundColor: '#EFEFEF', borderRadius:20},
     dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
     dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},
 
