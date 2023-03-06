@@ -133,6 +133,15 @@ export const Styles = StyleSheet.create({
         marginHorizontal:'20%'
     },
 
+    btnitif: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        // marginTop: 10,
+        marginHorizontal:'20%'
+    },
+
     btngif: {
         backgroundColor: '#F88C8C',
         // marginBottom: 10,
