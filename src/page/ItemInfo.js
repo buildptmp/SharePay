@@ -26,6 +26,7 @@ import { async } from '@firebase/util';
 export default function ItemInfo({ route,navigation }) {
     const {eid,ename,gid,price } = route.params;
     const [itemInfo, setItemInfo] = useState({});
+    const [isReadyE, setReadyE] = useState(false)
     const RouteMapping = [
         { routeName: 'Homepage', displayText: 'Homepage', }
     ]
@@ -33,23 +34,41 @@ export default function ItemInfo({ route,navigation }) {
     async function showItemInfo(){
         const item = await getExpenseInfo(gid,eid);
         console.log("EIEI");
-        console.log(item);
+        console.log([item.creditor]);
+        console.log("EIEI2");
+        console.log(item.debtor);
         setItemInfo(item);
+        setReadyE(true);
     }
     useEffect(()=>{
+        setReadyE(false);
         showItemInfo()
     },[])
 
+    ListHeader = (props) => {
+        return(
+            <View style={{}}>
+                <View style={{paddingTop:10}}>
+                    <Text style={Styles.sectionHeaderwithsub}>Name {ename}</Text>
+                    <Text style={Styles.sectionHeaderwithsub}>Price {price}</Text>
+                    <Text style={Styles.sectionHeaderwithsub}>Method</Text>
+                </View>
+            </View>
+        )
+    };
+    
+    SectionHeader = (props) => {
+        return(
+        <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignContent:'center'}}>
+            <Text style={Styles.sectionHeader}>{props.title}</Text>
+        </View>)
+    };
+
     RenderItem = (props) => {
         return (
-            <TouchableOpacity style ={{flex: 1}} onPress={() => 
-                //console.log(props.item.name)
-                navigation.navigate('ItemInfo',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
-                //navigation.navigate('ItemInfo')
+            <TouchableOpacity style ={{flex: 1}} onPress={() => {}
+                // navigation.navigate('ItemInfo',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
             }>
-                <View>
-                    <text>{item}</text>
-                </View>
                 <View style={{
                     // width: '100%',
                     // height: 50,
@@ -59,20 +78,33 @@ export default function ItemInfo({ route,navigation }) {
                     borderColor: '#7E828A',
                     flexDirection: 'row',
                     }}>
-                    <View style={{width: '80%',flexDirection: 'row',}}>
-                        {props.title == "Expense item" ? <Text style={Styles.item}>{props.index + 1}</Text>:<Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>}    
-                        <View style={{}}>
-                            <Text style={Styles.item}>{props.item.name}</Text> 
-                            {props.title == "Expense item" ? <Text style={Styles.itemDesc}>Creditor name {props.item.creditor.name}</Text> : null }
-                        </View>
+                    <View style={{width: '60%',flexDirection: 'row',}}>
+                        <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>  
+                        <Text style={Styles.item}>{props.item.name}</Text> 
                     </View>
-                    <View style={{width: '20%',justifyContent:'center'}}>
-                        {props.title == "Expense item" ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.price}</Text>:null}
+                    <View style={{width: '25%',flexDirection: 'row',justifyContent:'center'}}>
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end'}]}>{props.item.debtstatus}</Text>:null}
+                        {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null} */}
+                    </View>
+                    <View style={{width: '15%',flexDirection: 'row',justifyContent:'center'}}>
+                        {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end'}]}>{props.item.debtstatus}</Text>:null} */}
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null}
                     </View>
                 </View>
             </TouchableOpacity>
         )
     };
+
+    ListFooter = (props) => {
+        return(
+            <TouchableOpacity 
+                style={Styles.btnaddex}
+                >
+                <Text style={Styles.text}> Done </Text>
+            </TouchableOpacity>
+        ) 
+    }
+
     return(
         
 
@@ -94,26 +126,26 @@ export default function ItemInfo({ route,navigation }) {
         // </View> 
 
         <SafeAreaView>
-            <SectionList
-         
-            sections={[
-                {title: 'Creditor', data: [itemInfo.creditor]},
-                {title: 'Debtor', data: itemInfo.debtor},
-
-            ]}
-            renderItem={({item}) => (
-                <View style={{}}>
-                  <Text style={{}}>{item.name}</Text>
-                </View>
-              )}
-            keyExtractor={(item, index) => item + index}
-            // ListEmptyComponent={()=>{
-            //     <Text>There is no member in this group.</Text>
-            // }}
-            // renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
-            // ListFooterComponent={ () => <RenderFooter />}
-            // ListFooterComponentStyle={{paddingTop:20}}
-            />
+            {
+                isReadyE && <SectionList
+                sections={[
+                    {title: 'Creditor', data: [itemInfo.creditor]},
+                    {title: 'Debtor', data: itemInfo.debtor},
+                ]}
+                renderItem={({item}) => (
+                    <RenderItem item={item}/>
+                )}
+                keyExtractor={(item, index) => item + index}
+                // ListEmptyComponent={()=>{
+                //     <Text>There is no member in this group.</Text>
+                // }}
+                ListHeaderComponent={() => <ListHeader />}
+                renderSectionHeader={({section: {title}}) => <SectionHeader title={title} />}
+                ListFooterComponent={ () => <ListFooter />}
+                // ListFooterComponentStyle={{paddingTop:20}}
+                />
+            }
+            
         </SafeAreaView>
     );
 };
