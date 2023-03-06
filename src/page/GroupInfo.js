@@ -50,7 +50,7 @@ export default function GroupInfo({ route, navigation }) {
     async function _showExpenseList(){
         let eList = await getExpenseListByGid(gid);
         setExpenseList(eList);
-        // console.log(eList)
+        //console.log(eList)
         setReadyE(true)
     };
     
@@ -163,47 +163,73 @@ export default function GroupInfo({ route, navigation }) {
     };
     RenderFooter = (props) => {
         return(
-        <View style={{height:220, alignItems: 'center'}}>
-            <TouchableOpacity 
-                style={Styles.btnginfo}
-                onPress={_editGroup}
-            >
-                <Text style={Styles.text}>Edit group</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-                style={Styles.btnginfo}
-                onPress={_leaveGroup}
-            >
-                <Text style={Styles.text}>Leave group</Text>
-            </TouchableOpacity>
+            <View>
+                <View style={{height:200, alignItems: 'center'}}> 
+                {/* <View style={{height:100, alignItems: 'center'}}> */}
+                <TouchableOpacity 
+                    style={Styles.btnginfo}
+                    onPress={_editGroup}
+                >
+                    <Text style={Styles.text}>Edit group</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    style={Styles.btnginfo}
+                    onPress={_leaveGroup}
+                >
+                    <Text style={Styles.text}>Leave group</Text>
+                </TouchableOpacity>
+                </View>
             </View>
         )
     };
     // Start render list section
     return(
         <SafeAreaView style={Styles.list_container}>
-            
             {editGroupView ? 
-            <View style={{width:'100%', height: 120,flexDirection:'row', backgroundColor:'#FDCECE'}}>
+            <View style={{width:'100%', height: 100,flexDirection:'row', backgroundColor:'#FDCECE'}}>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <View style={{flexDirection:'column',marginLeft:10}}>
+                    <View style={{flexDirection:'row',marginLeft:10}}>
                         <Image style={{ borderRadius: 40, height:80, width:80}} source={{uri:pickerRes.uri}}/>
-                        <TouchableOpacity onPress={chooseFile} style={{alignItems:'center'}}><Text>edit</Text></TouchableOpacity>
+                        {/* <TouchableOpacity onPress={chooseFile} style={{alignItems:'center'}}>
+                            <Text>edit</Text>
+                        </TouchableOpacity> */}
+                        <AntDesign 
+                            name='edit'
+                            size={18}
+                            style={{alignItems:'center'}}
+                            onPress={chooseFile}
+                        />
                     </View>
                     <View style={{flexDirection:'column',marginLeft:10}}>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
                             <TextInput ref={textInputRefname} onChangeText={(text) => setgName(text)} style={{marginLeft:20, fontWeight:'bold', fontSize:25, borderBottomColor:'black', borderBottomWidth:1}}>{gname}</TextInput>
-                            <TouchableOpacity onPress={editName}><Text style={{marginTop:8,marginLeft:5}}>edit</Text></TouchableOpacity>
+                            {/* <TouchableOpacity onPress={editDesc}>
+                                <Text style={{marginTop:8,marginLeft:5}}>edit</Text>
+                            </TouchableOpacity> */}
+                            <AntDesign 
+                                name='edit'
+                                size={18}
+                                style={{marginTop:8,marginLeft:5}}
+                                onPress={editName}
+                            />
                         </View>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
                             <TextInput ref={textInputRefdesc} onChangeText={(text) => setgDesc(text)} style={{marginLeft:20, fontSize:16, color:'#555454'}}>{gdesc}</TextInput>
-                            <TouchableOpacity onPress={editDesc}><Text style={{marginTop:8,marginLeft:5}}>edit</Text></TouchableOpacity>
+                            {/* <TouchableOpacity onPress={editDesc}>
+                                <Text style={{marginTop:8,marginLeft:5}}>edit</Text>
+                            </TouchableOpacity> */}
+                            <AntDesign 
+                                name='edit'
+                                size={18}
+                                style={{marginTop:8,marginLeft:5}}
+                                onPress={editDesc}
+                            />
                         </View>
                     </View>
                     
                 </View>
                 <View style={{flexDirection:'column', alignItems:'flex-end', right:10, position:'absolute',justifyContent:'space-between', }}>
-                    <AntDesign name="close" color="black" size={25} style={{ marginTop:10, marginBottom:50}} onPress={() => 
+                    <AntDesign name="close" color="black" size={25} style={{ marginTop:10, marginBottom:30}} onPress={() => 
                         setEditGroupView(false)} />
                 
                     <TouchableOpacity onPress={_saveEditGroup} style={{ marginBottom:10,borderRadius:10, borderColor:'#DE7272',borderWidth:1, backgroundColor:'#EB9090',width:75}}><Text style={{padding:2, color:'#F6EFEF', alignSelf:'center', fontWeight:'bold'}}>Save edit</Text></TouchableOpacity>
