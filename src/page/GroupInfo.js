@@ -181,7 +181,7 @@ export default function GroupInfo({ route, navigation }) {
     };
     // Start render list section
     return(
-        <SafeAreaView style={Styles.list_container3}>
+        <SafeAreaView style={Styles.list_container}>
             
             {editGroupView ? 
             <View style={{width:'100%', height: 120,flexDirection:'row', backgroundColor:'#FDCECE'}}>

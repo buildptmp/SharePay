@@ -41,7 +41,7 @@ export default function Homepage({page, navigation}){
                 renderItem={({item}) => 
                     <TouchableOpacity key={'GroupInfo'} style ={{flex: 1}} onPress={() => 
                         navigation.navigate('GroupInfo',{gid:item.gid})
-                    }>
+                        }>
                         <View style={{
                             // width: '100%',
                             // height: 50,
@@ -56,10 +56,11 @@ export default function Homepage({page, navigation}){
                         </View>
                     </TouchableOpacity>
                 }
+                keyExtractor={(item, index) => item + index}
                 renderSectionHeader={({section}) => (
                     <Text style={Styles.sectionHeader}>{section.title}</Text>
                 )}
-                keyExtractor={(item, index) => item + index}
+                // ListFooterComponentStyle={{heigth:'100%',backgroundColor:'#F6EFEF'}}
             />}
         </SafeAreaView>
     );
