@@ -13,13 +13,11 @@ import { Button,
     TouchableOpacity,
     ScrollView
  } from "react-native";
-//  import CheckBox from 'react-native-check-box';
 import SectionList from 'react-native/Libraries/Lists/SectionList';
 import SelectDropdown from 'react-native-select-dropdown'
 import Icon from 'react-native-vector-icons/Fontisto';
-// import Icon from 'react-native-vector-icons/AntDesign';
 import {addExpense, addDebtor, getMemberListByGid} from '../../database/DBConnection'
-// import Selection from '../components/option';
+import SwitchSelector from 'react-native-switch-selector';
 
 export default function AddingExpense({ route, navigation }) {
     const { gid, gname } = route.params
@@ -33,7 +31,7 @@ export default function AddingExpense({ route, navigation }) {
     async function seeMember(){
         const mList = await getMemberListByGid(gid);
         setMemberList(mList)
-    } 
+    }
     useEffect(() => {
         seeMember()
     },[])
@@ -69,7 +67,7 @@ export default function AddingExpense({ route, navigation }) {
     SetItemInfo = (props) => {
         return(
             <View>
-                <Text style={Styles.sectionHeaderwithsub}>Item Name</Text>
+                <Text style={Styles.textInputHeader}>Item Name</Text>
                 <View style={Styles.itemInput}>
                     <TextInput
                     value={ItemName}
@@ -80,7 +78,7 @@ export default function AddingExpense({ route, navigation }) {
                 </View>
                 
 
-                <Text style={Styles.sectionHeaderwithsub}>Price (Baht)</Text>
+                <Text style={Styles.textInputHeader}>Price (Baht)</Text>
                 <View style={Styles.itemInput}>
                     <TextInput
                     value={ItemPrice}
@@ -91,7 +89,7 @@ export default function AddingExpense({ route, navigation }) {
                 </View>
                 
 
-                <Text style={Styles.sectionHeaderwithsub}>Creditor</Text>
+                <Text style={Styles.textInputHeader}>Creditor</Text>
                 <SelectDropdown
                     data={memberList}
                     defaultButtonText={'Select a Creditor'}
@@ -119,7 +117,7 @@ export default function AddingExpense({ route, navigation }) {
                     rowStyle={Styles.dropdownRowStyle}
                     rowTextStyle={Styles.dropdownRowTxtStyle}
                 />
-                <Text style={Styles.sectionHeaderwithsub}>Spliting Method</Text>
+                <Text style={Styles.textInputHeader}>Spliting Method</Text>
 
             </View>
         )
@@ -130,7 +128,7 @@ export default function AddingExpense({ route, navigation }) {
             <View style={{marginLeft:10}}>
                 <SetItemInfo />
                 <View style={{paddingTop:10}}>
-                    <Text style={Styles.sectionHeaderwithsub}>Debtor</Text>
+                    <Text style={Styles.textInputHeader}>Debtor</Text>
                     <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
                 </View>
             </View>
@@ -138,8 +136,9 @@ export default function AddingExpense({ route, navigation }) {
     }
 
     Checkbox = (props) => {
-        const [checker, setChecker] = useState(false)
-        const data = props.data
+        const [checker, setChecker] = useState(false);
+        const [price, setCheckboxPrice] = useState(0);
+        const data = props.data;
         return(
             <View style ={{flex: 1, paddingHorizontal:20}} >
                 <TouchableOpacity 
@@ -157,16 +156,32 @@ export default function AddingExpense({ route, navigation }) {
                 }}>
             <View style={{
                 // width: '100%',
-                // height: 50,
+                height: 50,
                 backgroundColor: '#FFFFFF',
                 borderBottomWidth: 1,
                 borderTopWidth: 1,
                 borderColor: '#7E828A',
-                flexDirection: 'row'
+                flexDirection: 'row',
+                justifyContent:'space-between',
+                alignContent:'center'
                 }}>
+                <View style={{flexDirection: 'row', marginLeft:5}}>
                     <Icon name={(checker ? 'checkbox-active':'checkbox-passive')} size={35} style={{margin:6.5, width:40}}></Icon>
                     <Image style={{borderRadius: 50, height:35, width:35,margin:6.5 }} source={props.source}/>
                     <Text style={Styles.item}>{props.name}</Text>
+                </View>
+                <View style={[Styles.itemInputCheckboxPrice, {marginRight:20,alignSelf:'center', flexDirection:'row',justifyContent:'space-around'}]}>
+                    <View style={{width:70}}>
+                        <TextInput
+                        value={price} 
+                        keyboardType={'number-pad'}
+                        placeholder={"..."}
+                        onChangeText={(text) => setCheckboxPrice(text)}
+                        />
+                    </View>
+                    <Text style={{alignSelf:'center'}}>0%</Text>
+
+                </View>
             </View>
             </TouchableOpacity>
             </View>
@@ -184,6 +199,7 @@ export default function AddingExpense({ route, navigation }) {
         </TouchableOpacity>
         ) 
     }
+
     return(
         <View style={[Styles.containeraddex,Styles.shadowProp]}>
             <SafeAreaView style={Styles.list_container}><SectionList
