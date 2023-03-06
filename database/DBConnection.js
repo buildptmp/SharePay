@@ -443,6 +443,12 @@ export async function getExpenseInfo(gid, eid){
   
   return itemInfo
 }
+export function editExpneseName(eid, newName){
+  const _data = {
+    name: newName
+  }
+  updateDoc(doc(db, 'Test-Items', eid), _data).catch(err => {console.log(err.message)})
+}
 /* Debtor management*/
 
 const debtstatus_enum = {

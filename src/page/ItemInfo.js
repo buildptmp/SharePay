@@ -1,8 +1,8 @@
-import { NavigationContainer, StackActions } from '@react-navigation/native';
+// import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
 import Homepage from './Homepage';
 import { Styles } from "../Styles"
-import { FC, useEffect, ReactElement, useState } from "react";
+import { FC, useEffect, ReactElement, useState, useRef, useCallback } from "react";
 import { Button, 
     StyleSheet, 
     Text,
@@ -14,42 +14,73 @@ import { Button,
     TouchableOpacity,
     SectionList,
  } from "react-native";
-import { getExpenseInfo } from "../../database/DBConnection";
+import { getExpenseInfo, editExpneseName } from "../../database/DBConnection";
 import auth from '@react-native-firebase/auth';
-import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
-import { getGroupByGid, getMemberListByGid, getExpenseListByGid } from '../../database/DBConnection'
-import { uploadGroupImg, imagePicker } from '../../database/Storage'
-import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
 
 export default function ItemInfo({ route,navigation }) {
-    const {eid,ename,gid,price } = route.params;
+    const {eid,gid,price } = route.params;
     const [itemInfo, setItemInfo] = useState({});
-    const [isReadyE, setReadyE] = useState(false)
+    const [isReadyE, setReadyE] = useState(false);
+
+    let newName = "";
+
+    const [editableName,setEditableName] = useState(false);
+    const itemNameRef = useRef(null);
     const RouteMapping = [
         { routeName: 'Homepage', displayText: 'Homepage', }
     ]
 
     async function showItemInfo(){
         const item = await getExpenseInfo(gid,eid);
-        console.log("EIEI");
-        console.log([item.creditor]);
-        console.log("EIEI2");
-        console.log(item.debtor);
+        // console.log("EIEI");
+        // console.log([item.creditor]);
+        // console.log("EIEI2");
+        // console.log(item.debtor);
+        // console.log(item.name)
         setItemInfo(item);
         setReadyE(true);
     }
+
+    function _saveEditItem(){
+        console.log("newName is "+ newName)
+        editExpneseName(eid,newName);
+        alert("Edit successfully. Please refresh to see the change.")
+    }
+
     useEffect(()=>{
+        setEditableName(false);
         setReadyE(false);
-        showItemInfo()
+        showItemInfo();
     },[])
+
+    editItemName = () => {
+        // itemNameRef.current.editable = true
+        setEditableName(true)
+
+        itemNameRef.current.focus(); 
+    }
 
     ListHeader = (props) => {
         return(
             <View style={{}}>
                 <View style={{paddingTop:10}}>
-                    <Text style={Styles.sectionHeaderwithsub}>Name {ename}</Text>
+                    <View style={{flexDirection:'row'}}>
+                        <Text style={Styles.sectionHeaderwithsub}>Name </Text>
+                        <TextInput ref ={itemNameRef} editable={editableName} style={[Styles.sectionHeaderwithsub,]}
+                            onChangeText={text => {newName = text}}>{itemInfo.name}</TextInput>
+                        {!editableName?<AntDesign 
+                            name='edit'
+                            size={18}
+                            style={{marginTop:5, marginLeft:5}}
+                            onPress={editItemName}
+                        />: null}
+                        {editableName? <AntDesign name="close" color="black" size={20} style={{marginTop:5, marginLeft:5}} onPress={() => {
+                            setEditableName(false)
+                            text = ""
+                        }} />:null}
+                    </View>
                     <Text style={Styles.sectionHeaderwithsub}>Price {price}</Text>
                     <Text style={Styles.sectionHeaderwithsub}>Method</Text>
                 </View>
@@ -97,34 +128,27 @@ export default function ItemInfo({ route,navigation }) {
 
     ListFooter = (props) => {
         return(
-            <TouchableOpacity 
-                style={Styles.btnaddex}
-                >
-                <Text style={Styles.text}> Done </Text>
-            </TouchableOpacity>
+            <View style={{marginTop:20}}>
+                {editableName ? 
+                <TouchableOpacity 
+                    style={Styles.btnitif}
+                    onPress={_saveEditItem}
+                    >
+                    <Text style={Styles.text}> Save Edit </Text>
+                </TouchableOpacity>
+                :null}
+                <TouchableOpacity 
+                    style={Styles.btnitif}
+                    onPress={()=>{}}
+                    >
+                    <Text style={Styles.text}> Done </Text>
+                </TouchableOpacity>
+            </View>
+            
         ) 
     }
 
     return(
-        
-
-        // <View style={Styles.container}>
-        //     {/* <View style={[{flex:1}]} /> */}
-        //     <View style={[{ marginHorizontal: 20, backgroundColor: '#F6EFEF'}]}>
-        //         <Text style={{fontSize:12}}>Item Name: {ename} </Text>
-        //         <Text style={{fontSize:12}}>Item Price: {price} </Text>
-        //         <Text style={{fontSize:12}}>Creditor: {JSON.stringify(itemInfo.creditor)} </Text>
-        //         <Text style={{fontSize:12}}> Debtor: {JSON.stringify(itemInfo.debtor)} </Text>
-        //         <TouchableOpacity 
-        //             // key={e.routeName}
-        //             style={Styles.btnslip}
-        //            // onPress={() => navigation.navigate('GroupInfo')}
-        //         >
-        //             <Text style={Styles.text}> Done </Text>
-        //         </TouchableOpacity>
-        //     </View>
-        // </View> 
-
         <SafeAreaView>
             {
                 isReadyE && <SectionList
@@ -136,16 +160,11 @@ export default function ItemInfo({ route,navigation }) {
                     <RenderItem item={item}/>
                 )}
                 keyExtractor={(item, index) => item + index}
-                // ListEmptyComponent={()=>{
-                //     <Text>There is no member in this group.</Text>
-                // }}
                 ListHeaderComponent={() => <ListHeader />}
                 renderSectionHeader={({section: {title}}) => <SectionHeader title={title} />}
                 ListFooterComponent={ () => <ListFooter />}
-                // ListFooterComponentStyle={{paddingTop:20}}
                 />
             }
-            
         </SafeAreaView>
     );
 };
