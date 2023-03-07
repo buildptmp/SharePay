@@ -45,14 +45,14 @@ export default function Profilepage({page, navigation}){
     }
     
     return(
-        <View style={{flex:1, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{flex:1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F6EFEF'}}>
             <Image style={Styles.image_picker} source={userPicture}/>
             <Text style={Styles.sectionHeader}>{userName}</Text>
             {RouteMapping.map((e) => {
                 return (
                     <TouchableOpacity 
                         key={e.routeName}
-                        style={Styles.btn}
+                        style={Styles.btnprofile}
                         onPress={() => navigation.navigate(e.routeName)}
                     >
                         <Text style={Styles.text}>{e.displayText}</Text>
@@ -60,13 +60,13 @@ export default function Profilepage({page, navigation}){
                 )
             })}
             <TouchableOpacity
-                style={Styles.btn}
+                style={Styles.btnprofile}
                 onPress={() => {navigation.navigate('ProfileInfo')}}
             >
-                <Text style={Styles.text}>View user profile</Text>
+                <Text style={Styles.text}>View User Profile</Text>
             </TouchableOpacity> 
             <TouchableOpacity
-                style={Styles.btn}
+                style={Styles.btnprofile}
                 // onPress={() => {navigation.navigate('PersonalNotificationPage')}}
             >
                 <Text style={Styles.text}>View notification</Text>
@@ -77,7 +77,7 @@ export default function Profilepage({page, navigation}){
             
             { curUser && 
                 <TouchableOpacity
-                    style={Styles.btn}
+                    style={Styles.btnlogout}
                     onPress={_signOut}
                 >
                     <Text style={Styles.text}>Logout</Text>
