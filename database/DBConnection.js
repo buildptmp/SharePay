@@ -127,7 +127,7 @@ async function getCreditorsByDebtorId(debtorid, gid){
     const debtorSnap = await getDocs(q);
     let debtorList = [];
     debtorSnap.forEach( debtor => {
-      if({...debtor.data()}.debtstatus == "pending"){
+      if({...debtor.data()}.debtstatus == "owed"){
         debtorList.push({id:debtor.id, ...debtor.data()})
       }
     })
@@ -168,9 +168,12 @@ export async function getPersonalDebtAndDebtorList(uid){
           for(let item of debtorTemp){
             for(let debtor of item.debtors){
               if(member.uid == debtor.debtorid){
-                data_debtor.debtorName = debtor.name;
-                data_debtor.debtorid = debtor.debtorid;
-                calPrice += debtor.calculatedprice;
+                if(debtor.status != "Paid"){
+                  data_debtor.debtorName = debtor.name;
+                  data_debtor.debtorid = debtor.debtorid;
+                  calPrice += debtor.calculatedprice;
+                  data_debtor.debtStatus = debtor.debtstatus;
+                }
                 break;
               }
             }
@@ -179,7 +182,6 @@ export async function getPersonalDebtAndDebtorList(uid){
             data_debtor.calPrice = calPrice;
             data_debtorList.push(data_debtor)
           }
-          
         }
       }
       // console.log("data_debtorList: ", data_debtorList)
@@ -196,9 +198,12 @@ export async function getPersonalDebtAndDebtorList(uid){
 
           for(let item of creditorTemp){
             if(member.uid == item.creditorid){
-              data_creditor.creditorName = item.creditor.name;
-              data_creditor.creditorid = item.creditorid;
-              calPrice += item.debtor.calculatedprice;
+              if(item.debtor.status != "Paid"){
+                data_creditor.creditorName = item.creditor.name;
+                data_creditor.creditorid = item.creditorid;
+                calPrice += item.debtor.calculatedprice;
+                data_creditor.debtStatus = item.debtor.debtstatus;
+              }
             }
           }
           if(data_creditor.creditorName){
@@ -290,7 +295,7 @@ export async function checkAllowToleave(uid, gid){
   const DebtorRef = collection(db, 'Test-Debtors');
 
   const q1 = query(ItemRef,where("gid","==",gid),where("creditorid","==",uid));
-  const q2 = query(DebtorRef,where("gid","==",gid),where("debtorid","==",uid),where("debtstatus","==","pending"));
+  const q2 = query(DebtorRef,where("gid","==",gid),where("debtorid","==",uid),where("debtstatus","==","owed"));
 
   try {
     const creditorSnap = await getDocs(q1);
@@ -302,7 +307,7 @@ export async function checkAllowToleave(uid, gid){
         itemids.push(doc.id);
       })
       for(id in itemids){
-        const q3 = query(DebtorRef,where("gid","==",gid),where("itemid","==",id),where("debtstatus","==","pending"));
+        const q3 = query(DebtorRef,where("gid","==",gid),where("itemid","==",id),where("debtstatus","==","owed"));
         const debtorSnap_2 = await getDocs(q3)
         if(!debtorSnap_2.empty){
           return {creditor:debtorSnap_2.empty, debtor:debtorSnap.empty}
@@ -452,7 +457,7 @@ export function editExpneseName(eid, newName){
 /* Debtor management*/
 
 const debtstatus_enum = {
-  pending: 'pending',
+  owed: 'owed',
   paid: 'paid',
   owner: 'owner',
   cancel: 'cancel'
@@ -473,7 +478,7 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
     if (debtor.isSplitEqully) calculatedprice = Math.round(((priceRemainder/countSplitEquallyMember)+Number.EPSILON)*100)/100
     console.log(priceRemainder +" , "+ countSplitEquallyMember)
     // let calculatedprice = (debtor.isSplitEqully ? Math.round(((priceRemainder/countSplitEquallyMember)+Number.EPSILON)*100)/100 : price*percentage/100);
-    let debtstatus = (creditorid === debtor.uid ? debtstatus_enum.owner : debtstatus_enum.pending);
+    let debtstatus = (creditorid === debtor.uid ? debtstatus_enum.owner : debtstatus_enum.owed);
     let _data = {
       debtorid: debtor.uid,
       gid: gid,

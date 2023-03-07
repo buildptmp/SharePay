@@ -15,8 +15,8 @@ export default function DebtView({page, navigation}){
         const list = await getPersonalDebtAndDebtorList(uid);
         setDebtorList(list[0]);
         setDebtList(list[1]);
-        // console.log('Debtor', list[0][0])
-        // console.log('Debt', list[1][0])
+        console.log('Debtor: ', list[0][0].data)
+        console.log('Debt: ', list[1][0].data)
     }
     //console.log(debtorList[0].data)
 
@@ -89,6 +89,7 @@ function DebtList({data}) {
                             return (
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
                                 <Text key={r.creditorName}>{r.creditorName}</Text>
+                                <Text key={r.debtStatus}>{r.debtStatus}</Text>
                                 <Text key={r.calPrice}>{r.calPrice}</Text>
                                 </View>
                             )
@@ -111,6 +112,7 @@ function DebtorList({data}) {
                             return (
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
                                 <Text key={t.debtorName}>{t.debtorName}</Text>
+                                <Text key={t.debtStatus}>{t.debtStatus}</Text>
                                 <Text key={t.calPrice}>{t.calPrice}</Text>
                                 </View>
                             )
