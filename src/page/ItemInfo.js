@@ -56,9 +56,7 @@ export default function ItemInfo({ route,navigation }) {
     },[])
 
     editItemName = () => {
-        // itemNameRef.current.editable = true
         setEditableName(true)
-
         itemNameRef.current.focus(); 
     }
 
