@@ -24,6 +24,17 @@ export const Styles = StyleSheet.create({
         marginBottom:10
     },
 
+    containerdlist: {
+        flexDirection: 'row',
+        backgroundColor: '#F6EFEF'
+    },
+
+
+    containerdlist2:{
+        flex: 1,
+        marginTop: 8,
+    },
+
     containerginfo: {
         flex:1,
         paddingTop: 30, 
@@ -116,6 +127,37 @@ export const Styles = StyleSheet.create({
         borderRadius: 20,
     }, 
 
+    btnprofile: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        width: '50%',
+    }, 
+
+    btnprofileinfo: {
+        backgroundColor: '#F88C8C',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        width: '100%',
+    }, 
+
+    btnlogout: {
+        backgroundColor: '#E24B4B',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        width: '50%',
+    }, 
+
+    btnlist: {
+        backgroundColor: '#F1D2D2',
+        marginBottom: 10,
+        padding: 15,
+        width: '50%',
+    },
+
     btnginfo: {
         backgroundColor: '#F88C8C',
         marginBottom: 10,
@@ -150,7 +192,14 @@ export const Styles = StyleSheet.create({
         // marginTop: 20,
     },
 
-     btnslip: {
+    btnslip: {
+        backgroundColor: '#F88C8C',
+        marginTop: 20,
+        padding: 10,
+        borderRadius: 20,
+    },
+
+    btndetail: {
         backgroundColor: '#F88C8C',
         marginTop: 20,
         padding: 10,
@@ -165,6 +214,15 @@ export const Styles = StyleSheet.create({
         borderRadius: 20,
         marginLeft:60 ,
     },
+
+    selected: {
+        backgroundColor: '#F88C8C',
+        borderWidth: 0,
+    },
+
+    selectedLabel: {
+        color: 'white',
+      },
 
     text: {
         textAlign: 'center',
@@ -229,6 +287,15 @@ export const Styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: 'bold',
     },
+
+    bio: {
+        paddingTop: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        fontSize: 20,
+    },
+
     sectionHeaderwithsub: {
         paddingTop: 2,
         paddingLeft: 10,
@@ -287,5 +354,6 @@ export const Styles = StyleSheet.create({
         width: 200, 
         height: 200, 
         borderRadius: 100 
-    }
+    },
+
 });

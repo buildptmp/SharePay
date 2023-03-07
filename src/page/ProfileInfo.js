@@ -58,13 +58,24 @@ const textInputRefbio = useRef(null);
             <View style={styles.imgContainer}>
                 <Image style={Styles.image_picker} source={{uri:pickerRes.uri}}/>
                 <TextInput ref={textInputRefname} style={Styles.sectionHeader} onChangeText={(text) => setDisplayName(text)}>{displayName}</TextInput>
-                <TextInput ref={textInputRefbio} style={Styles.sectionHeader} onChangeText={(text) => setBio(text)}>{bio}</TextInput>
+                <TextInput ref={textInputRefbio} style={Styles.bio} onChangeText={(text) => setBio(text)}>{bio}</TextInput>
                 <Text style={Styles.sectionHeader}>{phoneNum}</Text>
                 <View style={{width: '80%',margin: 2}} >
-                    <Button title={'Change profile picture'} onPress={chooseFile}></Button>
-                    <Button title={'Change display name'} onPress={editName}></Button>
-                    <Button title={'Change bio'} onPress={editBio}></Button>
-                    <Button title={'Save change'} onPress={_saveEdit}></Button>
+                    <TouchableOpacity onPress={chooseFile} style = {Styles.btnprofileinfo}>
+                        <Text style={Styles.text}>Change profile picture</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={editName} style = {Styles.btnprofileinfo}>
+                        <Text style={Styles.text}>Change display name</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={editBio} style = {Styles.btnprofileinfo}>
+                        <Text style={Styles.text}>Change bio</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={_saveEdit} style = {Styles.btnprofileinfo}>
+                        <Text style={Styles.text}>Save changes</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
@@ -77,7 +88,7 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         height: '100%',
-        backgroundColor: '#e6e6fa',
+        backgroundColor: '#F6EFEF',
     },
     imgContainer: {
         alignItems: 'center',
