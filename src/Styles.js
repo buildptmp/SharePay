@@ -374,4 +374,17 @@ export const Styles = StyleSheet.create({
         borderRadius: 100 
     },
 
+    Iteminfo: {
+        //width: '100%',
+        // height: 50,
+        paddingVertical:3,         
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1,
+        borderColor: '#7E828A',                
+        flexDirection: 'row',
+    },
+
+
+
+
 });

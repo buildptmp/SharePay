@@ -98,26 +98,26 @@ export default function ItemInfo({ route,navigation }) {
             <TouchableOpacity style ={{flex: 1}} onPress={() => {}
                 // navigation.navigate('ItemInfo',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
             }>
-                <View style={{
+                <View style={Styles.Iteminfo
                     // width: '100%',
                     // height: 50,
-                    paddingVertical:3,
-                    backgroundColor: '#FFFFFF',
-                    borderBottomWidth: 1,
-                    borderColor: '#7E828A',
-                    flexDirection: 'row',
-                    }}>
-                    <View style={{width: '60%',flexDirection: 'row',}}>
+                    // paddingVertical:3,
+                    // backgroundColor: '#FFFFFF',
+                    // borderBottomWidth: 1,
+                    // borderColor: '#7E828A',
+                    // flexDirection: 'row',
+                    }>
+                    <View style={{width: '50%',flexDirection: 'row',}}>
                         <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>  
                         <Text style={Styles.item}>{props.item.name}</Text> 
                     </View>
-                    <View style={{width: '25%',flexDirection: 'row',justifyContent:'center'}}>
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end'}]}>{props.item.debtstatus}</Text>:null}
+                    <View style={{width: '30%',flexDirection: 'row',/*justifyContent:'center'*/}}>
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:3}]}>{props.item.debtstatus}</Text>:null}
                         {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null} */}
                     </View>
-                    <View style={{width: '15%',flexDirection: 'row',justifyContent:'center'}}>
+                    <View style={{width: '20%',flexDirection: 'row',/*justifyContent:'left'*/}}>
                         {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end'}]}>{props.item.debtstatus}</Text>:null} */}
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null}
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:0}]}>{props.item.calculatedprice}</Text>:null}
                     </View>
                 </View>
             </TouchableOpacity>

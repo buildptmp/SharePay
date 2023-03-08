@@ -15,8 +15,8 @@ export default function DebtView({page, navigation}){
         const list = await getPersonalDebtAndDebtorList(uid);
         setDebtorList(list[0]);
         setDebtList(list[1]);
-        // console.log('Debtor', list[0][0])
-        // console.log('Debt', list[1][0])
+        console.log('Debtor: ', list[0][0].data)
+        console.log('Debt: ', list[1][0].data)
     }
     //console.log(debtorList[0].data)
 
@@ -84,10 +84,14 @@ function DebtList({data}) {
             {data.map((e, index) => {
                 return (
                     <>
-                        <Text style={{fontWeight: 'bold'}} key={index}>{e.title}</Text>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,}} key={index}>{e.title}</Text>
                         { e.data && e.data.map((r) => {
                             return (
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
                                 <Text key={r.creditorName}>{r.creditorName}</Text>
+                                <Text key={r.debtStatus}>{r.debtStatus}</Text>
+                                <Text key={r.calPrice}>{r.calPrice}</Text>
+                                </View>
                             )
                         })}
                     </>
@@ -103,10 +107,14 @@ function DebtorList({data}) {
             {data.map((e, index) => {
                 return (
                     <>
-                        <Text style={{fontWeight: 'bold'}} key={index}>{e.title}</Text>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,}} key={index}>{e.title}</Text>
                         { e.data && e.data.map((t) => {
                             return (
+                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
                                 <Text key={t.debtorName}>{t.debtorName}</Text>
+                                <Text key={t.debtStatus}>{t.debtStatus}</Text>
+                                <Text key={t.calPrice}>{t.calPrice}</Text>
+                                </View>
                             )
                         })
                         }
