@@ -18,6 +18,7 @@ import { Button,
     TouchableOpacity,
  } from "react-native";
  import auth from '@react-native-firebase/auth';
+ import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
  import { getUserFromPhoneNum, addEditGroupMember, isInGroup} from "../../database/DBConnection";
 
  export default function AddingMember({ route, navigation }) {
@@ -67,18 +68,40 @@ import { Button,
     return(
         <SafeAreaView style={{flex: 1}}>
             <View style={Styles.containerAddmem}>
+            <View style={{ width: '120%', paddingHorizontal: 100}}>
+                <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
+                <View style={{flexDirection: 'row'}}>
+                <TextInput
+                    style={Styles.inputAddmem}
+                    value={PhoneNum}
+                    placeholder={"Insert Phone Number"}
+                    onChangeText={(text) => setPhoneNum(text)}
+                    autoCapitalize={"none"}
+                />
+                <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}} onPress={
+                    _addMember}>
+                <FontAwesome
+                    name="plus"
+                    color="white"
+                    size={18}
+                    style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
+                    onPress={_addMember}
+                    />
+                </TouchableOpacity>
+                </View> 
+            </View> 
             {showUser &&
                 <View style={{
                     backgroundColor: 'white',
-                    paddingHorizontal: 16,
-                    paddingVertical: 16,
-                    marginBottom: 20,
+                    paddingHorizontal: 10,
+                    paddingVertical: 10,
+                    marginTop: 20,
                     borderColor: 'black',
                     borderWidth: 0.5
                 }}>
                 {isNotNewuser ? (
                     <View>
-                        <Image source = {{uri:member.image}} style={{width: 200, height: 200, paddingBottom: 10}}/>
+                        <Image source = {{uri:member.image}} style={{width: 160, height: 160, paddingBottom: 10}}/>
                         <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}>{member.name}</Text>
                         <Text style={{ color: 'pink', fontSize: 12 }}>{member.bio}</Text>
                     </View>
@@ -86,7 +109,7 @@ import { Button,
                 }
                 </View>
             }
-            <View style={[{ width: '120%', paddingHorizontal: 100}]}>
+            {/* <View style={[{ width: '120%', paddingHorizontal: 100}]}>
                 <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
                 <TextInput
                     style={Styles.inputAddmem}
@@ -98,7 +121,7 @@ import { Button,
                 <TouchableOpacity style={Styles.btnph}  onPress={_addMember}>
                     <Text style={Styles.text}> Add Member</Text>
                 </TouchableOpacity>
-            </View> 
+            </View> */}
             </View>
         </SafeAreaView>
     );
