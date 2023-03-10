@@ -79,7 +79,7 @@ export async function getPersonalDebtAndDebtorList(uid){
   
   for(let g of groupList){
 
-    const items = await getExpenseList(g.gid,uid);
+    const items = await getExpenseListByGroupMember(g.gid,uid);
 
     let data_debtorList = [];    
     let data_creditorList = [];
@@ -344,7 +344,7 @@ export async function getExpenseListByGid(gid){
     console.log(error);
   }
 }
-export async function getExpenseList(gid,uid){
+export async function getExpenseListByGroupMember(gid,uid){
   const ItemRef = collection(db,preText+'Items');
   const q = query(ItemRef,where("gid","==",gid));
 
@@ -357,7 +357,7 @@ export async function getExpenseList(gid,uid){
       const index = debt.findIndex((obj => obj.uid == uid))
       if(cred.uid == uid || index >= 0) expenseList.push({eid:doc.id, ...doc.data()})
     })
-    // console.log(expenseList)
+    console.log(expenseList)
     return expenseList
   } catch (error){
     console.log(error);

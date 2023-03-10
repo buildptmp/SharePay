@@ -15,7 +15,7 @@ import { Button,
 import auth from '@react-native-firebase/auth';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
-import { getGroupByGid, getMemberListByGid, getExpenseListByGid } from '../../database/DBConnection'
+import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
 import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
@@ -34,24 +34,23 @@ export default function GroupInfo({ route, navigation }) {
     const listRef = useRef(null);
 
     async function _showGroupInfo(){
-        getGroupByGid(gid).then(groupInfo =>{
+        await getGroupByGid(gid).then(groupInfo =>{
             setgName(groupInfo.name)
             setPickerRes({uri:groupInfo.image})
             setgDesc(groupInfo.description)
         })
     };
     async function _showMemberList(){
-        getMemberListByGid(gid).then( mList =>{
+        await getMemberListByGid(gid).then( mList =>{
             setMemberList(mList);
             // console.log(mList)
         })
     };
     async function _showExpenseList(){
-        getExpenseListByGid(gid).then(eList =>{
+        await getExpenseListByGroupMember(gid,uid).then(eList =>{
             setExpenseList(eList);
             //console.log(eList)
-        })
-        
+        })  
     };
     
     useEffect(() => {
@@ -118,15 +117,15 @@ export default function GroupInfo({ route, navigation }) {
         return(
         <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignContent:'center'}}>
             <Text style={Styles.sectionHeader}>{props.title}</Text>
-            <View style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}}>
+            <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}} onPress={()=>navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
             <FontAwesome
                 name="plus"
                 color="white"
                 size={18}
                 style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
-                onPress={() => navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
+                > 
             </FontAwesome>
-            </View>
+            </TouchableOpacity>
         </View>)
     };
     RenderItem = (props) => {
