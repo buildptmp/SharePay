@@ -5,8 +5,8 @@ import auth from '@react-native-firebase/auth'
 import { getPersonalDebtAndDebtorList } from "../../database/DBConnection";
 
 export default function DebtView({page, navigation}){
-    const [debtorList, setDebtorList] = useState([{}]);
-    const [debtList, setDebtList] = useState([{}]);
+    const [debtorList, setDebtorList] = useState([]);
+    const [debtList, setDebtList] = useState([]);
     const [isDebtAcitve, setDebtAcitve] = useState(true);
     const [isDebtorAcitve, setDebtorAcitve] = useState(false);
     const [isLoading, setLoading] = useState(true);
