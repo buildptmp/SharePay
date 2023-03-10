@@ -23,10 +23,8 @@ import { async } from '@firebase/util';
 export default function GroupInfo({ route, navigation }) {
     const { gid } = route.params
     const uid = auth().currentUser.uid
-    const [isReadyM, setReadyM] = useState(false);
-    const [isReadyE, setReadyE] = useState(false);
-    const [memberList, setMemberList] = useState([{}]);
-    const [expenseList, setExpenseList] = useState([{}]);
+    const [memberList, setMemberList] = useState("");
+    const [expenseList, setExpenseList] = useState("");
     const [gname, setgName] = useState("")
     const [gdesc, setgDesc] = useState("")
     const [pickerRes, setPickerRes] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2FAddMem.png?alt=media&token=713f3955-809a-47e6-9f4c-4e93ac53dcd9"})
@@ -36,27 +34,27 @@ export default function GroupInfo({ route, navigation }) {
     const listRef = useRef(null);
 
     async function _showGroupInfo(){
-        const groupInfo = await getGroupByGid(gid)
-        setgName(groupInfo.name)
-        setPickerRes({uri:groupInfo.image})
-        setgDesc(groupInfo.description)
+        getGroupByGid(gid).then(groupInfo =>{
+            setgName(groupInfo.name)
+            setPickerRes({uri:groupInfo.image})
+            setgDesc(groupInfo.description)
+        })
     };
     async function _showMemberList(){
-        let mList = await getMemberListByGid(gid);
-        setMemberList(mList);
-        setReadyM(true)
-        // console.log(mList)
+        getMemberListByGid(gid).then( mList =>{
+            setMemberList(mList);
+            // console.log(mList)
+        })
     };
     async function _showExpenseList(){
-        let eList = await getExpenseListByGid(gid);
-        setExpenseList(eList);
-        //console.log(eList)
-        setReadyE(true)
+        getExpenseListByGid(gid).then(eList =>{
+            setExpenseList(eList);
+            //console.log(eList)
+        })
+        
     };
     
     useEffect(() => {
-        setReadyE(false)
-        setReadyM(false)
         _showGroupInfo();
         _showMemberList();
         _showExpenseList();
@@ -133,10 +131,10 @@ export default function GroupInfo({ route, navigation }) {
     };
     RenderItem = (props) => {
         return (
-            <TouchableOpacity style ={{flex: 1}} onPress={() => 
-                //console.log(props.item.name)
-                navigation.navigate('ItemInfo',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
-                //navigation.navigate('ItemInfo')
+            <TouchableOpacity style ={{flex: 1}} onPress={() => (props.title == "Expense item" ? 
+                navigation.navigate('ItemInfo',{eid:props.item.eid, allowToEdit:false}) 
+                : 
+                console.log(props.item.name))  
             }>
                 <View style={{
                     // width: '100%',
@@ -174,7 +172,8 @@ export default function GroupInfo({ route, navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={Styles.btnginfo}
-                    onPress={_leaveGroup}
+                    // onPress={_leaveGroup}
+                    onPress={()=> alert("Implementing")}
                 >
                     <Text style={Styles.text}>Leave group</Text>
                 </TouchableOpacity>
@@ -226,7 +225,6 @@ export default function GroupInfo({ route, navigation }) {
                             />
                         </View>
                     </View>
-                    
                 </View>
                 <View style={{flexDirection:'column', alignItems:'flex-end', right:10, position:'absolute',justifyContent:'space-between', }}>
                     <AntDesign name="close" color="black" size={25} style={{ marginTop:10, marginBottom:30}} onPress={() => 
@@ -237,7 +235,7 @@ export default function GroupInfo({ route, navigation }) {
             </View>
             : null}
             {
-                isReadyE && isReadyM && 
+                expenseList && memberList && 
                 <SectionList
                 ref={listRef}
                 sections={[

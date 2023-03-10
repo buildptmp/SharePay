@@ -16,7 +16,7 @@ export default function DebtView({page, navigation}){
         setDebtorList(list[0]);
         setDebtList(list[1]);
         console.log('Debtor: ', list[0][0].data)
-        console.log('Debt: ', list[1][0].data)
+        // console.log('Debt: ', list[1][0].data) 
     }
     //console.log(debtorList[0].data)
 
@@ -25,7 +25,7 @@ export default function DebtView({page, navigation}){
         if (!uid) return;
         _showDebtAndDebtorList(uid)
 
-        if (debtList.length === 0 || debtorList.length === 0) {
+        if (debtList.length === 0 && debtorList.length === 0) {
             setLoading(true)
         } else {
             setLoading(false)
@@ -90,7 +90,7 @@ function DebtList({data}) {
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
                                 <Text key={r.creditorName}>{r.creditorName}</Text>
                                 <Text key={r.debtStatus}>{r.debtStatus}</Text>
-                                <Text key={r.calPrice}>{r.calPrice}</Text>
+                                <Text key={r.totolPrice}>{r.totolPrice}</Text>
                                 </View>
                             )
                         })}
@@ -113,7 +113,7 @@ function DebtorList({data}) {
                                 <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
                                 <Text key={t.debtorName}>{t.debtorName}</Text>
                                 <Text key={t.debtStatus}>{t.debtStatus}</Text>
-                                <Text key={t.calPrice}>{t.calPrice}</Text>
+                                <Text key={t.totolPrice}>{t.totolPrice}</Text>
                                 </View>
                             )
                         })
