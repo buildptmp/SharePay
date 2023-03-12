@@ -79,6 +79,10 @@ export default function DebtView({page, navigation}){
 };
 
 function DebtList({data}) {
+    const RouteMapping = [
+        { routeName: 'AddingSlip', displayText: 'Add Slip'},
+    ]
+    
     return (
         <SafeAreaView>
             {data.map((e, index) => {
@@ -91,6 +95,15 @@ function DebtList({data}) {
                                 <Text key={r.creditorName}>{r.creditorName}</Text>
                                 <Text key={r.debtStatus}>{r.debtStatus}</Text>
                                 <Text key={r.calPrice}>{r.calPrice}</Text>
+
+                                <TouchableOpacity 
+                                    key={e.routeName}
+                                    style={Styles.btnprofile}
+                                    onPress={() => navigation.navigate(e.routeName)}
+                                >
+                                    <Text style={Styles.text}>{e.displayText}</Text>
+                                </TouchableOpacity>
+                                
                                 </View>
                             )
                         })}
