@@ -15,8 +15,8 @@ export default function DebtView({page, navigation}){
         const list = await getPersonalDebtAndDebtorList(uid);
         setDebtorList(list[0]);
         setDebtList(list[1]);
-        console.log('Debtor: ', list[0][0].data)
-        console.log('Debt: ', list[1][0].data)
+        //console.log('Debtor: ', list[0][0].data)
+        //console.log('Debt: ', list[1][0].data)
     }
     //console.log(debtorList[0].data)
 
@@ -25,7 +25,7 @@ export default function DebtView({page, navigation}){
         if (!uid) return;
         _showDebtAndDebtorList(uid)
 
-        if (debtList.length === 0 || debtorList.length === 0) {
+        if (debtList.length === 0 && debtorList.length === 0) {
             setLoading(true)
         } else {
             setLoading(false)
@@ -33,7 +33,7 @@ export default function DebtView({page, navigation}){
     }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
 
     return(
-        <SafeAreaView>
+        <SafeAreaView style={{backgroundColor: '#F6EFEF'}}>
             <View style={Styles.containerdlist}>
             <TouchableOpacity
                 onPress={() => {
@@ -87,7 +87,7 @@ function DebtList({data}) {
                         <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,}} key={index}>{e.title}</Text>
                         { e.data && e.data.map((r) => {
                             return (
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
+                                <View style={Styles.box}>
                                 <Text key={r.creditorName}>{r.creditorName}</Text>
                                 <Text key={r.debtStatus}>{r.debtStatus}</Text>
                                 <Text key={r.calPrice}>{r.calPrice}</Text>

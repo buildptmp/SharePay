@@ -366,6 +366,17 @@ export const Styles = StyleSheet.create({
         flexDirection: 'row',
     },
 
+    box: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginLeft: 10,
+        marginRight: 10,
+        borderBottomWidth:1,
+        borderColor: '#B6B6B6',
+        padding: 10,
+        backgroundColor: 'white',
+    },
+
 
 
 
