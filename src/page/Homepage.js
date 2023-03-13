@@ -39,8 +39,8 @@ export default function Homepage({page, navigation}){
                     {title: 'Group', data: groupList},
                 ]}
                 renderItem={({item}) => 
-                    <TouchableOpacity key={'GroupInfo'} style ={{flex: 1}} onPress={() => 
-                        navigation.navigate('GroupInfo',{gid:item.gid})
+                    <TouchableOpacity key={'Group'} style ={{flex: 1}} onPress={() => 
+                        navigation.navigate('Group',{gid:item.gid})
                         }>
                         <View style={{
                             // width: '100%',

@@ -382,7 +382,7 @@ export async function editExpenseAfterView(eid, name, price, creditorid, debtorL
   if(description){
     _data.description = description
   }
-  await pdateDoc(doc(db,preText+'Items',eid),_data)
+  await updateDoc(doc(db,preText+'Items',eid),_data)
   .catch(error => {console.log(error)})
 }
 

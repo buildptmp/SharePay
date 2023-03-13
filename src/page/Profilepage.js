@@ -12,7 +12,7 @@ export default function Profilepage({page, navigation}){
     const [debtorList, setDebtorList] = useState([{}]);
     const [debtList, setDebtList] = useState([{}]);
     const RouteMapping = [
-        { routeName: 'AddingSlip', displayText: 'Add Slip'},
+        { routeName: 'Add Slip', displayText: 'Add Slip'},
     ]
 
     async function _showDebtAndDebtorList(uid){
@@ -61,7 +61,7 @@ export default function Profilepage({page, navigation}){
             })}
             <TouchableOpacity
                 style={Styles.btnprofile}
-                onPress={() => {navigation.navigate('ProfileInfo')}}
+                onPress={() => {navigation.navigate('Edit Profile')}}
             >
                 <Text style={Styles.text}>View User Profile</Text>
             </TouchableOpacity> 

@@ -16,7 +16,7 @@ export default function UserRegister({ navigation }) {
         if (user) {
             if (!user.displayName) {
                 addUser(user.uid, user.phoneNumber);
-                navigation.navigate('UserInformation');
+                navigation.navigate('User Information');
             } else {
                 navigation.navigate('Root');
             }

@@ -28,15 +28,15 @@ const Stack = createStackNavigator();
 
 const RouteMapping = [
   { name: 'UserSelect', page: UserSelect },
-  { name: 'UserRegister', page: UserRegister },
-  { name: 'AddingMember' , page: AddingMember },
-  { name: 'UserInformation', page: UserInformation },
-  { name: 'AddingExpense' , page: AddingExpense },
-  { name: 'GroupInfo' , page: GroupInfo },
-  { name: 'Profilepage' , page: Profilepage },
-  { name: 'AddingSlip' , page: AddingSlip },
-  { name: 'ProfileInfo', page: ProfileInfo },
-  { name: 'ItemInfo' , page: ItemInfo },
+  { name: 'Register', page: UserRegister },
+  { name: 'Add Member' , page: AddingMember },
+  { name: 'User Information', page: UserInformation },
+  { name: 'Create Expense' , page: AddingExpense },
+  { name: 'Group' , page: GroupInfo },
+  { name: 'Profile' , page: Profilepage },
+  { name: 'Add Slip' , page: AddingSlip },
+  { name: 'Edit Profile', page: ProfileInfo },
+  { name: 'Item Information' , page: ItemInfo },
 ]
 
 const App = () => {
