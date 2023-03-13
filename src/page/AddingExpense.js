@@ -26,17 +26,15 @@ export default function AddingExpense({ route, navigation }) {
     const [ItemPrice, setItemPrice] = useState("");
     const [Creditor, setCreditor] = useState("");
     const [isSplitEqually, setMethod] = useState(true);
-    // const [sectionData, setSectionData] = useState({});
     const [Itemid, setItemID] = useState("");
     const [Debtor, setDebtor] = useState([]);
     const [total, setTotal] = useState({
         price: 0,
         percent: 0
     });
-    // let debtorTemp = [];
-    // let percenttotal = 0;
-    // let pricetotal = 0;
 
+    const [Data, setData] = useState('');
+    const dropdown = useRef(null);
     async function seeMember(){
         const mList = await getMemberListByGid(gid);
         setMemberList(mList);
@@ -45,18 +43,20 @@ export default function AddingExpense({ route, navigation }) {
         seeMember()
         // console.log(itemInfo)
         if (isUpdate){
-            console.log("SEE",ItemName,ItemPrice,Creditor.name,Debtor,isSplitEqually)
+            console.log("Before",ItemName,ItemPrice,Creditor.name,isSplitEqually, Itemid, Debtor)
+            console.log("After",itemInfo)
             setItemName(itemInfo.name);
             setItemPrice(itemInfo.price);
             setItemID(itemInfo.eid);
             setCreditor(itemInfo.creditor);
+            const index = memberList.findIndex((obj => obj.uid == itemInfo.creditor.uid))
+            dropdown.current.selectIndex(index)
             setMethod(itemInfo.method == "Split Equally" ? true: false)
             console.log("update ", itemInfo.eid)
         }
-    },[Itemid])
+    },[itemInfo])
 
     async function _addExpense(){
-        // console.log("LOOK ",debtorList)
         if(Debtor.length>=1){
             const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
             const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid, methodName,gid);
@@ -65,7 +65,7 @@ export default function AddingExpense({ route, navigation }) {
             
             // console.log("must be behind the update")
             alert("Successfully added.")
-            navigation.navigate('ItemInfo',{eid:itemid, allowToEdit:true})
+            navigation.navigate('Item Information',{eid:itemid, allowToEdit:true, gid:gid})
         }
         else{
             alert("Please select the debtor.")
@@ -76,10 +76,10 @@ export default function AddingExpense({ route, navigation }) {
         if(Debtor.length>=1){
             const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
             const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
-            editExpenseAfterView(itemInfo.eid, ItemName,ItemPrice,itemInfo.creditor.uid,Debtor,gid);
-            addDebtor(Debtor,itemInfo.eid,gid,itemInfo.creditor.uid,itemInfo.price, countSplitEquallyMember)
+            await editExpenseAfterView(Itemid, ItemName,ItemPrice,itemInfo.creditor.uid,Debtor,gid);
+            await addDebtor(Debtor,Itemid,gid,itemInfo.creditor.uid,itemInfo.price, countSplitEquallyMember)
             alert("Successfully update.") 
-            navigation.navigate('ItemInfo',{eid:itemid, allowToEdit:true})
+            navigation.navigate('Item Information',{eid:Itemid, allowToEdit:true, gid:gid})
         }
         else{
             alert("Please select the debtor.")
@@ -116,6 +116,7 @@ export default function AddingExpense({ route, navigation }) {
             <Text style={Styles.textInputHeader}>Creditor</Text>
             <SelectDropdown
                 data={memberList}
+                ref={dropdown}
                 defaultButtonText={'Select a Creditor'}
                 onSelect={(selectedItem) => {
                     setCreditor(selectedItem)
@@ -238,7 +239,7 @@ export default function AddingExpense({ route, navigation }) {
         setTotal(totalTemp);
 
         console.log("pricetotal ", totalTemp.price, "percenttotal ", totalTemp.percent);
-        console.log("selected debtor",Debtor);
+        console.log("selected debtor",debtorListTemp);
 
         return update
         

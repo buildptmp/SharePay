@@ -18,7 +18,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { async } from '@firebase/util';
 
 export default function ItemInfo({ route,navigation }) {
-    const {eid, allowToEdit } = route.params;
+    const {gid, eid, allowToEdit } = route.params;
     const [itemInfo, setItemInfo] = useState("");
 
     async function showItemInfo(){
@@ -53,7 +53,7 @@ export default function ItemInfo({ route,navigation }) {
     RenderItem = (props) => {
         return (
             <TouchableOpacity style ={{flex: 1}} onPress={() => {}
-                // navigation.navigate('ItemInfo',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
+                // navigation.navigate('Item Information',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
             }>
                 <View style={Styles.Iteminfo}>
                     <View style={{width: '50%',flexDirection: 'row',}}>
@@ -80,8 +80,8 @@ export default function ItemInfo({ route,navigation }) {
                     allowToEdit && 
                     <TouchableOpacity 
                         style={Styles.btnitif}
-                        // onPress={()=>{navigation.navigate('AddingExpense', {itemInfo:itemInfo, isUpdate:true})}}
-                        onPress={()=>{alert("Implementing")}}
+                        onPress={()=>{navigation.navigate('Create Expense', {itemInfo:itemInfo, isUpdate:true, gid:gid})}}
+                        // onPress={()=>{alert("Implementing")}}
                         >
                         <Text style={Styles.text}> Edit item </Text>
                     </TouchableOpacity>
