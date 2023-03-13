@@ -13,6 +13,7 @@ export default function Profilepage({page, navigation}){
     const [debtList, setDebtList] = useState([{}]);
     const RouteMapping = [
         { routeName: 'AddingSlip', displayText: 'Add Slip'},
+        { routeName: 'Notification', displayText: 'Notification'},
     ]
 
     async function _showDebtAndDebtorList(uid){
@@ -67,9 +68,9 @@ export default function Profilepage({page, navigation}){
             </TouchableOpacity> 
             <TouchableOpacity
                 style={Styles.btnprofile}
-                // onPress={() => {navigation.navigate('PersonalNotificationPage')}}
+                onPress={() => {navigation.navigate('Notification')}}
             >
-                <Text style={Styles.text}>View notification</Text>
+                <Text style={Styles.text}>Notification</Text>
             </TouchableOpacity> 
             
              {/* /* <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Creditor List</Text>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>927888254427-vn6j1512m60k6flths2bjphaddi87fnp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.927888254427-vn6j1512m60k6flths2bjphaddi87fnp</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>927888254427-2v5j034lqsnj2l18nnalp396fh54vo9o.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAg1mdCpfcMZjl3HIMjRN6AKL1m32rtUJs</string>
+	<key>GCM_SENDER_ID</key>
+	<string>927888254427</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.SharePay</string>
+	<key>PROJECT_ID</key>
+	<string>sharepay-77c6c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>sharepay-77c6c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:927888254427:ios:1803484fd315d5672e33fe</string>
+</dict>
+</plist>

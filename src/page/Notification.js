@@ -1,14 +1,9 @@
-import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-// import { useNavigation } from '@react-navigation/native';
-// import { useHistory } from "react-router-dom";
-// import { createStackNavigator } from '@react-navigation/stack';
-import Homepage from './Homepage';
 import { Styles } from "../Styles"
-// import { NavigationScreenProps } from "react-navigation";
-import { FC, useEffect, ReactElement, useState } from "react";
+import { FC, useEffect, ReactElement, useState, useRef} from "react";
 import { Button, 
     StyleSheet, 
+    SectionList,
     Text,
     TextInput , 
     View, 
@@ -18,7 +13,7 @@ import { Button,
     TouchableOpacity,
  } from "react-native";
 
- export default function AddingSlip({ navigation }) {
+ export default function Notification({ navigation }) {
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
     const RouteMapping = [
@@ -41,7 +36,6 @@ import { Button,
                 <Text style={Styles.textboxtop}>To: 'Creditor' </Text>
                 <Text style={Styles.textboxtop}> Amount: 'Price' </Text>
                 <TouchableOpacity 
-                    // key={e.routeName}
                     style={Styles.btnslip}
                     onPress={()=> alert('Upload Successfully.')}
                 >
@@ -51,4 +45,3 @@ import { Button,
         </View> 
     );
 };
-

@@ -23,6 +23,7 @@ import Profilepage from './page/Profilepage';
 import AddingSlip from './page/AddingSlip';
 import ProfileInfo from './page/ProfileInfo';
 import ItemInfo from './page/ItemInfo';
+import Notification from './page/Notification';
 
 const Stack = createStackNavigator();
 
@@ -37,6 +38,8 @@ const RouteMapping = [
   { name: 'AddingSlip' , page: AddingSlip },
   { name: 'ProfileInfo', page: ProfileInfo },
   { name: 'ItemInfo' , page: ItemInfo },
+  { name: 'Notification' , page: Notification },
+
 ]
 
 const App = () => {
