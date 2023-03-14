@@ -264,7 +264,7 @@ export const Styles = StyleSheet.create({
         //textAlign: 'left',
         textAlignVertical: 'center',
         fontSize: 17,
-        width: '20%',
+        alignItems: 'flex-end',
     },
 
     containerLogin: {
