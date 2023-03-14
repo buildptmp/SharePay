@@ -11,6 +11,7 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
+    RefreshControl
  } from "react-native";
 import auth from '@react-native-firebase/auth';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
@@ -32,6 +33,8 @@ export default function GroupInfo({ route, navigation }) {
     const textInputRefname = useRef(null);
     const textInputRefdesc = useRef(null);
     const listRef = useRef(null);
+
+    const [refreshing, setRefreshing] = useState(false);
 
     async function _showGroupInfo(){
         await getGroupByGid(gid).then(groupInfo =>{
@@ -58,6 +61,16 @@ export default function GroupInfo({ route, navigation }) {
         _showMemberList();
         _showExpenseList();
     },[]);
+
+    const handleRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            _showGroupInfo();
+            _showMemberList();
+            _showExpenseList();
+            setRefreshing(false);
+        }, 2000);
+    }, []);
 
     // Start edit group section
     function _editGroup(){
@@ -97,6 +110,7 @@ export default function GroupInfo({ route, navigation }) {
             addEditGroupMember(gid,uid,"left");
             alert("Leaving successfully.");
             _checkEmptyMemberInGroup();
+            navigation.navigate('Root');
         }
         else{
            alert(text);
@@ -171,8 +185,8 @@ export default function GroupInfo({ route, navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={Styles.btnginfo}
-                    // onPress={_leaveGroup}
-                    onPress={()=> alert("Implementing")}
+                    onPress={_leaveGroup}
+                    // onPress={()=> alert("Implementing")}
                 >
                     <Text style={Styles.text}>Leave group</Text>
                 </TouchableOpacity>
@@ -236,6 +250,7 @@ export default function GroupInfo({ route, navigation }) {
             {
                 expenseList && memberList && 
                 <SectionList
+                style={{height:'100%'}}
                 ref={listRef}
                 sections={[
                     {title: 'Expense item', data: expenseList},
@@ -251,6 +266,9 @@ export default function GroupInfo({ route, navigation }) {
                 renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
                 ListFooterComponent={ () => <RenderFooter />}
                 ListFooterComponentStyle={{paddingTop:20}}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                }
                 />
             }
             
