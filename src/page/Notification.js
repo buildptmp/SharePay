@@ -31,13 +31,13 @@ import { Button,
             {
                 ID: '02',
                 Username: 'Jino',
-                NotiType: 'User A has invited you to join "XXXX" Group',
+                NotiType: 'has invited you to join "XXXX" Group',
                 Time: '16.40',
             },
             {
                 ID: '03',
                 Username: 'Capybara',
-                NotiType: 'User A has paid the debt to you',
+                NotiType: ' has paid the debt to you',
                 Time: '12.00',
             },
             {
