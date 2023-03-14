@@ -357,7 +357,7 @@ export async function getExpenseListByGroupMember(gid,uid){
       const index = debt.findIndex((obj => obj.uid == uid))
       if(cred.uid == uid || index >= 0) expenseList.push({eid:doc.id, ...doc.data()})
     })
-    console.log(expenseList)
+    // console.log(expenseList)
     return expenseList
   } catch (error){
     console.log(error);
@@ -382,7 +382,7 @@ export async function editExpenseAfterView(eid, name, price, creditorid, debtorL
   if(description){
     _data.description = description
   }
-  await pdateDoc(doc(db,preText+'Items',eid),_data)
+  await updateDoc(doc(db,preText+'Items',eid),_data)
   .catch(error => {console.log(error)})
 }
 

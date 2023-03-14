@@ -117,7 +117,7 @@ export default function GroupInfo({ route, navigation }) {
         return(
         <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', alignContent:'center'}}>
             <Text style={Styles.sectionHeader}>{props.title}</Text>
-            <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}} onPress={()=>navigation.navigate((props.title == "Expense item" ?'AddingExpense':'AddingMember'), {gid:gid, gname:gname})}>
+            <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}} onPress={()=>navigation.navigate((props.title == "Expense item" ?'Create Expense':'Add Member'), {gid:gid, gname:gname})}>
             <FontAwesome
                 name="plus"
                 color="white"
@@ -131,7 +131,7 @@ export default function GroupInfo({ route, navigation }) {
     RenderItem = (props) => {
         return (
             <TouchableOpacity style ={{flex: 1}} onPress={() => (props.title == "Expense item" ? 
-                navigation.navigate('ItemInfo',{eid:props.item.eid, allowToEdit:false}) 
+                navigation.navigate('Item Information',{eid:props.item.eid, allowToEdit:false}) 
                 : 
                 console.log(props.item.name))  
             }>

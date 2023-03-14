@@ -48,7 +48,7 @@ export default function Profilepage({page, navigation}){
     
             <TouchableOpacity
                 style={Styles.btnprofile}
-                onPress={() => {navigation.navigate('ProfileInfo')}}
+                onPress={() => {navigation.navigate('Edit Profile')}}
             >
                 <Text style={Styles.text}>View User Profile</Text>
             </TouchableOpacity> 

@@ -37,7 +37,7 @@ export default function GroupCreate({ navigation }) {
             const groupId = await addGroup(GroupName, photoURL, GroupDesc);
             addEditGroupMember(groupId,user.uid,'accepted')
             console.log("Successfully created a group.")
-            navigation.navigate('AddingMember',{gid:groupId, gname:GroupName})
+            navigation.navigate('Add Member',{gid:groupId, gname:GroupName})
         }
     }
 
