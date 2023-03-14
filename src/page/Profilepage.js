@@ -45,7 +45,7 @@ export default function Profilepage({page, navigation}){
         <View style={{flex:1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F6EFEF'}}>
             <Image style={Styles.image_picker} source={userPicture}/>
             <Text style={Styles.sectionHeader}>{userName}</Text>
-    
+            
             <TouchableOpacity
                 style={Styles.btnprofile}
                 onPress={() => {navigation.navigate('Edit Profile')}}
@@ -54,9 +54,9 @@ export default function Profilepage({page, navigation}){
             </TouchableOpacity> 
             <TouchableOpacity
                 style={Styles.btnprofile}
-                // onPress={() => {navigation.navigate('PersonalNotificationPage')}}
+                onPress={() => {navigation.navigate('Notification')}}
             >
-                <Text style={Styles.text}>View notification</Text>
+                <Text style={Styles.text}>Notification</Text>
             </TouchableOpacity> 
             
              {/* /* <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Creditor List</Text>
