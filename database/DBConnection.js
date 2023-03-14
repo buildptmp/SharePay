@@ -77,6 +77,7 @@ export async function getPersonalDebtAndDebtorList(uid){
   let debtorList = [];    
   let creditorList = [];
   
+  let havedata = false;
   for(let g of groupList){
 
     const items = await getExpenseListByGroupMember(g.gid,uid);
@@ -107,33 +108,35 @@ export async function getPersonalDebtAndDebtorList(uid){
           }
         }
         // Debtor //
-        for(let debtor of item.debtor){
-          if(debtor.uid != uid){
+        else{
+          for(let debtor of item.debtor){
+            if(debtor.uid != uid){
 
-            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
-            if(index_d >= 0 ){
-              data_debtorList[index_d].totolPrice += debtor.calculatedprice
-            }else{
-              const _data ={
-                debtorName: debtor.name,
-                debtorid: debtor.uid,
-                totolPrice: Number(debtor.calculatedprice),
-                debtStatus: debtor.debtstatus
-              } 
-              // console.log("------",_data)
-              data_debtorList.push(_data);
+              const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
+              if(index_d >= 0 ){
+                data_debtorList[index_d].totolPrice += debtor.calculatedprice
+              }else{
+                const _data ={
+                  debtorName: debtor.name,
+                  debtorid: debtor.uid,
+                  totolPrice: Number(debtor.calculatedprice),
+                  debtStatus: debtor.debtstatus
+                } 
+                // console.log("------",_data)
+                data_debtorList.push(_data);
+              }
             }
-          }
-        } 
+          } 
+        }
       }
     }
 
-    if(data_debtorList.length>0) debtorList.push({title:g.name,data:data_debtorList})
-    if(data_creditorList.length>0) creditorList.push({title:g.name,data:data_creditorList})
+    if(data_debtorList.length>0) {debtorList.push({title:g.name,data:data_debtorList}); havedata = true}
+    if(data_creditorList.length>0) {creditorList.push({title:g.name,data:data_creditorList}); havedata = true}
   }
   // console.log("debtorList: ", debtorList)
   // console.log("creditorList: ", creditorList)
-  return [debtorList, creditorList]
+  return {debtor:debtorList, debt:creditorList, havedata:havedata}
 }
 
 /* Group management*/

@@ -14,11 +14,19 @@ export default function DebtView({page, navigation}){
     const [isLoading, setLoading] = useState(true);
 
     async function _showDebtAndDebtorList(uid){
-        const list = await getPersonalDebtAndDebtorList(uid);
-        setDebtorList(list[0]);
-        setDebtList(list[1]);
-        //console.log('Debtor: ', list[0][0].data)
+        const listof = await getPersonalDebtAndDebtorList(uid);
+
+        if(listof.havedata){
+            setDebtorList(listof.debtor);
+            setDebtList(listof.debt);
+        }
+        //console.log('Debtor: ', listof.debtor[0].data)
         //console.log('Debt: ', list[1][0].data)
+        if (listof.havedata) {
+            setLoading(false);
+        } else {
+            setLoading(true);
+        }
     }
     //console.log(debtorList[0].data)
 
@@ -27,11 +35,6 @@ export default function DebtView({page, navigation}){
         if (!uid) return;
         _showDebtAndDebtorList(uid)
 
-        if (debtList.length === 0 && debtorList.length === 0) {
-            setLoading(true)
-        } else {
-            setLoading(false)
-        }
     }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
 
     return(
@@ -129,10 +132,10 @@ function DebtorList({data}) {
                         <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,}} key={index}>{e.title}</Text>
                         { e.data && e.data.map((t) => {
                             return (
-                                <View style={Styles.box}>
+                                <View style={[Styles.box, {width:'100%'}]}>
                                 <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>
-                                <Text key={t.debtStatus} style={Styles.debttext2}>{t.debtStatus}</Text>
-                                <Text key={t.totolPrice} style={Styles.debttext3}>{t.totolPrice}</Text>
+                                <Text key={t.debtStatus} style={[Styles.debttext2, {textAlign:'center'}]}>{t.debtStatus}</Text>
+                                <Text key={t.totolPrice} style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>{t.totolPrice}</Text>
                                 </View>
                             )
                         })
