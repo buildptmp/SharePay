@@ -145,7 +145,7 @@ export default function GroupInfo({ route, navigation }) {
     RenderItem = (props) => {
         return (
             <TouchableOpacity style ={{flex: 1}} onPress={() => (props.title == "Expense item" ? 
-                navigation.navigate('Item Information',{eid:props.item.eid, allowToEdit:false}) 
+                navigation.navigate('Item Information',{eid:props.item.eid, allowToEdit:false, gid:gid,gname:gname}) 
                 : 
                 console.log(props.item.name))  
             }>

@@ -18,7 +18,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { async } from '@firebase/util';
 
 export default function ItemInfo({ route,navigation }) {
-    const {gid, eid, allowToEdit } = route.params;
+    const {gid, gname, eid, allowToEdit } = route.params;
     const [itemInfo, setItemInfo] = useState("");
 
     async function showItemInfo(){
@@ -35,7 +35,10 @@ export default function ItemInfo({ route,navigation }) {
         return(
             <View style={{}}>
                 <View style={{paddingTop:10}}>
-                    <Text style={Styles.sectionHeaderwithsub}>Name {itemInfo.name} </Text>
+                    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                        <Text style={Styles.sectionHeaderwithsub}>Name {itemInfo.name} </Text> 
+                        <Text style={Styles.sectionHeaderwithsub}>Group {gname} </Text>
+                    </View>
                     <Text style={Styles.sectionHeaderwithsub}>Price {itemInfo.price} </Text>
                     <Text style={Styles.sectionHeaderwithsub}>Method {itemInfo.method} </Text>
                 </View>
@@ -87,7 +90,7 @@ export default function ItemInfo({ route,navigation }) {
                 
                 <TouchableOpacity 
                     style={Styles.btnitif}
-                    onPress={()=>{navigation.navigate('Root')}}
+                    onPress={()=>{navigation.navigate('Group', {gid:gid})}}
                     >
                     <Text style={Styles.text}> Done </Text>
                 </TouchableOpacity>
