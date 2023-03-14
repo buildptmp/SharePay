@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image, SectionList, SafeAreaView} from 'react-native';
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
-import { getPersonalDebtAndDebtorList } from "../../database/DBConnection";
+import { getPersonalDebtAndDebtorListAllGroup } from "../../database/DBConnection";
 import { useNavigation } from '@react-navigation/native';
 import AddingSlip from "./AddingSlip";
 
@@ -14,7 +14,7 @@ export default function DebtView({page, navigation}){
     const [isLoading, setLoading] = useState(true);
 
     async function _showDebtAndDebtorList(uid){
-        const listof = await getPersonalDebtAndDebtorList(uid);
+        const listof = await getPersonalDebtAndDebtorListAllGroup(uid);
 
         if(listof.havedata){
             setDebtorList(listof.debtor);

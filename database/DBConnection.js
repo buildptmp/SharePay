@@ -71,33 +71,24 @@ export async function getUserFromUid(uid){
 
 // show Debt and Debtor list function
 
-export async function getPersonalDebtAndDebtorList(uid){
-  const groupList = await getGroupListByUid(uid);
+export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
+  const items = await getExpenseListByGroupMember(gid,uid);
 
-  let debtorList = [];    
-  let creditorList = [];
-  
-  let havedata = false;
-  for(let g of groupList){
+  let data_debtorList = [];    
+  let data_creditorList = [];
+  // console.log(items)
+  if(items.length >0){
+    for(let item of items){
+      
+      // Debt //
+      if(item.creditor.uid != uid) {
 
-    const items = await getExpenseListByGroupMember(g.gid,uid);
-
-    let data_debtorList = [];    
-    let data_creditorList = [];
-    // console.log(items)
-    if(items.length >0){
-      for(let item of items){
-        
-        // Debt //
-        if(item.creditor.uid != uid) {
-
-          const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
+        const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
+        const index = item.debtor.findIndex((obj => obj.uid == uid));
+        if(item.debtor[index].debtstatus == "owed"){
           if(index_c >=0){
-            const index = item.debtor.findIndex((obj => obj.uid == uid));
             data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
-    
           }else{
-            const index = item.debtor.findIndex((obj => obj.uid == uid));
             const _data ={
               creditorName: item.creditor.name,
               creditorid: item.creditor.uid,
@@ -107,32 +98,45 @@ export async function getPersonalDebtAndDebtorList(uid){
             data_creditorList.push(_data);
           }
         }
-        // Debtor //
-        else{
-          for(let debtor of item.debtor){
-            if(debtor.uid != uid){
+      }
+      // Debtor //
+      else{
+        for(let debtor of item.debtor){
+          if(debtor.uid != uid && debtor.debtstatus == "owed"){
 
-              const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
-              if(index_d >= 0 ){
-                data_debtorList[index_d].totolPrice += debtor.calculatedprice
-              }else{
-                const _data ={
-                  debtorName: debtor.name,
-                  debtorid: debtor.uid,
-                  totolPrice: Number(debtor.calculatedprice),
-                  debtStatus: debtor.debtstatus
-                } 
-                // console.log("------",_data)
-                data_debtorList.push(_data);
-              }
+            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
+            if(index_d >= 0 ){
+              data_debtorList[index_d].totolPrice += debtor.calculatedprice
+            }else{
+              const _data ={
+                debtorName: debtor.name,
+                debtorid: debtor.uid,
+                totolPrice: Number(debtor.calculatedprice),
+                debtStatus: debtor.debtstatus
+              } 
+              // console.log("------",_data)
+              data_debtorList.push(_data);
             }
-          } 
-        }
+          }
+        } 
       }
     }
+  }
+  return {debtor:data_debtorList, creditor:data_creditorList}
+}
+export async function getPersonalDebtAndDebtorListAllGroup(uid){
+  const groupList = await getGroupListByUid(uid);
 
-    if(data_debtorList.length>0) {debtorList.push({title:g.name,data:data_debtorList}); havedata = true}
-    if(data_creditorList.length>0) {creditorList.push({title:g.name,data:data_creditorList}); havedata = true}
+  let debtorList = [];    
+  let creditorList = [];
+  
+  let havedata = false;
+  for(let g of groupList){
+
+    const data = await getPersonalDebtAndDebtorListbyGid(g.gid,uid);
+
+    if(data.debtor.length>0) {debtorList.push({title:g.name,data:data.debtor}); havedata = true}
+    if(data.creditor.length>0) {creditorList.push({title:g.name,data:data.creditor}); havedata = true}
   }
   // console.log("debtorList: ", debtorList)
   // console.log("creditorList: ", creditorList)
@@ -209,31 +213,11 @@ export async function getGroupByGid(gid){
   }
 }
 export async function checkAllowToleave(uid, gid){ //A-edit
-  const ItemRef = collection(db, preText+'Items');
-  const DebtorRef = collection(db, preText+'Debtors');
-
-  const q1 = query(ItemRef,where("gid","==",gid),where("creditorid","==",uid));
-  const q2 = query(DebtorRef,where("gid","==",gid),where("debtorid","==",uid),where("debtstatus","==","owed"));
 
   try {
-    const creditorSnap = await getDocs(q1);
-    const debtorSnap = await getDocs(q2);
-    let itemids = [];
+    const data = await getPersonalDebtAndDebtorListbyGid(gid, uid);
 
-    if(!creditorSnap.empty){
-      creditorSnap.forEach(doc => {
-        itemids.push(doc.id);
-      })
-      for(id in itemids){
-        const q3 = query(DebtorRef,where("gid","==",gid),where("itemid","==",id),where("debtstatus","==","owed"));
-        const debtorSnap_2 = await getDocs(q3)
-        if(!debtorSnap_2.empty){
-          return {creditor:debtorSnap_2.empty, debtor:debtorSnap.empty}
-        }
-      }
-      return {creditor:true, debtor:debtorSnap.empty}
-    }
-    return {creditor:creditorSnap.empty, debtor:debtorSnap.empty}; // True if empty.
+    return {creditor:(data.creditor.length == 0), debtor:(data.debtor.length == 0)}; // True if empty.
 
   } catch (error){
     console.log(error);

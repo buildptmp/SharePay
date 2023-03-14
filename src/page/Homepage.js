@@ -1,40 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, TouchableOpacity, SectionList, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Image, Text, TouchableOpacity, SectionList, StyleSheet, SafeAreaView, RefreshControl  } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { Styles } from "../Styles"
 import { getGroupListByUid } from "../../database/DBConnection";
 import { ListItem } from "react-native-elements";
 
-export default function Homepage({page, navigation}){
+export default function Homepage({page, navigation, route}){
     const [curUser, setUser] = useState(null);
-    const [isReady, setReady] = useState(false);
-    const [groupList, setGroupList] = useState([{}]);
+    const [groupList, setGroupList] = useState("");
+    const [refreshing, setRefreshing] = useState(false);
 
     const RouteMapping = [
         { routeName: 'GroupInfo', displayText: 'Group Info'},
     ]
 
-    async function _showGroupList(){
-        let gList = await getGroupListByUid(auth().currentUser.uid);
+    async function _showGroupList(uid){
+        let gList = await getGroupListByUid(uid);
         setGroupList(gList)
+
     };
     
     useEffect(() => {
         auth().onAuthStateChanged((user) => {
             if (user) {
                 setUser(user);
-                setReady(true);
-                _showGroupList();
+                _showGroupList(user.uid);
+
             } else {
                 setUser(null);
-                setReady(false);
             }
         });
     }, [curUser])
 
+    const handleRefresh = React.useCallback(() => {
+        const uid = auth().currentUser.uid
+        setRefreshing(true);
+        setTimeout(async() => {
+            await _showGroupList(uid);
+            setRefreshing(false);
+        }, 2000);
+    }, []);
+
     return(
         <SafeAreaView style={Styles.list_container}>
             {groupList && <SectionList
+                style={{height:'100%'}}
                 sections={[
                     {title: 'Group', data: groupList},
                 ]}
@@ -60,6 +70,9 @@ export default function Homepage({page, navigation}){
                 renderSectionHeader={({section}) => (
                     <Text style={Styles.sectionHeader}>{section.title}</Text>
                 )}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                }
                 // ListFooterComponentStyle={{heigth:'100%',backgroundColor:'#F6EFEF'}}
             />}
         </SafeAreaView>

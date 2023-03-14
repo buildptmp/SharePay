@@ -101,7 +101,7 @@ export const Styles = StyleSheet.create({
     inputAddmem: {
         height: 40,
         width: '100%',
-        marginLeft: 10,
+        // marginLeft: 10,
         borderWidth: 1,
         borderRadius: 15,
         borderColor: '#B6B6B6',
