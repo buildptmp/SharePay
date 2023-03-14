@@ -246,11 +246,25 @@ export const Styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 
-    debttext: {
+    debttext1: {
         //textAlign: 'left',
         textAlignVertical: 'center',
         fontSize: 17,
+        width: '30%',
+    },
 
+    debttext2: {
+        //textAlign: 'left',
+        textAlignVertical: 'center',
+        fontSize: 17,
+        width: '20%',
+    },
+
+    debttext3: {
+        //textAlign: 'left',
+        textAlignVertical: 'center',
+        fontSize: 17,
+        width: '20%',
     },
 
     containerLogin: {

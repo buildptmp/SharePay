@@ -38,6 +38,7 @@ const RouteMapping = [
   { name: 'Add Slip' , page: AddingSlip },
   { name: 'Edit Profile', page: ProfileInfo },
   { name: 'Item Information' , page: ItemInfo },
+  { name: 'Notification' , page: Notification },
 ]
 
 const App = () => {

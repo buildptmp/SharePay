@@ -95,10 +95,10 @@ function DebtList({data, page}) {
                         { e.data && e.data.map((r) => {
                             return (
                                 <View style={Styles.box}>
-                                <Text key={r.creditorName} style={Styles.debttext}>{r.creditorName}</Text>
-                                <Text key={r.debtStatus} style={Styles.debttext}>{r.debtStatus}</Text>
+                                <Text key={r.creditorName} style={Styles.debttext1}>{r.creditorName}</Text>
+                                <Text key={r.debtStatus} style={Styles.debttext2}>{r.debtStatus}</Text>
                                 <Text key={r.calPrice}>{r.calPrice}</Text>
-                                <Text key={r.totolPrice} style={Styles.debttext}>{r.totolPrice}</Text> 
+                                <Text key={r.totolPrice} style={Styles.debttext3}>{r.totolPrice}</Text> 
                                 {RouteMapping.map((g) => {
                                     return(
                                 <TouchableOpacity 
@@ -130,9 +130,9 @@ function DebtorList({data}) {
                         { e.data && e.data.map((t) => {
                             return (
                                 <View style={Styles.box}>
-                                <Text key={t.debtorName} style={Styles.debttext}>{t.debtorName}</Text>
-                                <Text key={t.debtStatus} style={Styles.debttext}>{t.debtStatus}</Text>
-                                <Text key={t.totolPrice} style={Styles.debttext}>{t.totolPrice}</Text>
+                                <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>
+                                <Text key={t.debtStatus} style={Styles.debttext2}>{t.debtStatus}</Text>
+                                <Text key={t.totolPrice} style={Styles.debttext3}>{t.totolPrice}</Text>
                                 </View>
                             )
                         })
