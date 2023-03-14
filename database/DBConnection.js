@@ -92,25 +92,25 @@ export async function getPersonalDebtAndDebtorList(uid){
         if(item.creditor.uid != uid) {
 
           const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
-          if(index_c >=0){
-            const index = item.debtor.findIndex((obj => obj.uid == uid));
-            data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
-    
-          }else{
-            const index = item.debtor.findIndex((obj => obj.uid == uid));
-            const _data ={
-              creditorName: item.creditor.name,
-              creditorid: item.creditor.uid,
-              totolPrice: Number(item.debtor[index].calculatedprice),
-              debtStatus: item.debtor[index].debtstatus
-            };
-            data_creditorList.push(_data);
+          const index = item.debtor.findIndex((obj => obj.uid == uid));
+          if(item.debtor[index].debtstatus == "owed"){
+            if(index_c >=0){
+              data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
+            }else{
+              const _data ={
+                creditorName: item.creditor.name,
+                creditorid: item.creditor.uid,
+                totolPrice: Number(item.debtor[index].calculatedprice),
+                debtStatus: item.debtor[index].debtstatus
+              };
+              data_creditorList.push(_data);
+            }
           }
         }
         // Debtor //
         else{
           for(let debtor of item.debtor){
-            if(debtor.uid != uid){
+            if(debtor.uid != uid && debtor.debtstatus == "owed"){
 
               const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
               if(index_d >= 0 ){
