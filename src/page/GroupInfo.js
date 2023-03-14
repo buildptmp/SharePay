@@ -144,14 +144,14 @@ export default function GroupInfo({ route, navigation }) {
                     borderColor: '#7E828A',
                     flexDirection: 'row',
                     }}>
-                    <View style={{width: '80%',flexDirection: 'row',}}>
+                    <View style={{width: '60%',flexDirection: 'row',}}>
                         {props.title == "Expense item" ? <Text style={Styles.item}>{props.index + 1}</Text>:<Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>}    
                         <View style={{}}>
                             <Text style={Styles.item}>{props.item.name}</Text> 
                             {props.title == "Expense item" ? <Text style={Styles.itemDesc}>Creditor:  {props.item.creditor.name}</Text> : null }
                         </View>
                     </View>
-                    <View style={{width: '20%',justifyContent:'center'}}>
+                    <View style={{width: '40%',justifyContent:'center'}}>
                         {props.title == "Expense item" ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.price}</Text>:null}
                     </View>
                 </View>

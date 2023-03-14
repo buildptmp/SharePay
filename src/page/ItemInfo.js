@@ -60,13 +60,11 @@ export default function ItemInfo({ route,navigation }) {
                         <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>  
                         <Text style={Styles.item}>{props.item.name}</Text> 
                     </View>
-                    <View style={{width: '30%',flexDirection: 'row',/*justifyContent:'center'*/}}>
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:3}]}>{props.item.debtstatus}</Text>:null}
-                        {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null} */}
+                    <View style={{width: '20%'}}>
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'center'}]}>{props.item.debtstatus}</Text>:null}
                     </View>
-                    <View style={{width: '20%',flexDirection: 'row',/*justifyContent:'left'*/}}>
-                        {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end'}]}>{props.item.debtstatus}</Text>:null} */}
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:0}]}>{props.item.calculatedprice}</Text>:null}
+                    <View style={{width: '30%'}}>
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null}
                     </View>
                 </View>
             </TouchableOpacity>

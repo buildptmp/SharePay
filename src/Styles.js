@@ -343,7 +343,7 @@ export const Styles = StyleSheet.create({
     textInputHeader: {
         paddingTop: 2,
         paddingLeft: 10,
-        paddingRight: 10,
+        // paddingRight: 10,
         paddingBottom: 5,
         fontSize: 16,
         fontWeight: 'bold',
@@ -371,13 +371,16 @@ export const Styles = StyleSheet.create({
         paddingRight:10,
     },
 
-    itemInputCheckboxPrice: {
+    itemInputCheckboxContainer: {
         // flex:1,
-        width: '30%',
+        width: '45%',
         height: '80%',
+    },
+
+    itemInputCheckboxBorder:{
         backgroundColor: '#FFF',
         borderRadius: 20,
-        borderWidth: 1,
+        borderWidth: 1.5,
         borderColor: '#fabbbb',
     },
 
