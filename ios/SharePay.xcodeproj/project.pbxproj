@@ -14,6 +14,13 @@
 		5397572B33C501D7A2A9E82F /* Pods_SharePay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE238AE1DB171192821B7968 /* Pods_SharePay.framework */; };
 		5F5B86D597AB676EB192AAC5 /* Pods_SharePay_SharePayTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2E6B0BD3DC087D5726FC20F /* Pods_SharePay_SharePayTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A38DB8FF29B845F400F53C68 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A38DB8FE29B845F400F53C68 /* FirebaseAnalytics */; };
+		A38DB90129B845F400F53C68 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = A38DB90029B845F400F53C68 /* FirebaseAppCheck */; };
+		A38DB90329B845F400F53C68 /* FirebaseAppDistribution-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = A38DB90229B845F400F53C68 /* FirebaseAppDistribution-Beta */; };
+		A38DB90529B845F400F53C68 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A38DB90429B845F400F53C68 /* FirebaseAuth */; };
+		A38DB90729B845F400F53C68 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A38DB90629B845F400F53C68 /* FirebaseFirestore */; };
+		A38DB90929B845F400F53C68 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = A38DB90829B845F400F53C68 /* FirebaseFirestoreSwift */; };
+		A38DB90B29B845F400F53C68 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A38DB90A29B845F400F53C68 /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,7 +66,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A38DB8FF29B845F400F53C68 /* FirebaseAnalytics in Frameworks */,
+				A38DB90529B845F400F53C68 /* FirebaseAuth in Frameworks */,
+				A38DB90129B845F400F53C68 /* FirebaseAppCheck in Frameworks */,
+				A38DB90929B845F400F53C68 /* FirebaseFirestoreSwift in Frameworks */,
 				5397572B33C501D7A2A9E82F /* Pods_SharePay.framework in Frameworks */,
+				A38DB90B29B845F400F53C68 /* FirebaseStorage in Frameworks */,
+				A38DB90329B845F400F53C68 /* FirebaseAppDistribution-Beta in Frameworks */,
+				A38DB90729B845F400F53C68 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -191,6 +205,15 @@
 			dependencies = (
 			);
 			name = SharePay;
+			packageProductDependencies = (
+				A38DB8FE29B845F400F53C68 /* FirebaseAnalytics */,
+				A38DB90029B845F400F53C68 /* FirebaseAppCheck */,
+				A38DB90229B845F400F53C68 /* FirebaseAppDistribution-Beta */,
+				A38DB90429B845F400F53C68 /* FirebaseAuth */,
+				A38DB90629B845F400F53C68 /* FirebaseFirestore */,
+				A38DB90829B845F400F53C68 /* FirebaseFirestoreSwift */,
+				A38DB90A29B845F400F53C68 /* FirebaseStorage */,
+			);
 			productName = SharePay;
 			productReference = 13B07F961A680F5B00A75B9A /* SharePay.app */;
 			productType = "com.apple.product-type.application";
@@ -221,6 +244,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -711,6 +737,55 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A38DB8FE29B845F400F53C68 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		A38DB90029B845F400F53C68 /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		A38DB90229B845F400F53C68 /* FirebaseAppDistribution-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseAppDistribution-Beta";
+		};
+		A38DB90429B845F400F53C68 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		A38DB90629B845F400F53C68 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		A38DB90829B845F400F53C68 /* FirebaseFirestoreSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestoreSwift;
+		};
+		A38DB90A29B845F400F53C68 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A38DB8FD29B845F400F53C68 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
