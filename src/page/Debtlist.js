@@ -83,7 +83,7 @@ export default function DebtView({page, navigation}){
 function DebtList({data, page}) {
     const navigation = useNavigation();
     const RouteMapping = [
-        { routeName: 'AddingSlip', displayText: 'Add Slip'},
+        { routeName: 'Add Slip', displayText: 'Add Slip'},
     ]
     
     return (
