@@ -64,8 +64,12 @@ import { Button,
                 renderItem={({item})=>{
                     return (
                         <View style={Styles.list_container}>
+                            {/* <View>
+                                <Image></Image>
+                            </View> */}
                             <View>
-                                <Text> {item.Username} </Text>
+                                <Text> {item.Username} {item.NotiType} </Text>
+                                <Text> {item.Time} </Text>
                             </View>
             
                         </View>
