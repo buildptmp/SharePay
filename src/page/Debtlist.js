@@ -3,10 +3,12 @@ import { View, Text, Button, StyleSheet, TouchableOpacity, Image, SectionList, S
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
 import { getPersonalDebtAndDebtorList } from "../../database/DBConnection";
+import { useNavigation } from '@react-navigation/native';
+import AddingSlip from "./AddingSlip";
 
 export default function DebtView({page, navigation}){
-    const [debtorList, setDebtorList] = useState([{}]);
-    const [debtList, setDebtList] = useState([{}]);
+    const [debtorList, setDebtorList] = useState([]);
+    const [debtList, setDebtList] = useState([]);
     const [isDebtAcitve, setDebtAcitve] = useState(true);
     const [isDebtorAcitve, setDebtorAcitve] = useState(false);
     const [isLoading, setLoading] = useState(true);
@@ -78,7 +80,8 @@ export default function DebtView({page, navigation}){
     );
 };
 
-function DebtList({data}) {
+function DebtList({data, page}) {
+    const navigation = useNavigation();
     const RouteMapping = [
         { routeName: 'AddingSlip', displayText: 'Add Slip'},
     ]
@@ -88,22 +91,25 @@ function DebtList({data}) {
             {data.map((e, index) => {
                 return (
                     <>
-                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,}} key={index}>{e.title}</Text>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,fontSize:18, marginBottom:5,}} key={index}>{e.title}</Text>
                         { e.data && e.data.map((r) => {
                             return (
                                 <View style={Styles.box}>
-                                <Text key={r.creditorName}>{r.creditorName}</Text>
-                                <Text key={r.debtStatus}>{r.debtStatus}</Text>
+                                <Text key={r.creditorName} style={Styles.debttext}>{r.creditorName}</Text>
+                                <Text key={r.debtStatus} style={Styles.debttext}>{r.debtStatus}</Text>
                                 <Text key={r.calPrice}>{r.calPrice}</Text>
-
+                                <Text key={r.totolPrice} style={Styles.debttext}>{r.totolPrice}</Text> 
+                                {RouteMapping.map((g) => {
+                                    return(
                                 <TouchableOpacity 
-                                    key={e.routeName}
-                                    style={Styles.btnprofile}
-                                    onPress={() => navigation.navigate(e.routeName)}
+                                    key={g.routeName}
+                                    style={Styles.btnaddslip}
+                                    onPress={() => navigation.navigate(g.routeName)}
                                 >
-                                    <Text style={Styles.text}>{e.displayText}</Text>
+                                    <Text style={Styles.text}>{g.displayText}</Text>
                                 </TouchableOpacity>
-                                
+                                )
+                                })}
                                 </View>
                             )
                         })}
@@ -120,13 +126,13 @@ function DebtorList({data}) {
             {data.map((e, index) => {
                 return (
                     <>
-                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,}} key={index}>{e.title}</Text>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,}} key={index}>{e.title}</Text>
                         { e.data && e.data.map((t) => {
                             return (
-                                <View style={{flexDirection: 'row', justifyContent: 'space-between', marginLeft: 10, marginRight: 10,}}>
-                                <Text key={t.debtorName}>{t.debtorName}</Text>
-                                <Text key={t.debtStatus}>{t.debtStatus}</Text>
-                                <Text key={t.calPrice}>{t.calPrice}</Text>
+                                <View style={Styles.box}>
+                                <Text key={t.debtorName} style={Styles.debttext}>{t.debtorName}</Text>
+                                <Text key={t.debtStatus} style={Styles.debttext}>{t.debtStatus}</Text>
+                                <Text key={t.totolPrice} style={Styles.debttext}>{t.totolPrice}</Text>
                                 </View>
                             )
                         })

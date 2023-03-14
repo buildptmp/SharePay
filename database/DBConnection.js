@@ -18,7 +18,7 @@ import {
 const db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
 });
-
+const preText = "Test-";
 /* User management*/
 
 export function addUser(uid, phoneNum) {
@@ -27,7 +27,7 @@ export function addUser(uid, phoneNum) {
     bio: 'New User',
     phoneNum: phoneNum
   };
-  setDoc(doc(db, 'Test-Users', uid), _data).catch(err => {console.log(err.message)})
+  setDoc(doc(db, preText+'Users', uid), _data).catch(err => {console.log(err.message)})
 }
 export function updateUser(uid, name, image, bio="") {
   let _data = {
@@ -38,11 +38,11 @@ export function updateUser(uid, name, image, bio="") {
     _data.bio = bio
   }
   console.log(_data)
-  if(Object.keys(_data).length > 0){updateDoc(doc(db, 'Test-Users', uid), _data)
+  if(Object.keys(_data).length > 0){updateDoc(doc(db, preText+'Users', uid), _data)
   .catch(err => {console.log(err.message)})}
 }
 export async function getUserFromPhoneNum(phoneNum){
-  const colRef = collection(db,'Test-Users');
+  const colRef = collection(db,preText+'Users');
   const q = query(colRef,where("phoneNum","==","+66"+phoneNum.slice(1, 10)));
   
   try{
@@ -51,18 +51,14 @@ export async function getUserFromPhoneNum(phoneNum){
     docsSnap.forEach(doc => {
       member.push({ uid: doc.id, ...doc.data()})
     })
-
     return member;
-    
   } catch (error){
     console.log(error);
   }
-
   // console.log(member);
-  
 }
 export async function getUserFromUid(uid){
-  const docRef = doc(db,'Test-Users',uid);
+  const docRef = doc(db,preText+'Users',uid);
   
   try{
     const docsnap = await getDoc(docRef);
@@ -75,73 +71,6 @@ export async function getUserFromUid(uid){
 
 // show Debt and Debtor list function
 
-async function getDebtorsByItemId(itemid, gid){
-  const debtorcolRef = collection(db,'Test-Debtors');
-  const q = query(debtorcolRef,where("gid","==",gid),where("itemid","==",itemid));
-
-  try{
-    const debtorSnap = await getDocs(q);
-    let debtors = [];
-    debtorSnap.forEach( debtor => {
-      debtors.push({id:debtor.id, ...debtor.data()})
-    })
-    let debtorList = [];
-    for(let debtor of debtors){
-      const debtorInfo = await getDoc(doc(db,'Test-Users',debtor.debtorid))
-      debtorList.push({...debtor,...debtorInfo.data()})
-    }
-    // console.log("debtors: ", debtorList)
-    return debtorList
-  }catch(error){
-    console.log(error.message);
-  }
-}
-async function getItemsByCreditorId(uid, gid){
-  const itemcolRef = collection(db, 'Test-Items');
-  const q = query(itemcolRef, where("gid","==",gid),where("creditorid","==",uid));
-
-  try{ 
-    const itemsSnap = await getDocs(q);
-    let items = [];
-    itemsSnap.forEach( doc => {
-      items.push({ id: doc.id, ...doc.data()})
-    })
-
-    let itemList = [];
-    for(let item of items){
-      const debtors = await getDebtorsByItemId(item.id,gid)
-      const creditorInfo = await getDoc(doc(db,'Test-Users', item.creditorid))
-      itemList.push({...item,creditor:{...creditorInfo.data()},debtors:debtors})
-    }
-    // console.log("item: ", itemList)
-    return itemList;
-  } catch (error){
-    console.log(error);
-  }
-}
-async function getCreditorsByDebtorId(debtorid, gid){
-  const debtorcolRef = collection(db,'Test-Debtors');
-  const q = query(debtorcolRef,where("gid","==",gid),where("debtorid","==",debtorid));
-
-  try{
-    const debtorSnap = await getDocs(q);
-    let debtorList = [];
-    debtorSnap.forEach( debtor => {
-      if({...debtor.data()}.debtstatus == "owed"){
-        debtorList.push({id:debtor.id, ...debtor.data()})
-      }
-    })
-    let creditorList = [];
-    for(let debtor of debtorList){
-      const itemInfo = await getDoc(doc(db,'Test-Items',debtor.itemid))
-      const userInfo = await getDoc(doc(db, 'Test-Users', {...itemInfo.data()}.creditorid))
-      creditorList.push({debtor:{...debtor},...itemInfo.data(),creditor:{...userInfo.data()}})
-    }
-    return creditorList
-  }catch(error){
-    console.log(error.message);
-  }
-}
 export async function getPersonalDebtAndDebtorList(uid){
   const groupList = await getGroupListByUid(uid);
 
@@ -149,72 +78,58 @@ export async function getPersonalDebtAndDebtorList(uid){
   let creditorList = [];
   
   for(let g of groupList){
-    const debtorTemp = await getItemsByCreditorId(uid,g.gid);
-    const creditorTemp = await getCreditorsByDebtorId(uid,g.gid);
+
+    const items = await getExpenseListByGroupMember(g.gid,uid);
 
     let data_debtorList = [];    
     let data_creditorList = [];
+    // console.log(items)
+    if(items.length >0){
+      for(let item of items){
+        
+        // Debt //
+        if(item.creditor.uid != uid) {
 
-    // debtor list 
-    if(debtorTemp.length > 0){
-      const memberList = await getMemberListByGid(g.gid);
-
-      for(let member of memberList){
-        if(member.uid != uid){
-          
-          let data_debtor = {};
-          let calPrice = 0;
-
-          for(let item of debtorTemp){
-            for(let debtor of item.debtors){
-              if(member.uid == debtor.debtorid){
-                if(debtor.status != "Paid"){
-                  data_debtor.debtorName = debtor.name;
-                  data_debtor.debtorid = debtor.debtorid;
-                  calPrice += debtor.calculatedprice;
-                  data_debtor.debtStatus = debtor.debtstatus;
-                }
-                break;
-              }
-            }
-          }
-          if(data_debtor.debtorid){
-            data_debtor.calPrice = calPrice;
-            data_debtorList.push(data_debtor)
+          const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
+          if(index_c >=0){
+            const index = item.debtor.findIndex((obj => obj.uid == uid));
+            data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
+    
+          }else{
+            const index = item.debtor.findIndex((obj => obj.uid == uid));
+            const _data ={
+              creditorName: item.creditor.name,
+              creditorid: item.creditor.uid,
+              totolPrice: Number(item.debtor[index].calculatedprice),
+              debtStatus: item.debtor[index].debtstatus
+            };
+            data_creditorList.push(_data);
           }
         }
-      }
-      // console.log("data_debtorList: ", data_debtorList)
-      debtorList.push({title:g.name,data:data_debtorList})// debtor list
-    }
-    // debt list 
-    if(creditorTemp.length > 0){
-      const memberList = await getMemberListByGid(g.gid);
+        // Debtor //
+        for(let debtor of item.debtor){
+          if(debtor.uid != uid){
 
-      for(let member of memberList){
-        if(member.uid != uid){
-          let data_creditor = {};
-          let calPrice = 0;
-
-          for(let item of creditorTemp){
-            if(member.uid == item.creditorid){
-              if(item.debtor.status != "Paid"){
-                data_creditor.creditorName = item.creditor.name;
-                data_creditor.creditorid = item.creditorid;
-                calPrice += item.debtor.calculatedprice;
-                data_creditor.debtStatus = item.debtor.debtstatus;
-              }
+            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
+            if(index_d >= 0 ){
+              data_debtorList[index_d].totolPrice += debtor.calculatedprice
+            }else{
+              const _data ={
+                debtorName: debtor.name,
+                debtorid: debtor.uid,
+                totolPrice: Number(debtor.calculatedprice),
+                debtStatus: debtor.debtstatus
+              } 
+              // console.log("------",_data)
+              data_debtorList.push(_data);
             }
           }
-          if(data_creditor.creditorName){
-            data_creditor.calPrice = calPrice;
-            data_creditorList.push(data_creditor);
-          }
-        }
+        } 
       }
-      // console.log("data_creditorList: ", data_creditorList)
-      creditorList.push({title:g.name,data:data_creditorList})// creditor list
     }
+
+    if(data_debtorList.length>0) debtorList.push({title:g.name,data:data_debtorList})
+    if(data_creditorList.length>0) creditorList.push({title:g.name,data:data_creditorList})
   }
   // console.log("debtorList: ", debtorList)
   // console.log("creditorList: ", creditorList)
@@ -230,7 +145,7 @@ const invStatus = {
   cancelled: 'cancelled',
 }
 export async function addGroup(name, image, description="" ){
-  const colRef = collection(db, 'Test-Groups');
+  const colRef = collection(db, preText+'Groups');
   let _data={
     name: name, 
     image: image
@@ -247,7 +162,7 @@ export async function addGroup(name, image, description="" ){
   return groupid
 }
 export async function getGroupListByUid(uid){
-  const UserGroupRef = collection(db, 'Test-UserGroup');
+  const UserGroupRef = collection(db, preText+'UserGroup');
   const q = query(UserGroupRef,where("uid","==",uid), where("status","==", "accepted"));
   try {
     const docsSnap = await getDocs(q);
@@ -258,7 +173,7 @@ export async function getGroupListByUid(uid){
 
     let groupList = [];
     for(let gid of gidList){
-      let group = await getDoc(doc(db,'Test-Groups',gid)).catch(err => {console.log(err.message)})
+      let group = await getDoc(doc(db,preText+'Groups',gid)).catch(err => {console.log(err.message)})
       groupList.push({gid:group.id, ...group.data()})
     }
 
@@ -276,11 +191,11 @@ export function editGroup(gid, name, image, description="" ){
   if(description){
     _data.description = description;
   }
-  setDoc(doc(db, 'Test-Groups', gid), _data).catch(err => {console.log(err.message)})
+  setDoc(doc(db, preText+'Groups', gid), _data).catch(err => {console.log(err.message)})
 }
 export async function getGroupByGid(gid){
   try {
-    const groupInfo = await getDoc(doc(db,'Test-Groups', gid));
+    const groupInfo = await getDoc(doc(db,preText+'Groups', gid));
     if(groupInfo.exists()) {
     } else {
         console.log("Document does not exist")
@@ -290,9 +205,9 @@ export async function getGroupByGid(gid){
       console.log(error)
   }
 }
-export async function checkAllowToleave(uid, gid){
-  const ItemRef = collection(db, 'Test-Items');
-  const DebtorRef = collection(db, 'Test-Debtors');
+export async function checkAllowToleave(uid, gid){ //A-edit
+  const ItemRef = collection(db, preText+'Items');
+  const DebtorRef = collection(db, preText+'Debtors');
 
   const q1 = query(ItemRef,where("gid","==",gid),where("creditorid","==",uid));
   const q2 = query(DebtorRef,where("gid","==",gid),where("debtorid","==",uid),where("debtstatus","==","owed"));
@@ -325,15 +240,15 @@ export async function checkAllowToleave(uid, gid){
 /* User and Group */
 
 export function addEditGroupMember(gid,uid,status){
-  setDoc(doc(db,'Test-UserGroup','('+gid+','+uid+')'),{uid: uid,gid:gid, status: status}).catch(err => {console.log(err.message)})
+  setDoc(doc(db,preText+'UserGroup','('+gid+','+uid+')'),{uid: uid,gid:gid, status: status}).catch(err => {console.log(err.message)})
 }
 export async function isInGroup(gid,uid){
-  const check = await getDoc(doc(db,'Test-UserGroup','('+gid+','+uid+')')).catch(err => {console.log(err.message)})
+  const check = await getDoc(doc(db,preText+'UserGroup','('+gid+','+uid+')')).catch(err => {console.log(err.message)})
   // console.log({isInGroup:{...check.data()}.status == "accepted", status: {...check.data()}.status})
   return {isInGroup:({...check.data()}.status == "accepted"), status: {...check.data()}.status}
 }
 export async function getMemberListByGid(gid){
-  const UserGroupRef = collection(db, 'Test-UserGroup');
+  const UserGroupRef = collection(db, preText+'UserGroup');
   const q = query(UserGroupRef,where("gid","==",gid), where("status", "==", "accepted"));
 
   try {
@@ -346,7 +261,7 @@ export async function getMemberListByGid(gid){
 
       let memberList = [];
       for(let uid of uidList){
-        let member = await getDoc(doc(db,'Test-Users',uid)).catch(err => {console.log(err.message)})
+        let member = await getDoc(doc(db,preText+'Users',uid)).catch(err => {console.log(err.message)})
         memberList.push({uid:member.id, ...member.data()});
       }
       return memberList;
@@ -357,32 +272,32 @@ export async function getMemberListByGid(gid){
   }
 } 
 export async function deleteGroup(gid){
-  const ItemRef = collection(db,'Test-Items');
+  const ItemRef = collection(db,preText+'Items');
   const q1 = query(ItemRef, where("gid","==",gid));
-  const DebtorRef = collection(db,'Test-Debtors');
+  const DebtorRef = collection(db,preText+'Debtors');
   const q2 = query(DebtorRef, where("gid","==",gid));
-  const UserGroupRef = collection(db, 'Test-UserGroup');
+  const UserGroupRef = collection(db, preText+'UserGroup');
   const q3 = query(UserGroupRef,where("gid", "==", gid));
   
   try{
 
     const ItemSnap = await getDocs(q1);
     ItemSnap.forEach((res)=>{
-      // updateDoc(doc(db, 'Test-Items', doc.id), {status:'disabled'}).catch(err => {console.log(err.message)})
-      deleteDoc(doc(db,'Test-Items', res.id));
+      // updateDoc(doc(db, preText+'Items', doc.id), {status:'disabled'}).catch(err => {console.log(err.message)})
+      deleteDoc(doc(db,preText+'Items', res.id));
     })
 
     const DebtorSnap = await getDocs(q2);
     DebtorSnap.forEach((res)=>{
-      deleteDoc(doc(db,'Test-Debtors', res.id));
+      deleteDoc(doc(db,preText+'Debtors', res.id));
     })
 
     const UserGroupSnap = await getDocs(q3);
     UserGroupSnap.forEach(res=>{
-      deleteDoc(doc(db,'Test-UserGroup',res.id));
+      deleteDoc(doc(db,preText+'UserGroup',res.id));
     })
 
-    deleteDoc(doc(db,'Test-Groups', gid));
+    deleteDoc(doc(db,preText+'Groups', gid));
     console.log("The group ",gid," has been deleted.")
 
   } catch (error){
@@ -392,18 +307,20 @@ export async function deleteGroup(gid){
 
 /* Expense management*/ 
 
-export async function addExpense(name, price, creditorid, gid,description=""){
+export async function addExpense(name, price, creditorid, method, gid,description=""){
+  const creditorInfo = await getUserFromUid(creditorid)
   let _data = {
     name: name,
     price: price,
-    creditorid: creditorid,
+    creditor: creditorInfo, // an object
+    method: method,
     gid: gid
   }
   if(description){
     _data.description = description
   }
 
-  const itemid = await addDoc(collection(db,'Test-Items'),_data)
+  const itemid = await addDoc(collection(db,preText+'Items'),_data)
   .then(docRef => {
     console.log("The expense item id "+docRef.id+" has been added successfully");
     return docRef.id;
@@ -412,7 +329,7 @@ export async function addExpense(name, price, creditorid, gid,description=""){
   return itemid
 }
 export async function getExpenseListByGid(gid){
-  const ItemRef = collection(db,'Test-Items');
+  const ItemRef = collection(db,preText+'Items');
   const q = query(ItemRef,where("gid","==",gid));
 
   try {
@@ -421,39 +338,54 @@ export async function getExpenseListByGid(gid){
     docsnap.forEach( doc => {
       expenseList.push({eid:doc.id, ...doc.data()})
     })
-    
-    let expenseListandCreditorname = [];
-    for(expense of expenseList){
-      const creditorInfo = await getDoc(doc(db,'Test-Users', expense.creditorid))
-      expenseListandCreditorname.push({...expense, creditor:{...creditorInfo.data()}})
-    }
-    return expenseListandCreditorname;
-
+    // console.log(expenseList)
+    return expenseList
   } catch (error){
     console.log(error);
   }
 }
-export async function getExpenseInfo(gid, eid){
-  const itemDoc = await getDoc(doc(db,'Test-Items',eid));
+export async function getExpenseListByGroupMember(gid,uid){
+  const ItemRef = collection(db,preText+'Items');
+  const q = query(ItemRef,where("gid","==",gid));
+
+  try {
+    const docsnap = await getDocs(q);
+    let expenseList = [];
+    docsnap.forEach( doc => {
+      const cred = {...doc.data()}.creditor;
+      const debt = {...doc.data()}.debtor;
+      const index = debt.findIndex((obj => obj.uid == uid))
+      if(cred.uid == uid || index >= 0) expenseList.push({eid:doc.id, ...doc.data()})
+    })
+    console.log(expenseList)
+    return expenseList
+  } catch (error){
+    console.log(error);
+  }
+}
+export async function getExpenseInfo(eid){
+  const itemDoc = await getDoc(doc(db,preText+'Items',eid));
   let itemInfo = {
     eid: itemDoc.id,
     ...itemDoc.data()
   };
-
-  const creditorInfo = await getDoc(doc(db,'Test-Users',itemInfo.creditorid));
-  itemInfo.creditor = {...creditorInfo.data()};
-
-  const debtorInfo = await getDebtorsByItemId(eid,gid);
-  itemInfo.debtor = debtorInfo;
-  
+  // console.log('iteminfo: ', itemInfo)
   return itemInfo
 }
-export function editExpneseName(eid, newName){
-  const _data = {
-    name: newName
+export async function editExpenseAfterView(eid, name, price, creditorid, debtorList, gid, description="" ){
+  const creditorInfo = await getUserFromUid(creditorid)
+  let _data = {
+    name: name,
+    price: price,
+    creditor: creditorInfo, // an object
   }
-  updateDoc(doc(db, 'Test-Items', eid), _data).catch(err => {console.log(err.message)})
+  if(description){
+    _data.description = description
+  }
+  await pdateDoc(doc(db,preText+'Items',eid),_data)
+  .catch(error => {console.log(error)})
 }
+
 /* Debtor management*/
 
 const debtstatus_enum = {
@@ -463,39 +395,38 @@ const debtstatus_enum = {
   cancel: 'cancel'
 };
 export async function addDebtor(debtors, itemid, gid, creditorid, price, countSplitEquallyMember=0){
-  // debtors = [{uid:xx,isSplitEqully:true,percentage:10}]
+  // debtors = [{uid:xx,isSplitEqually:true,percentage:10}]
   let sortedDebtors = debtors.sort(
-    (d1, d2) => (d1.percentage < d2.percentage) ? 1 : (d1.price > d2.price) ? -1 : 0);
-  let priceRemainder = price;
+    (d1, d2) => (!d2.isSplitEqually) ? 1 : (!d1.isSplitEqually) ? -1 : 0);
+  let priceRemainder = Number(price);
   let debtoridList = [];
   
-  // console.log(sortedDebtors)
   for (debtor of sortedDebtors){
 
-    let calculatedprice = (debtor.isSplitEqully ? 0 : price*debtor.percentage/100);
+    // let calculatedprice = (debtor.isSplitEqually ? 0 : price*debtor.percentage/100);
+    let calculatedprice = (debtor.isSplitEqually ? 0 : Number(debtor.priceToPay));
     priceRemainder-=calculatedprice
 
-    if (debtor.isSplitEqully) calculatedprice = Math.round(((priceRemainder/countSplitEquallyMember)+Number.EPSILON)*100)/100
-    console.log(priceRemainder +" , "+ countSplitEquallyMember)
-    // let calculatedprice = (debtor.isSplitEqully ? Math.round(((priceRemainder/countSplitEquallyMember)+Number.EPSILON)*100)/100 : price*percentage/100);
+    if (debtor.isSplitEqually) calculatedprice = Math.round(((priceRemainder/countSplitEquallyMember)+Number.EPSILON)*100)/100
+    
+    // console.log(priceRemainder +" - "+ calculatedprice+ " = "+ priceRemainder-calculatedprice)
+    // let calculatedprice = (debtor.isSplitEqually ? Math.round(((priceRemainder/countSplitEquallyMember)+Number.EPSILON)*100)/100 : price*percentage/100);
     let debtstatus = (creditorid === debtor.uid ? debtstatus_enum.owner : debtstatus_enum.owed);
+    const debtorInfo = await getUserFromUid(debtor.uid)
     let _data = {
-      debtorid: debtor.uid,
-      gid: gid,
-      itemid: itemid,
+      ...debtorInfo,
       calculatedprice: calculatedprice,
       debtstatus: debtstatus
     };
-
-    let debtorid = await addDoc(collection(db,'Test-Debtors'),_data)
-    .then( docRef => {
-      console.log("The debtor id "+docRef.id+" has been added successfully")
-      return docRef.id
-    }).catch(err => {console.log(err.message)})
-
-    debtoridList.push(debtorid)
+    debtoridList.push(_data)
   }
 
-  return debtoridList
+  const debtorData = {
+    debtor: debtoridList
+  }
+  await updateDoc(doc(db,preText+'Items', itemid), debtorData).then(docRef => {
+    console.log(itemid,"has been updated the debtors");
+    // return itemid;
+  }).catch(err => {console.log(err.message); return false})
 }
   

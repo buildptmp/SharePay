@@ -18,21 +18,28 @@ import { Button,
     TouchableOpacity,
  } from "react-native";
 
- export default function GroupCreate({ navigation }) {
+ export default function Adding({ navigation }) {
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
+    const [pickerRes, setPickerRes] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2FAddMem.png?alt=media&token=713f3955-809a-47e6-9f4c-4e93ac53dcd9"});
     const RouteMapping = [
         { routeName: 'AddingMember', displayText: 'Add Member', }
     ]
+
+    async function chooseFile() {
+        const response = await imagePicker()
+        if (!response.didCancel){
+            setPickerRes(response)
+        }
+    };
 
     return(
         
         <View style={Styles.container}>
             <View style={[{flex:1}]} />
-            <Image 
-                style = {Styles.logoImg}
-                source={require('../assets/AddMem.png')} 
-            />
+            <TouchableOpacity onPress={chooseFile}>
+                <Image style = {Styles.image_picker} source={{uri: pickerRes.uri}}></Image>
+            </TouchableOpacity>
         
        
             <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>

@@ -18,7 +18,7 @@ export const Styles = StyleSheet.create({
         // justifyContent: 'center', 
         alignItems: 'center',
         backgroundColor: '#F6EFEF',
-        borderWidth: 1,
+        // borderWidth: 1,
         borderRadius: 20,
         marginTop: 10,
         marginBottom:10
@@ -143,6 +143,14 @@ export const Styles = StyleSheet.create({
         width: '100%',
     }, 
 
+    btnsavechn: {
+        backgroundColor: '#6EC7B1',
+        marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        width: '100%',
+    }, 
+
     btnlogout: {
         backgroundColor: '#E24B4B',
         marginBottom: 10,
@@ -192,6 +200,13 @@ export const Styles = StyleSheet.create({
         // marginTop: 20,
     },
 
+    btnaddslip: {
+        backgroundColor: '#F88C8C',
+        padding: 10,
+        borderRadius: 20,
+        width: '25%',
+    }, 
+
     btnslip: {
         backgroundColor: '#F88C8C',
         marginTop: 20,
@@ -229,6 +244,13 @@ export const Styles = StyleSheet.create({
         color: 'white',
         textTransform: 'uppercase',
         fontWeight: 'bold',
+    },
+
+    debttext: {
+        //textAlign: 'left',
+        textAlignVertical: 'center',
+        fontSize: 17,
+
     },
 
     containerLogin: {
@@ -304,6 +326,14 @@ export const Styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
     },
+    textInputHeader: {
+        paddingTop: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 5,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
     item: {
         padding: 10,
         fontSize: 18,
@@ -325,6 +355,16 @@ export const Styles = StyleSheet.create({
         marginBottom: 10,
         paddingLeft:10,
         paddingRight:10,
+    },
+
+    itemInputCheckboxPrice: {
+        // flex:1,
+        width: '30%',
+        height: '80%',
+        backgroundColor: '#FFF',
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#fabbbb',
     },
 
     shadowProp: {  
@@ -369,8 +409,6 @@ export const Styles = StyleSheet.create({
     box: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginLeft: 10,
-        marginRight: 10,
         borderBottomWidth:1,
         borderColor: '#B6B6B6',
         padding: 10,

@@ -11,9 +11,6 @@ export default function Profilepage({page, navigation}){
     const [userName, setUserName] = useState("");
     const [debtorList, setDebtorList] = useState([{}]);
     const [debtList, setDebtList] = useState([{}]);
-    const RouteMapping = [
-        { routeName: 'AddingSlip', displayText: 'Add Slip'},
-    ]
 
     async function _showDebtAndDebtorList(uid){
         const list = await getPersonalDebtAndDebtorList(uid);
@@ -48,17 +45,7 @@ export default function Profilepage({page, navigation}){
         <View style={{flex:1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#F6EFEF'}}>
             <Image style={Styles.image_picker} source={userPicture}/>
             <Text style={Styles.sectionHeader}>{userName}</Text>
-            {RouteMapping.map((e) => {
-                return (
-                    <TouchableOpacity 
-                        key={e.routeName}
-                        style={Styles.btnprofile}
-                        onPress={() => navigation.navigate(e.routeName)}
-                    >
-                        <Text style={Styles.text}>{e.displayText}</Text>
-                    </TouchableOpacity>
-                )
-            })}
+    
             <TouchableOpacity
                 style={Styles.btnprofile}
                 onPress={() => {navigation.navigate('ProfileInfo')}}

@@ -73,7 +73,7 @@ const textInputRefbio = useRef(null);
                         <Text style={Styles.text}>Change bio</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={_saveEdit} style = {Styles.btnprofileinfo}>
+                    <TouchableOpacity onPress={_saveEdit} style = {Styles.btnsavechn}>
                         <Text style={Styles.text}>Save changes</Text>
                     </TouchableOpacity>
                 </View>
