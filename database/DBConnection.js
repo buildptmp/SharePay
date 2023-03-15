@@ -76,27 +76,41 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
 
   let data_debtorList = [];    
   let data_creditorList = [];
+
   // console.log(items)
   if(items.length >0){
     for(let item of items){
       
       // Debt //
-      if(item.creditor.uid != uid) {
+      const index = item.debtor.findIndex((obj => obj.uid == uid));
+      if(item.creditor.uid != uid && item.debtor[index].debtstatus == "owed") {
 
         const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
-        const index = item.debtor.findIndex((obj => obj.uid == uid));
-        if(item.debtor[index].debtstatus == "owed"){
-          if(index_c >=0){
-            data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
-          }else{
-            const _data ={
-              creditorName: item.creditor.name,
-              creditorid: item.creditor.uid,
-              totolPrice: Number(item.debtor[index].calculatedprice),
+
+        if(index_c >=0){
+          data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
+          data_creditorList[index_c].detail.push({
+            eid: item.eid,
+            gid: gid,
+            itemName: item.name,
+            priceToPay: Number(item.debtor[index].calculatedprice),
+            debtStatus: item.debtor[index].debtstatus
+          })
+        }else{
+          const _data = {
+            creditorName: item.creditor.name,
+            creditorid: item.creditor.uid,
+            totolPrice: Number(item.debtor[index].calculatedprice),
+            debtStatus: item.debtor[index].debtstatus,
+            detail: [{
+              eid: item.eid,
+              gid: gid,
+              itemName: item.name,
+              priceToPay: Number(item.debtor[index].calculatedprice),
               debtStatus: item.debtor[index].debtstatus
-            };
-            data_creditorList.push(_data);
-          }
+            }]
+          };
+          data_creditorList.push(_data);
         }
       }
       // Debtor //
@@ -107,12 +121,26 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
             const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
             if(index_d >= 0 ){
               data_debtorList[index_d].totolPrice += debtor.calculatedprice
+              data_debtorList[index_d].detail.push({
+                eid: item.eid,
+                gid: gid,
+                itemName: item.name,
+                priceToPay: Number(debtor.calculatedprice),
+                debtStatus: debtor.debtstatus
+              })
             }else{
               const _data ={
                 debtorName: debtor.name,
                 debtorid: debtor.uid,
                 totolPrice: Number(debtor.calculatedprice),
-                debtStatus: debtor.debtstatus
+                debtStatus: debtor.debtstatus,
+                detail: [{
+                  eid: item.eid,
+                  gid: gid,
+                  itemName: item.name,
+                  priceToPay: Number(debtor.calculatedprice),
+                  debtStatus: debtor.debtstatus
+                }]
               } 
               // console.log("------",_data)
               data_debtorList.push(_data);
