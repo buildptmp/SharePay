@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList } from "react-native";
+import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
 
 export default function ExpenseDetail({ page, navigation, route}) {
@@ -15,9 +15,9 @@ export default function ExpenseDetail({ page, navigation, route}) {
                     {title: DebtorDebtor+" ("+DebtorDebtorName+")" , data: detail},
                 ]}
                 renderItem={({item}) => 
-                    <TouchableOpacity style ={{flex: 1}} onPress={() => 
-                        navigation.navigate('Item Information',{eid:item.eid, allowToEdit:false, gid:item.gid,gname:gname})
-                        }>
+                    <TouchableWithoutFeedback style ={{flex: 1}} 
+                    // onPress={() => {navigation.navigate('Item Information',{eid:item.eid, allowToEdit:false, gid:item.gid,gname:gname})}}
+                        >
                         <View style={Styles.box}>
                             {/* <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/> */}
                             
@@ -25,11 +25,15 @@ export default function ExpenseDetail({ page, navigation, route}) {
                             <Text style={[Styles.debttext2, {textAlign:'center'}]}>{item.debtStatus}</Text>
                             <Text style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>{item.priceToPay}</Text>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableWithoutFeedback>
                 }
                 keyExtractor={(item, index) => item + index}
                 renderSectionHeader={({section}) => (
-                    <Text style={Styles.sectionHeader}>{section.title}</Text>
+                    <View style={{justifyContent:'space-between', flexDirection:'row'}}>
+                        <Text style={Styles.sectionHeader}>{section.title}</Text>
+                        <Text style={Styles.sectionHeader}>{gname}</Text>
+                    </View>
+                    
                 )}
             />}
         </SafeAreaView>

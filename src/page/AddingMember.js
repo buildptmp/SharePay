@@ -106,7 +106,7 @@ import { Button,
             }
             <TouchableOpacity 
                     style={[Styles.btnitif, {marginTop:10}]}
-                    onPress={()=>{navigation.navigate('Group', {gid:gid})}}
+                    onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
                     >
                     <Text style={Styles.text}> Done </Text>
                 </TouchableOpacity>

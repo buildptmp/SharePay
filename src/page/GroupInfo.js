@@ -16,7 +16,7 @@ import { Button,
 import auth from '@react-native-firebase/auth';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
-import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember } from '../../database/DBConnection'
+import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember, isInGroup } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
 import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
@@ -56,10 +56,19 @@ export default function GroupInfo({ route, navigation }) {
         })  
     };
     
+    async function isinGroup(){
+        const allowtostay =  await isInGroup(gid,uid);
+        if(allowtostay.isInGroup){
+            _showGroupInfo();
+            _showMemberList();
+            _showExpenseList();
+        }
+        else{
+            alert("The system detect that you are not a member in the group. Your status is "+allowtostay.status+". \n\nPlease go back to the homepage and do pull to refresh.")
+        }
+    }
     useEffect(() => {
-        _showGroupInfo();
-        _showMemberList();
-        _showExpenseList();
+        isinGroup();        
     },[]);
 
     const handleRefresh = React.useCallback(() => {
@@ -260,9 +269,9 @@ export default function GroupInfo({ route, navigation }) {
                     <RenderItem item={item} title={section.title} index={index}/>
                 }
                 keyExtractor={(item, index) => item + index}
-                // ListEmptyComponent={()=>{
+                // ListEmptyComponent={
                 //     <Text>There is no member in this group.</Text>
-                // }}
+                // }
                 renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
                 ListFooterComponent={ () => <RenderFooter />}
                 ListFooterComponentStyle={{paddingTop:20}}

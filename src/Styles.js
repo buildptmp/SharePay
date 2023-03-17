@@ -183,6 +183,15 @@ export const Styles = StyleSheet.create({
         marginHorizontal:'20%'
     },
 
+    btnpopup: {
+        backgroundColor: '#F88C8C',
+        // marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        // marginTop: 10,
+        // marginHorizontal:'20%'
+    },
+
     btnitif: {
         backgroundColor: '#F88C8C',
         marginBottom: 10,
@@ -432,7 +441,26 @@ export const Styles = StyleSheet.create({
         backgroundColor: 'white',
     },
 
-
-
-
+    //pop up confirming adding expense model view
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
 });

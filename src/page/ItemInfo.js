@@ -55,9 +55,7 @@ export default function ItemInfo({ route,navigation }) {
 
     RenderItem = (props) => {
         return (
-            <TouchableOpacity style ={{flex: 1}} onPress={() => {}
-                // navigation.navigate('Item Information',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
-            }>
+            <TouchableOpacity style ={{flex: 1}} onPress={() => {}}>
                 <View style={Styles.Iteminfo}>
                     <View style={{width: '50%',flexDirection: 'row',}}>
                         <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>  
@@ -81,7 +79,7 @@ export default function ItemInfo({ route,navigation }) {
                     allowToEdit && 
                     <TouchableOpacity 
                         style={Styles.btnitif}
-                        onPress={()=>{navigation.navigate('Create Expense', {itemInfo:itemInfo, isUpdate:true, gid:gid})}}
+                        onPress={()=>{navigation.navigate('Create Expense', {itemInfo:itemInfo, isUpdate:true, gid:gid, gname:gname})}}
                         // onPress={()=>{alert("Implementing")}}
                         >
                         <Text style={Styles.text}> Edit item </Text>
@@ -90,7 +88,7 @@ export default function ItemInfo({ route,navigation }) {
                 
                 <TouchableOpacity 
                     style={Styles.btnitif}
-                    onPress={()=>{navigation.navigate('Group', {gid:gid})}}
+                    onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
                     >
                     <Text style={Styles.text}> Done </Text>
                 </TouchableOpacity>

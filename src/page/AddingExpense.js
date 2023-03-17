@@ -11,7 +11,9 @@ import {
     TouchableOpacity,
     ScrollView,
     TouchableWithoutFeedback,
-    Modal
+    Modal,
+    Button,
+    Pressable
  } from "react-native";
 import SectionList from 'react-native/Libraries/Lists/SectionList';
 import SelectDropdown from 'react-native-select-dropdown'
@@ -42,6 +44,10 @@ export default function AddingExpense({ route, navigation }) {
         const mList = await getMemberListByGid(gid);
         setMemberList(mList);
     }
+
+    const [modalVisible, setModalVisible] = useState(false);
+    const [isaccept, setIsAccept] = useState(false);
+
     useEffect(() => {
         seeMember()
         // console.log(itemInfo)
@@ -60,42 +66,99 @@ export default function AddingExpense({ route, navigation }) {
         }
     },[itemInfo])
 
-    async function _addExpense(){
+    async function _addExpense(isaccepted){
         const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
         const check = checkCompleteForm(ItemName,ItemPrice,Creditor.uid,methodName, Debtor)
         if(check){
-            const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
-            if(total.percent == 100 || countSplitEquallyMember>=1){
-                const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid, methodName,gid);
-                await addDebtor(Debtor,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember);
-                
-                alert("Successfully added.")
-                navigation.navigate('Item Information',{eid:itemid, allowToEdit:true, gid:gid})
-            }
-            else{
-                alert("Warn! The total price is "+ total.price+" (THB). \nadd more "+ (Number(ItemPrice)-total.price) +" (THB) or select more debtor without insert a number to set them in the Splitting equally for the rest.")
+            if(isaccepted){
+                const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
+                if(total.percent == 100 || countSplitEquallyMember>=1){
+                    const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid, methodName,gid);
+                    await addDebtor(Debtor,itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember);
+                    
+                    alert("Successfully added.")
+                    navigation.navigate('Item Information',{eid:itemid, allowToEdit:true, gid:gid, gname:gname})
+                }
+                else{
+                    alert("Warn! The total price is "+ total.price+" (THB). \nadd more "+ (Number(ItemPrice)-total.price) +" (THB) or select more debtor without insert a number to set them in the Splitting equally for the rest.")
+                }
+            } else{
+                setModalVisible(true)
             }
         }
     }
     
-    async function _updateExpense(){
-        console.log(Creditor.name);
+    async function _updateExpense(isaccepted){
         const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
         const check = checkCompleteForm(ItemName,ItemPrice,Creditor.uid,methodName, Debtor)
         if(check){
-            const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
-            if(total.percent == 100 || countSplitEquallyMember>=1){
-                await editExpenseAfterView(Itemid, ItemName,ItemPrice,Creditor.uid,Debtor,gid);
-                await addDebtor(Debtor,Itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
+            if(isaccepted){
+                const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
+                if(total.percent == 100 || countSplitEquallyMember>=1){
+                    await editExpenseAfterView(Itemid, ItemName,ItemPrice,Creditor.uid,Debtor,gid);
+                    await addDebtor(Debtor,Itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
 
-                alert("Successfully update.") 
-                navigation.navigate('Item Information',{eid:Itemid, allowToEdit:true, gid:gid})
-            }
-            else{
-                alert("Warn! The total price is "+ total.price+" (THB). \nadd more "+ (Number(ItemPrice)-total.price) +"(THB) or select more debtor without insert a number to set them in the Splitting equally for the rest.")
+                    alert("Successfully update.") 
+                    navigation.navigate('Item Information',{eid:Itemid, allowToEdit:true, gid:gid, gname:gname})
+                }
+                else{
+                    alert("Warn! The total price is "+ total.price+" (THB). \nadd more "+ (Number(ItemPrice)-total.price) +"(THB) or select more debtor without insert a number to set them in the Splitting equally for the rest.")
+                }
+            } else{
+                setModalVisible(true)
             }
         }
     }
+
+    const Popup = (props) => {
+        
+        const isaddexpense = props.funcbut
+        return(
+        <Modal
+            animationType='slide'
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={()=>{
+                setModalVisible(false);
+            }}
+        >
+            <View style={Styles.centeredView}>
+                <View style={Styles.modalView}>
+                    <Text style={{textAlign:'center'}}>A decimal number that has more than two decimal point will be rounded up.</Text>
+                    <Text>This would benefit to creditor.</Text>
+                    <View style={{justifyContent:'center', margin:10}}>
+                        <View style={{flexDirection:'row', justifyContent:'space-evenly', width:'80%'}}>
+                        <TouchableOpacity 
+                            style={Styles.btnpopup}
+                            onPress={()=>{
+                                // console.log(isaccept);
+                                setIsAccept(true);
+                                setModalVisible(false);
+                                (isaddexpense ? _addExpense(true): _updateExpense(true))
+                            }} 
+                            
+                        >
+                            <Text style={Styles.text}>accept</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={Styles.btnpopup}
+                            onPress={()=>{
+                                setIsAccept(false);
+                                // console.log(isaccept);
+                                setModalVisible(false);
+                            }} 
+                        >
+                            <Text style={Styles.text}>decline</Text>
+                        </TouchableOpacity>
+                        </View>    
+                    </View>
+                    <Text>Please select accept to continue.</Text>
+                </View>
+
+            </View>
+        </Modal>
+    )}
+    
 
     const SetItemInfo = (
         <View>
@@ -335,7 +398,7 @@ export default function AddingExpense({ route, navigation }) {
                                 placeholder={String(setprice)}
                                 onChangeText={(text) => {setCheckboxPrice(text)}}
                                 onEndEditing={(e)=> {
-                                    const roundedValue = parseFloat((price? price:0)).toFixed(2); 
+                                    const roundedValue = roundup2decimalpoint(price); 
                                     const update = crudOfDebtor(checker,data.uid,roundedValue,(setpercent == "<1"|| setpercent == "..."? 0:setpercent)).price
                                     setCheckboxPrice(String(update));
                                 }}
@@ -380,22 +443,29 @@ export default function AddingExpense({ route, navigation }) {
 
     ListFooter = (props) => {
         return(
-            <View>            
+            <View>  
+                <TouchableOpacity style={{flexDirection:'row', margin:10,}} onPress={()=>{
+                        setIsAccept(!isaccept)
+                    }}>
+                    <Fontisto name={(isaccept ? 'checkbox-active':'checkbox-passive')} size={16} style={{margin:2, marginLeft:10, marginRight:5}}></Fontisto>
+                    <Text>Accept the rounded up two decimal point.</Text>
+                </TouchableOpacity>    
+                    
             {
                 isUpdate ? 
-                <TouchableOpacity 
+                <Pressable 
                     style={Styles.btnaddex}
-                    onPress= {_updateExpense} 
+                    onPress= {()=>_updateExpense(isaccept)}
                 >
-                    <Text style={Styles.text}> update Expense</Text>
-                </TouchableOpacity> 
+                    <Text style={Styles.text}>update Expense</Text>
+                </Pressable> 
                 :
-                <TouchableOpacity 
+                <Pressable 
                     style={Styles.btnaddex}
-                    onPress= {_addExpense} 
+                    onPress= {()=> _addExpense(isaccept)} 
                 >
-                    <Text style={Styles.text}> Add Expense</Text>
-                </TouchableOpacity>
+                    <Text style={Styles.text}>Add Expense</Text>
+                </Pressable>
             }
             </View>
         ) 
@@ -406,7 +476,9 @@ export default function AddingExpense({ route, navigation }) {
 
     return(
         <View style={[Styles.containeraddex,Styles.shadowProp]}>
-            <SafeAreaView style={Styles.list_container}><SectionList
+            <SafeAreaView style={Styles.list_container}>
+                <Popup funcbut={isUpdate ? false:true} />
+                <SectionList
                 sections={[
                     {title: 'Select the debtor', data: memberList},
                 ]}
@@ -441,4 +513,9 @@ function checkCompleteForm(itemname, itemprice, creditorid, splitmethod, debtor)
         return false;
     }
     return true;
+}
+function roundup2decimalpoint(num){
+    const numb = Number((num? num:0));
+    const roundedValue = Math.ceil(numb*100)/100
+    return roundedValue;
 }
