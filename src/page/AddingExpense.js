@@ -180,9 +180,9 @@ export default function AddingExpense({ route, navigation }) {
                 placeholder={"Insert Price"}
                 onChangeText={(text) => setItemPrice(text)}
                 onEndEditing={()=> {
-                    const roundedValue = parseFloat((ItemPrice? ItemPrice: 0)).toFixed(2)
+                    const roundedValue = roundup2decimalpoint(ItemPrice)
                     // console.log(roundedValue)
-                    setItemPrice(roundedValue)
+                    setItemPrice(String(roundedValue))
                 }}
                 />
             </View>
@@ -423,7 +423,7 @@ export default function AddingExpense({ route, navigation }) {
                                 //     console.log("percentage",percentage)
                                 }}
                                 onEndEditing={(e)=> {
-                                    const roundedValue = parseFloat((percentage? percentage:0)).toFixed(0); 
+                                    const roundedValue = roundupint(percentage);
                                     const update = crudOfDebtor(checker,data.uid,(setprice == "<1" || setprice == "..."? 0:setprice),roundedValue).percent
                                     setPercentage(String(update));
                                 }}
@@ -441,16 +441,15 @@ export default function AddingExpense({ route, navigation }) {
         );
     }
 
-    ListFooter = (props) => {
-        return(
-            <View>  
-                <TouchableOpacity style={{flexDirection:'row', margin:10,}} onPress={()=>{
-                        setIsAccept(!isaccept)
-                    }}>
-                    <Fontisto name={(isaccept ? 'checkbox-active':'checkbox-passive')} size={16} style={{margin:2, marginLeft:10, marginRight:5}}></Fontisto>
-                    <Text>Accept the rounded up two decimal point.</Text>
-                </TouchableOpacity>    
-                    
+    const ListFooter = (
+        <View>  
+            <TouchableOpacity style={{flexDirection:'row', margin:10,}} onPress={()=>{
+                    setIsAccept(!isaccept)
+                }}>
+                <Fontisto name={(isaccept ? 'checkbox-active':'checkbox-passive')} size={16} style={{margin:2, marginLeft:10, marginRight:5}}></Fontisto>
+                <Text>Accept the rounded up two decimal point.</Text>
+            </TouchableOpacity>    
+                
             {
                 isUpdate ? 
                 <Pressable 
@@ -466,10 +465,10 @@ export default function AddingExpense({ route, navigation }) {
                 >
                     <Text style={Styles.text}>Add Expense</Text>
                 </Pressable>
-            }
-            </View>
-        ) 
-    }
+            }   
+        </View>
+    ) 
+    
     const memoizedRenderItem = useMemo(() =>{
         return Checkbox;
     },[Checkbox,isSplitEqually, ItemPrice, Debtor])
@@ -517,5 +516,10 @@ function checkCompleteForm(itemname, itemprice, creditorid, splitmethod, debtor)
 function roundup2decimalpoint(num){
     const numb = Number((num? num:0));
     const roundedValue = Math.ceil(numb*100)/100
+    return roundedValue;
+}
+function roundupint(num){
+    const numb = Number((num? num:0));
+    const roundedValue = Math.ceil(numb)
     return roundedValue;
 }

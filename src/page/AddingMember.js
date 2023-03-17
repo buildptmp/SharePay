@@ -14,15 +14,21 @@ import { Button,
  } from "react-native";
  import auth from '@react-native-firebase/auth';
  import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
- import { getUserFromPhoneNum, addEditGroupMember, isInGroup} from "../../database/DBConnection";
+ import { getUserFromPhoneNum, getUserFromUid, addEditGroupMember, isInGroup, sendGroupInv} from "../../database/DBConnection";
 
  export default function AddingMember({ route, navigation }) {
     const { gid , gname} = route.params
+    const [currentUser, setCurrentUser] = useState("");
+    const uid = auth().currentUser?.uid;
     const [PhoneNum, setPhoneNum] = useState("");
-    const [member, setMember] = useState({});
+    const [member, setMember] = useState("");
     const [showUser, setshowUser] = useState(false);
     const [isNotNewuser, setIsNotNewuser] = useState(false);
     
+    async function setCurrUser(){
+        const u = await getUserFromUid(uid)
+        setCurrentUser(u);
+    }
     async function checkMember(){
         const m = await getUserFromPhoneNum(PhoneNum)
         if(m.length != 0){
@@ -34,14 +40,17 @@ import { Button,
         else{
             setIsNotNewuser(false)
         }
-}
+    }
     // console.log(gid)
     useEffect(() =>{
+        if(!currentUser){
+            setCurrUser();
+        }
         // console.log(PhoneNum)
         if(PhoneNum.length == 10){
-            checkMember()
+            checkMember();
         }
-    },[PhoneNum])
+    },[currentUser,PhoneNum])
 
     async function _addMember(){
         if(Object.keys(member).length > 0){
@@ -50,9 +59,11 @@ import { Button,
                 check.status == 'accepted' ? alert('This user is already in the group '+ gname) : alert('Invitation status is ' + check.status)
             }
             else{
-                console.log("not in group")
-                addEditGroupMember(gid,member.uid,'pending')
-                alert("Invitaion has been sent to "+member.name)
+                // console.log("not in group")
+                await sendGroupInv(currentUser, member, true, gid, gname).then(()=>{
+                    addEditGroupMember(gid,member.uid,'pending');
+                    alert("Invitaion has been sent to "+member.name);
+                })   
             }
         }
         else{
