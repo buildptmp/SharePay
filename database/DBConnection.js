@@ -467,8 +467,8 @@ export async function getAllNoti(uid){
 }
 
 export async function sendGroupInv(from, to, needreaction, gid, gname){
-  const notiType = await getDoc(doc(db,'Notification-props', 'groupinv')) 
-  const notiRef = collection(db, 'Notification-records')
+  const notiType = await getDoc(doc(db,'Notification-props', 'groupinv')); 
+  const notiRef = collection(db, 'Notification-records');
 
   // const gname = gname;
   const uname = from.name;
@@ -486,8 +486,9 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
     needreaction: needreaction,
     notification: notification,
   }
-  
-  (notification.type=='groupinv'? _data.UserGroup=db.doc(preText+'UserGroup/(' + gid+','+to.uid+')') :null)
+  // console.log(`${preText}UserGroup`,`(${gid},${to.uid})`);
+//  doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`)
+  (notification.type=='groupinv'? _data.UserGroup=doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`) :null);
   await addDoc(notiRef, _data).catch(error => {console.log(error)})
 }
 

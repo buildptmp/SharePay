@@ -24,6 +24,7 @@ import { Button,
     const [member, setMember] = useState("");
     const [showUser, setshowUser] = useState(false);
     const [isNotNewuser, setIsNotNewuser] = useState(false);
+    const [checkInGroup, setcheckInGroup] = useState("");
     
     async function setCurrUser(){
         const u = await getUserFromUid(uid)
@@ -36,6 +37,9 @@ import { Button,
             setMember(memberInfo)
             setshowUser(true)
             setIsNotNewuser(true)
+
+            const check = await isInGroup(gid,memberInfo.uid)
+            setcheckInGroup(check);
         }
         else{
             setIsNotNewuser(false)
@@ -54,29 +58,29 @@ import { Button,
 
     async function _addMember(){
         if(Object.keys(member).length > 0){
-            const check = await isInGroup(gid,member.uid)
-            if(check.isInGroup || check.status !=  undefined){
-                check.status == 'accepted' ? alert('This user is already in the group '+ gname) : alert('Invitation status is ' + check.status)
+            // const check = await isInGroup(gid,member.uid)
+            if(checkInGroup.isInGroup || checkInGroup.status !=  undefined){
+                checkInGroup.status == 'accepted' ? alert('This user is already in the group '+ gname+".") : alert('Invitation status is ' + check.status+".")
             }
             else{
                 // console.log("not in group")
-                await sendGroupInv(currentUser, member, true, gid, gname).then(()=>{
-                    addEditGroupMember(gid,member.uid,'pending');
-                    alert("Invitaion has been sent to "+member.name);
+                await sendGroupInv(currentUser, member, true, gid, gname).then(async()=>{
+                    await addEditGroupMember(gid,member.uid,'pending.');
+                    alert("Invitaion has been sent to "+member.name+".");
                 })   
             }
         }
         else{
-            alert('Can not find an account with phone number '+ PhoneNum)
+            alert('Can not find an account with phone number '+ PhoneNum+".")
         }
     }
 
     return(
         <SafeAreaView style={{flex: 1}}>
             <View style={Styles.containerAddmem}>
-            <View style={{marginHorizontal:10}}>
+            <View style={{marginHorizontal:30}}>
                 <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
-                <View style={{flexDirection: 'row', width: '80%'}}>
+                <View style={{flexDirection: 'row', width: '80%', marginLeft:10}}>
                 <TextInput
                     style={Styles.inputAddmem}
                     value={PhoneNum}
@@ -84,7 +88,7 @@ import { Button,
                     onChangeText={(text) => setPhoneNum(text)}
                     autoCapitalize={"none"}
                 />
-                <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginLeft:10}} onPress={
+                <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:8}} onPress={
                     _addMember}>
                 <FontAwesome
                     name="plus"
@@ -94,6 +98,21 @@ import { Button,
                     onPress={_addMember}
                     />
                 </TouchableOpacity>
+                {
+                    !checkInGroup.isInGroup && checkInGroup.status !=  undefined &&
+                    <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:10}} onPress={
+                        _addMember}>
+                    <FontAwesome
+                        name="minus"
+                        color="white"
+                        size={18}
+                        style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
+                        // onPress={_removeInv}
+                    />
+                    </TouchableOpacity>
+                }
+                
+                {/* </TouchableOpacity> */}
                 </View> 
             </View> 
             {showUser &&
@@ -116,11 +135,11 @@ import { Button,
                 </View>
             }
             <TouchableOpacity 
-                    style={[Styles.btnitif, {marginTop:10}]}
-                    onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
-                    >
-                    <Text style={Styles.text}> Done </Text>
-                </TouchableOpacity>
+                style={[Styles.btnitif, {marginTop:10}]}
+                onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
+                >
+                <Text style={Styles.text}> Done </Text>
+            </TouchableOpacity>
             {/* <View style={[{ width: '120%', paddingHorizontal: 100}]}>
                 <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
                 <TextInput
