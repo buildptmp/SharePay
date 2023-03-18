@@ -4,9 +4,7 @@ import { Styles } from "../Styles"
 
 export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtorDebtor, gname, DebtorDebtorName} = route.params;
-
-
-
+    
     return(
         <SafeAreaView style={Styles.list_container}>
             {detail && <SectionList

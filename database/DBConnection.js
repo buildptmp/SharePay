@@ -11,7 +11,8 @@ import {
   updateDoc,
   query,
   where,
-  deleteDoc
+  deleteDoc,
+  Timestamp
 } from "firebase/firestore"
 
 // const db = getFirestore(app);
@@ -254,8 +255,8 @@ export async function checkAllowToleave(uid, gid){ //A-edit
 
 /* User and Group */
 
-export function addEditGroupMember(gid,uid,status){
-  setDoc(doc(db,preText+'UserGroup','('+gid+','+uid+')'),{uid: uid,gid:gid, status: status}).catch(err => {console.log(err.message)})
+export async function addEditGroupMember(gid,uid,status){
+  await setDoc(doc(db,preText+'UserGroup','('+gid+','+uid+')'),{uid: uid,gid:gid, status: status}).catch(err => {console.log(err.message)})
 }
 export async function isInGroup(gid,uid){
   const check = await getDoc(doc(db,preText+'UserGroup','('+gid+','+uid+')')).catch(err => {console.log(err.message)})
@@ -445,3 +446,57 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
   }).catch(err => {console.log(err.message); return false})
 }
   
+/* Notification */ 
+
+export async function getAllNoti(uid){
+  const notiRef = collection(db, 'Notification-records');
+
+  let notiList = [];
+  try {
+    const docsnap = await getDocs(notiRef);
+    docsnap.forEach(doc=>{
+      notiList.push({nid:doc.id, ...doc.data()});
+    })
+    // sort newest first
+  return notiList;
+    
+  } catch (error){
+    console.log(error);
+  }
+
+}
+
+export async function sendGroupInv(from, to, needreaction, gid, gname){
+  const notiType = await getDoc(doc(db,'Notification-props', 'groupinv')); 
+  const notiRef = collection(db, 'Notification-records');
+
+  // const gname = gname;
+  const uname = from.name;
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{uname}', uname).replace('{gname}', gname), header:'Group Invitation', group:{gid:gid,gname:gname}}
+  // console.log(notification.message)
+  const date = new Date (Date.now())
+  let dateFormat = (date.getHours()<10? '0'+date.getHours():date.getHours()) + ":" + (date.getMinutes()<10? '0'+date.getMinutes():date.getMinutes()) + ", "+ date.toDateString();
+  // console.log(dateFormat)
+
+  let _data = {
+    from: from,
+    to: to,
+    timestamp: dateFormat,
+    read:false,
+    needreaction: needreaction,
+    notification: notification,
+  }
+  // console.log(`${preText}UserGroup`,`(${gid},${to.uid})`);
+//  doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`)
+  (notification.type=='groupinv'? _data.UserGroup=doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`) :null);
+  await addDoc(notiRef, _data).catch(error => {console.log(error)})
+}
+
+export async function setReadNeedReaction(nid,read, needreaction=false){
+  const notiRef = doc(db, 'Notification-records',nid);
+  let _data = {
+    read:read,
+    needreaction: needreaction,
+  }
+  await updateDoc(notiRef, _data).catch(error => {console.log(error)})
+}

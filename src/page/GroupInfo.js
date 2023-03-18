@@ -73,10 +73,8 @@ export default function GroupInfo({ route, navigation }) {
 
     const handleRefresh = React.useCallback(() => {
         setRefreshing(true);
-        setTimeout(() => {
-            _showGroupInfo();
-            _showMemberList();
-            _showExpenseList();
+        setTimeout(async() => {
+            await isinGroup();
             setRefreshing(false);
         }, 2000);
     }, []);
