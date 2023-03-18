@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image, SectionList, SafeAreaView} from 'react-native';
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
-import { getPersonalDebtAndDebtorList } from "../../database/DBConnection";
+import { getPersonalDebtAndDebtorListAllGroup } from "../../database/DBConnection";
 import { useNavigation } from '@react-navigation/native';
 import AddingSlip from "./AddingSlip";
 
@@ -14,19 +14,19 @@ export default function DebtView({page, navigation}){
     const [isLoading, setLoading] = useState(null);
 
     async function _showDebtAndDebtorList(uid){
-        const list = await getPersonalDebtAndDebtorList(uid);
-        setDebtorList(list[0]);
-        setDebtList(list[1]);
+        const listof = await getPersonalDebtAndDebtorListAllGroup(uid);
 
-        if (debtList.length === 0 && debtorList.length === 0) {
-            setLoading(true)
+        if(listof.havedata){
+            setDebtorList(listof.debtor);
+            setDebtList(listof.debt);
+            setLoading(false);
         } else {
-            setLoading(false)
+            setLoading(true);
         }
-        console.log('Debtor: ', list[0][0].data)
-        // console.log('Debt: ', list[1][0].data)
+        
+        //console.log('Debtor: ', listof.debtor[0].data)
+        //console.log('Debt: ', listof.debt[0].data)
     }
-    //console.log(debtorList[0].data)
 
     useEffect(() => {
         const uid = auth().currentUser.uid;
@@ -65,17 +65,6 @@ export default function DebtView({page, navigation}){
             {
                 (isDebtorAcitve && !isLoading) && <DebtorList data={debtorList} />
             }
-
-            {/* // <DebtList
-            // values={['Debt list', 'Debtor list']}
-            // // selectedValue={}
-            // // setSelectedValue={}
-            // >
-            //     <View>
-            //         <SectionList></SectionList>
-            //     </View>
-
-            // </DebtList> */}
         </SafeAreaView>
     );
 };
@@ -90,16 +79,16 @@ function DebtList({data, page}) {
         <SafeAreaView>
             {data.map((e, index) => {
                 return (
-                    <>
-                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,fontSize:18, marginBottom:5,}} key={index}>{e.title}</Text>
-                        { e.data && e.data.map((r) => {
+                    <React.Fragment key={index}>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,fontSize:18, marginBottom:5,}} key={e+index}>{e.title}</Text>
+                        { e.data && e.data.map((r,index) => {
                             return (
-                                <View style={Styles.box}>
+                                <TouchableOpacity style={Styles.box} key={r+index} onPress={()=>{navigation.navigate('Detail',{detail: r.detail, DebtorDebtor: "Debt", gname:e.title, DebtorDebtorName:r.creditorName})}}>
                                 <Text key={r.creditorName} style={Styles.debttext1}>{r.creditorName}</Text>
                                 <Text key={r.debtStatus} style={Styles.debttext2}>{r.debtStatus}</Text>
                                 <Text key={r.calPrice}>{r.calPrice}</Text>
                                 <Text key={r.totolPrice} style={Styles.debttext3}>{r.totolPrice}</Text> 
-                                {RouteMapping.map((g) => {
+                                {RouteMapping.map((g, index) => {
                                     return(
                                 <TouchableOpacity 
                                     key={g.routeName}
@@ -110,10 +99,10 @@ function DebtList({data, page}) {
                                 </TouchableOpacity>
                                 )
                                 })}
-                                </View>
+                                </TouchableOpacity>
                             )
                         })}
-                    </>
+                    </React.Fragment>
                 )
             })}
         </SafeAreaView>
@@ -121,23 +110,25 @@ function DebtList({data, page}) {
 }
 
 function DebtorList({data}) {
+    const navigation = useNavigation();
+
     return (
         <SafeAreaView>
             {data.map((e, index) => {
                 return (
-                    <>
-                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,}} key={index}>{e.title}</Text>
-                        { e.data && e.data.map((t) => {
+                    <React.Fragment key={index}>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,}}>{e.title}</Text>
+                        { e.data && e.data.map((t,index) => {
                             return (
-                                <View style={Styles.box}>
+                                <TouchableOpacity style={Styles.box} key={t+index} onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtorDebtor: "Debtor", gname:e.title, DebtorDebtorName:t.debtorName})}}>
                                 <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>
-                                <Text key={t.debtStatus} style={Styles.debttext2}>{t.debtStatus}</Text>
-                                <Text key={t.totolPrice} style={Styles.debttext3}>{t.totolPrice}</Text>
-                                </View>
+                                <Text key={t.debtStatus} style={[Styles.debttext2, {textAlign:'center'}]}>{t.debtStatus}</Text>
+                                <Text key={t.totolPrice} style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>{t.totolPrice}</Text>
+                                </TouchableOpacity>
                             )
                         })
                         }
-                    </>
+                    </React.Fragment>
                 )
             })}
         </SafeAreaView>

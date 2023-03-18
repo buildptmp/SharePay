@@ -1,11 +1,6 @@
 import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-// import { useNavigation } from '@react-navigation/native';
-// import { useHistory } from "react-router-dom";
-// import { createStackNavigator } from '@react-navigation/stack';
-// import Homepage from './Homepage';
 import { Styles } from "../Styles"
-// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState } from "react";
 import { Button, 
     StyleSheet, 
@@ -68,9 +63,9 @@ import { Button,
     return(
         <SafeAreaView style={{flex: 1}}>
             <View style={Styles.containerAddmem}>
-            <View style={{ width: '120%', paddingHorizontal: 100}}>
+            <View style={{marginHorizontal:10}}>
                 <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', width: '80%'}}>
                 <TextInput
                     style={Styles.inputAddmem}
                     value={PhoneNum}
@@ -78,7 +73,7 @@ import { Button,
                     onChangeText={(text) => setPhoneNum(text)}
                     autoCapitalize={"none"}
                 />
-                <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginRight:25}} onPress={
+                <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:3, marginLeft:10}} onPress={
                     _addMember}>
                 <FontAwesome
                     name="plus"
@@ -109,6 +104,12 @@ import { Button,
                 }
                 </View>
             }
+            <TouchableOpacity 
+                    style={[Styles.btnitif, {marginTop:10}]}
+                    onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
+                    >
+                    <Text style={Styles.text}> Done </Text>
+                </TouchableOpacity>
             {/* <View style={[{ width: '120%', paddingHorizontal: 100}]}>
                 <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
                 <TextInput

@@ -101,7 +101,7 @@ export const Styles = StyleSheet.create({
     inputAddmem: {
         height: 40,
         width: '100%',
-        marginLeft: 10,
+        // marginLeft: 10,
         borderWidth: 1,
         borderRadius: 15,
         borderColor: '#B6B6B6',
@@ -181,6 +181,15 @@ export const Styles = StyleSheet.create({
         borderRadius: 20,
         marginTop: 20,
         marginHorizontal:'20%'
+    },
+
+    btnpopup: {
+        backgroundColor: '#F88C8C',
+        // marginBottom: 10,
+        padding: 10,
+        borderRadius: 20,
+        // marginTop: 10,
+        // marginHorizontal:'20%'
     },
 
     btnitif: {
@@ -343,7 +352,7 @@ export const Styles = StyleSheet.create({
     textInputHeader: {
         paddingTop: 2,
         paddingLeft: 10,
-        paddingRight: 10,
+        // paddingRight: 10,
         paddingBottom: 5,
         fontSize: 16,
         fontWeight: 'bold',
@@ -371,13 +380,16 @@ export const Styles = StyleSheet.create({
         paddingRight:10,
     },
 
-    itemInputCheckboxPrice: {
+    itemInputCheckboxContainer: {
         // flex:1,
-        width: '30%',
+        width: '45%',
         height: '80%',
+    },
+
+    itemInputCheckboxBorder:{
         backgroundColor: '#FFF',
         borderRadius: 20,
-        borderWidth: 1,
+        borderWidth: 1.5,
         borderColor: '#fabbbb',
     },
 
@@ -429,7 +441,26 @@ export const Styles = StyleSheet.create({
         backgroundColor: 'white',
     },
 
-
-
-
+    //pop up confirming adding expense model view
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
 });

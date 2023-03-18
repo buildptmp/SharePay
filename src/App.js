@@ -24,6 +24,7 @@ import AddingSlip from './page/AddingSlip';
 import ProfileInfo from './page/ProfileInfo';
 import ItemInfo from './page/ItemInfo';
 import Notification from './page/Notification';
+import ExpenseDetail from './page/ExpenseDetail';
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,7 @@ const RouteMapping = [
   { name: 'Edit Profile', page: ProfileInfo },
   { name: 'Item Information' , page: ItemInfo },
   { name: 'Notification' , page: Notification },
+  { name: 'Detail' , page: ExpenseDetail }
 ]
 
 const App = () => {
@@ -49,7 +51,7 @@ const App = () => {
         screenOptions={{
           headerShown: true
         }}>
-        {RouteMapping.map((e) => {
+        {RouteMapping.map((e,index) => {
           return (
             <Stack.Screen key={e.name} name={e.name} component={e.page} />  
           )

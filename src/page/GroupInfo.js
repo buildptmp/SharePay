@@ -11,11 +11,12 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
+    RefreshControl
  } from "react-native";
 import auth from '@react-native-firebase/auth';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
-import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember } from '../../database/DBConnection'
+import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember, isInGroup } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
 import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
@@ -32,6 +33,8 @@ export default function GroupInfo({ route, navigation }) {
     const textInputRefname = useRef(null);
     const textInputRefdesc = useRef(null);
     const listRef = useRef(null);
+
+    const [refreshing, setRefreshing] = useState(false);
 
     async function _showGroupInfo(){
         await getGroupByGid(gid).then(groupInfo =>{
@@ -53,11 +56,30 @@ export default function GroupInfo({ route, navigation }) {
         })  
     };
     
+    async function isinGroup(){
+        const allowtostay =  await isInGroup(gid,uid);
+        if(allowtostay.isInGroup){
+            _showGroupInfo();
+            _showMemberList();
+            _showExpenseList();
+        }
+        else{
+            alert("The system detect that you are not a member in the group. Your status is "+allowtostay.status+". \n\nPlease go back to the homepage and do pull to refresh.")
+        }
+    }
     useEffect(() => {
-        _showGroupInfo();
-        _showMemberList();
-        _showExpenseList();
+        isinGroup();        
     },[]);
+
+    const handleRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            _showGroupInfo();
+            _showMemberList();
+            _showExpenseList();
+            setRefreshing(false);
+        }, 2000);
+    }, []);
 
     // Start edit group section
     function _editGroup(){
@@ -97,6 +119,7 @@ export default function GroupInfo({ route, navigation }) {
             addEditGroupMember(gid,uid,"left");
             alert("Leaving successfully.");
             _checkEmptyMemberInGroup();
+            navigation.navigate('Root');
         }
         else{
            alert(text);
@@ -131,7 +154,7 @@ export default function GroupInfo({ route, navigation }) {
     RenderItem = (props) => {
         return (
             <TouchableOpacity style ={{flex: 1}} onPress={() => (props.title == "Expense item" ? 
-                navigation.navigate('Item Information',{eid:props.item.eid, allowToEdit:false}) 
+                navigation.navigate('Item Information',{eid:props.item.eid, allowToEdit:false, gid:gid,gname:gname}) 
                 : 
                 console.log(props.item.name))  
             }>
@@ -144,14 +167,14 @@ export default function GroupInfo({ route, navigation }) {
                     borderColor: '#7E828A',
                     flexDirection: 'row',
                     }}>
-                    <View style={{width: '80%',flexDirection: 'row',}}>
+                    <View style={{width: '60%',flexDirection: 'row',}}>
                         {props.title == "Expense item" ? <Text style={Styles.item}>{props.index + 1}</Text>:<Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>}    
                         <View style={{}}>
                             <Text style={Styles.item}>{props.item.name}</Text> 
                             {props.title == "Expense item" ? <Text style={Styles.itemDesc}>Creditor:  {props.item.creditor.name}</Text> : null }
                         </View>
                     </View>
-                    <View style={{width: '20%',justifyContent:'center'}}>
+                    <View style={{width: '40%',justifyContent:'center'}}>
                         {props.title == "Expense item" ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.price}</Text>:null}
                     </View>
                 </View>
@@ -171,8 +194,8 @@ export default function GroupInfo({ route, navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={Styles.btnginfo}
-                    // onPress={_leaveGroup}
-                    onPress={()=> alert("Implementing")}
+                    onPress={_leaveGroup}
+                    // onPress={()=> alert("Implementing")}
                 >
                     <Text style={Styles.text}>Leave group</Text>
                 </TouchableOpacity>
@@ -236,6 +259,7 @@ export default function GroupInfo({ route, navigation }) {
             {
                 expenseList && memberList && 
                 <SectionList
+                style={{height:'100%'}}
                 ref={listRef}
                 sections={[
                     {title: 'Expense item', data: expenseList},
@@ -245,12 +269,15 @@ export default function GroupInfo({ route, navigation }) {
                     <RenderItem item={item} title={section.title} index={index}/>
                 }
                 keyExtractor={(item, index) => item + index}
-                // ListEmptyComponent={()=>{
+                // ListEmptyComponent={
                 //     <Text>There is no member in this group.</Text>
-                // }}
+                // }
                 renderSectionHeader={({section: {title}}) => <ListHeader title={title} />}
                 ListFooterComponent={ () => <RenderFooter />}
                 ListFooterComponentStyle={{paddingTop:20}}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                }
                 />
             }
             

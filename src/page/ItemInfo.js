@@ -18,7 +18,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { async } from '@firebase/util';
 
 export default function ItemInfo({ route,navigation }) {
-    const {gid, eid, allowToEdit } = route.params;
+    const {gid, gname, eid, allowToEdit } = route.params;
     const [itemInfo, setItemInfo] = useState("");
 
     async function showItemInfo(){
@@ -35,7 +35,10 @@ export default function ItemInfo({ route,navigation }) {
         return(
             <View style={{}}>
                 <View style={{paddingTop:10}}>
-                    <Text style={Styles.sectionHeaderwithsub}>Name {itemInfo.name} </Text>
+                    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                        <Text style={Styles.sectionHeaderwithsub}>Name {itemInfo.name} </Text> 
+                        <Text style={Styles.sectionHeaderwithsub}>Group {gname} </Text>
+                    </View>
                     <Text style={Styles.sectionHeaderwithsub}>Price {itemInfo.price} </Text>
                     <Text style={Styles.sectionHeaderwithsub}>Method {itemInfo.method} </Text>
                 </View>
@@ -52,21 +55,17 @@ export default function ItemInfo({ route,navigation }) {
 
     RenderItem = (props) => {
         return (
-            <TouchableOpacity style ={{flex: 1}} onPress={() => {}
-                // navigation.navigate('Item Information',{eid:props.item.eid, ename:props.item.name, gid:gid, price: props.item.price})
-            }>
+            <TouchableOpacity style ={{flex: 1}} onPress={() => {}}>
                 <View style={Styles.Iteminfo}>
                     <View style={{width: '50%',flexDirection: 'row',}}>
                         <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>  
                         <Text style={Styles.item}>{props.item.name}</Text> 
                     </View>
-                    <View style={{width: '30%',flexDirection: 'row',/*justifyContent:'center'*/}}>
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:3}]}>{props.item.debtstatus}</Text>:null}
-                        {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null} */}
+                    <View style={{width: '20%'}}>
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'center'}]}>{props.item.debtstatus}</Text>:null}
                     </View>
-                    <View style={{width: '20%',flexDirection: 'row',/*justifyContent:'left'*/}}>
-                        {/* {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end'}]}>{props.item.debtstatus}</Text>:null} */}
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:0}]}>{props.item.calculatedprice}</Text>:null}
+                    <View style={{width: '30%'}}>
+                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -80,7 +79,7 @@ export default function ItemInfo({ route,navigation }) {
                     allowToEdit && 
                     <TouchableOpacity 
                         style={Styles.btnitif}
-                        onPress={()=>{navigation.navigate('Create Expense', {itemInfo:itemInfo, isUpdate:true, gid:gid})}}
+                        onPress={()=>{navigation.navigate('Create Expense', {itemInfo:itemInfo, isUpdate:true, gid:gid, gname:gname})}}
                         // onPress={()=>{alert("Implementing")}}
                         >
                         <Text style={Styles.text}> Edit item </Text>
@@ -89,7 +88,7 @@ export default function ItemInfo({ route,navigation }) {
                 
                 <TouchableOpacity 
                     style={Styles.btnitif}
-                    onPress={()=>{navigation.navigate('Root')}}
+                    onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
                     >
                     <Text style={Styles.text}> Done </Text>
                 </TouchableOpacity>
