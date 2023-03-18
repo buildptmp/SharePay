@@ -1,15 +1,11 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { 
-  Button, 
-  StyleSheet, 
-  Text, 
-  View, 
-  FlatList, 
-  SafeAreaView, 
-  Image
-} from "react-native";
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
+import AntDesign from 'react-native-vector-icons/AntDesign'; 
 
 // Screens
 import UserSelect from './page/UserSelect'
@@ -41,7 +37,16 @@ const RouteMapping = [
   { name: 'Notification' , page: Notification },
 ]
 
+const FontsLoader = () => {
+  Ionicons.loadFont()
+  Fontisto.loadFont()
+  Feather.loadFont()
+  FontAwesome.loadFont()
+  AntDesign.loadFont()
+}
+
 const App = () => {
+  FontsLoader()
   return (
     <NavigationContainer>
       <Stack.Navigator 
