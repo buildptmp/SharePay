@@ -11,7 +11,7 @@ export default function DebtView({page, navigation}){
     const [debtList, setDebtList] = useState([]);
     const [isDebtAcitve, setDebtAcitve] = useState(true);
     const [isDebtorAcitve, setDebtorAcitve] = useState(false);
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setLoading] = useState(null);
 
     async function _showDebtAndDebtorList(uid){
         const listof = await getPersonalDebtAndDebtorListAllGroup(uid);
