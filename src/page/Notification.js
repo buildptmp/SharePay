@@ -28,8 +28,8 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember } from '../../datab
         })
     }
     useEffect(()=>{
-        getAllNoti();
-    })
+        showNoti();
+    },[])
 
     const handleRefresh = React.useCallback(() => {
         setRefreshing(true);

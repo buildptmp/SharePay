@@ -450,7 +450,7 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
 
 export async function getAllNoti(uid){
   const notiRef = collection(db, 'Notification-records');
-  // const q = query(notiRef,where("touid","==",uid));
+  const q = query(notiRef,where("touid","==",uid));
 
   let notiList = [];
   try {
@@ -489,7 +489,9 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   }
   // console.log(`${preText}UserGroup`,`(${gid},${to.uid})`);
 //  doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`)
-  (notification.type=='groupinv'? _data.UserGroup=doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`) :null);
+const colRef = `${preText}UserGroup`;
+const docID = `(${gid},${to.uid})`;
+  (notification.type=='groupinv'? _data.UserGroup=doc(db,colRef,docID) :null);
   await addDoc(notiRef, _data).catch(error => {console.log(error)})
 }
 
