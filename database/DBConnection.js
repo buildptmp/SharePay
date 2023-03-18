@@ -450,20 +450,21 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
 
 export async function getAllNoti(uid){
   const notiRef = collection(db, 'Notification-records');
+  // const q = query(notiRef,where("touid","==",uid));
 
   let notiList = [];
   try {
-    const docsnap = await getDocs(notiRef);
+    const docsnap = await getDocs(q);
     docsnap.forEach(doc=>{
       notiList.push({nid:doc.id, ...doc.data()});
     })
     // sort newest first
+    console.log(notiList)
   return notiList;
     
   } catch (error){
     console.log(error);
   }
-
 }
 
 export async function sendGroupInv(from, to, needreaction, gid, gname){
@@ -479,8 +480,8 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   // console.log(dateFormat)
 
   let _data = {
-    from: from,
-    to: to,
+    fromuid: from.uid,
+    touid: to.uid,
     timestamp: dateFormat,
     read:false,
     needreaction: needreaction,
