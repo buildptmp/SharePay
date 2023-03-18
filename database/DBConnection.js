@@ -450,16 +450,19 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
 
 export async function getAllNoti(uid){
   const notiRef = collection(db, 'Notification-records');
-  // const q = query(notiRef,where("touid","==",uid));
+  const q = query(notiRef,where("touid","==",uid));
 
   let notiList = [];
   try {
     const docsnap = await getDocs(q);
+
     docsnap.forEach(doc=>{
       notiList.push({nid:doc.id, ...doc.data()});
     })
-    // sort newest first
-    console.log(notiList)
+
+    // notiList.sort(function(x, y){
+    //   return x.timestamp - y.timestamp;
+    // })
   return notiList;
     
   } catch (error){
@@ -487,17 +490,20 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
     needreaction: needreaction,
     notification: notification,
   }
-  // console.log(`${preText}UserGroup`,`(${gid},${to.uid})`);
-//  doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`)
-  (notification.type=='groupinv'? _data.UserGroup=doc(db,`${preText}UserGroup`,`(${gid},${to.uid})`) :null);
+  // const colRef = `${preText}UserGroup`;
+  // const docID = `(${gid},${to.uid})`;
+  // (notification.type=='groupinv'? _data.UserGroup=doc(db,colRef,docID) :null);
   await addDoc(notiRef, _data).catch(error => {console.log(error)})
 }
 
-export async function setReadNeedReaction(nid,read, needreaction=false){
+export async function setReadNeedReaction(nid,read, needreaction=""){
   const notiRef = doc(db, 'Notification-records',nid);
   let _data = {
     read:read,
-    needreaction: needreaction,
+    // needreaction: needreaction,
+  }
+  if (needreaction !== ""){
+    _data.needreaction=needreaction
   }
   await updateDoc(notiRef, _data).catch(error => {console.log(error)})
 }

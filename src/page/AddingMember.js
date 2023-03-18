@@ -58,15 +58,16 @@ import { Button,
 
     async function _addMember(){
         if(Object.keys(member).length > 0){
-            // const check = await isInGroup(gid,member.uid)
-            if(checkInGroup.isInGroup || checkInGroup.status !=  undefined){
-                checkInGroup.status == 'accepted' ? alert('This user is already in the group '+ gname+".") : alert('Invitation status is ' + check.status+".")
+            const check = await isInGroup(gid,member.uid)
+            if(check.isInGroup || check.status !=  undefined){
+                check.status == 'accepted' ? alert('This user is already in the group '+ gname+".") : alert('Invitation status is ' + check.status+".")
             }
             else{
                 // console.log("not in group")
                 await sendGroupInv(currentUser, member, true, gid, gname).then(async()=>{
                     await addEditGroupMember(gid,member.uid,'pending.');
                     alert("Invitaion has been sent to "+member.name+".");
+                    setcheckInGroup(check);
                 })   
             }
         }
