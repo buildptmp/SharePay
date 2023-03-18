@@ -11,14 +11,20 @@ export default function DebtView({page, navigation}){
     const [debtList, setDebtList] = useState([]);
     const [isDebtAcitve, setDebtAcitve] = useState(true);
     const [isDebtorAcitve, setDebtorAcitve] = useState(false);
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setLoading] = useState(null);
 
     async function _showDebtAndDebtorList(uid){
         const list = await getPersonalDebtAndDebtorList(uid);
         setDebtorList(list[0]);
         setDebtList(list[1]);
-        //console.log('Debtor: ', list[0][0].data)
-        //console.log('Debt: ', list[1][0].data)
+
+        if (debtList.length === 0 && debtorList.length === 0) {
+            setLoading(true)
+        } else {
+            setLoading(false)
+        }
+        console.log('Debtor: ', list[0][0].data)
+        // console.log('Debt: ', list[1][0].data)
     }
     //console.log(debtorList[0].data)
 
@@ -26,12 +32,6 @@ export default function DebtView({page, navigation}){
         const uid = auth().currentUser.uid;
         if (!uid) return;
         _showDebtAndDebtorList(uid)
-
-        if (debtList.length === 0 && debtorList.length === 0) {
-            setLoading(true)
-        } else {
-            setLoading(false)
-        }
     }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
 
     return(

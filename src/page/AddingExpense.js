@@ -58,7 +58,7 @@ export default function AddingExpense({ route, navigation }) {
 
     async function _addExpense(){
         if(Debtor.length>=1){
-            if(total.percent == 100){
+            // if(total.percent == 100){
                 const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
                 const itemid = await addExpense(ItemName,ItemPrice,Creditor.uid, methodName,gid);
                 const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
@@ -67,10 +67,10 @@ export default function AddingExpense({ route, navigation }) {
                 // console.log("must be behind the update")
                 alert("Successfully added.")
                 navigation.navigate('Item Information',{eid:itemid, allowToEdit:true, gid:gid})
-            }
-            else{
-                alert("Warn! The total price is ", total.price)
-            }
+            // }
+            // else{
+            //     alert("Warn! The total price is ", total.price)
+            // }
         }
         else{
             alert("Please select the debtor.")
@@ -79,17 +79,17 @@ export default function AddingExpense({ route, navigation }) {
     
     async function _updateExpense(){
         if(Debtor.length>=1){
-            if(total.percent == 100){
+            // if(total.percent == 100){
                 const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
                 const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
                 await editExpenseAfterView(Itemid, ItemName,ItemPrice,itemInfo.creditor.uid,Debtor,gid);
                 await addDebtor(Debtor,Itemid,gid,itemInfo.creditor.uid,itemInfo.price, countSplitEquallyMember)
                 alert("Successfully update.") 
                 navigation.navigate('Item Information',{eid:Itemid, allowToEdit:true, gid:gid})
-            }
-            else{
-                alert("Warn! The total price is ", total.price)
-            }
+            // }
+            // else{
+            //     alert("Warn! The total price is ", total.price)
+            // }
         }
         else{
             alert("Please select the debtor.")
