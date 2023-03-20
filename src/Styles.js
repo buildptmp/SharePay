@@ -62,6 +62,12 @@ export const Styles = StyleSheet.create({
         backgroundColor: '#F6EFEF'
     },
 
+    containerRating: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+    },
+
     logoImg: {
         width: '100%',
         resizeMode: 'contain',
@@ -435,7 +441,7 @@ export const Styles = StyleSheet.create({
     box: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderBottomWidth:1,
+        //borderBottomWidth:1,
         borderColor: '#B6B6B6',
         padding: 10,
         backgroundColor: 'white',
@@ -448,6 +454,7 @@ export const Styles = StyleSheet.create({
         alignItems: "center",
         marginTop: 22
       },
+
       modalView: {
         margin: 20,
         backgroundColor: "white",
@@ -463,4 +470,5 @@ export const Styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5
       },
+
 });
