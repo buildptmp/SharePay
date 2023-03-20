@@ -37,12 +37,12 @@ const RouteMapping = [
   { name: 'Notification' , page: Notification },
 ]
 
-const FontsLoader = () => {
-  Ionicons.loadFont()
-  Fontisto.loadFont()
-  Feather.loadFont()
-  FontAwesome.loadFont()
-  AntDesign.loadFont()
+const FontsLoader = async () => {
+  await Ionicons.loadFont()
+  await Fontisto.loadFont()
+  await Feather.loadFont()
+  await FontAwesome.loadFont()
+  await AntDesign.loadFont()
 }
 
 const App = () => {

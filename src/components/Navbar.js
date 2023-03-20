@@ -30,7 +30,6 @@ const Screens = [
 const Tab = createBottomTabNavigator();
 
 function Navbar() {
-  
   return (
     <Tab.Navigator
       initialRouteName={ Homepage }
@@ -38,7 +37,7 @@ function Navbar() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'grey',
         tabBarLabelStyle: { paddingBottom: 10, fontSize: 10 },
-        tabBarStyle: { padding: 10, height: 70 },
+        tabBarStyle: { paddingTop: 5, height: 82 },
         // headerShown: false,
       })}
     >
