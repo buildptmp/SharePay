@@ -88,7 +88,7 @@ import { Button,
                     onChangeText={(text) => setPhoneNum(text)}
                     autoCapitalize={"none"}
                 />
-                <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:8}} onPress={
+                {/* <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:8}} onPress={
                     _addMember}>
                 <FontAwesome
                     name="plus"
@@ -97,7 +97,7 @@ import { Button,
                     style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
                     onPress={_addMember}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 {
                     !checkInGroup.isInGroup && checkInGroup.status !=  undefined &&
                     <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:10}} onPress={
@@ -134,25 +134,23 @@ import { Button,
                 }
                 </View>
             }
-            <TouchableOpacity 
+            {/* <TouchableOpacity 
                 style={[Styles.btnitif, {marginTop:10}]}
                 onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
                 >
                 <Text style={Styles.text}> Done </Text>
-            </TouchableOpacity>
-            {/* <View style={[{ width: '120%', paddingHorizontal: 100}]}>
-                <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
-                <TextInput
-                    style={Styles.inputAddmem}
-                    value={PhoneNum}
-                    placeholder={"Insert Phone Number"}
-                    onChangeText={(text) => setPhoneNum(text)}
-                    autoCapitalize={"none"}
-                />
+            </TouchableOpacity> */}
+            <View style={[{ width: '120%', paddingHorizontal: 100}]}>
                 <TouchableOpacity style={Styles.btnph}  onPress={_addMember}>
                     <Text style={Styles.text}> Add Member</Text>
                 </TouchableOpacity>
-            </View> */}
+                <TouchableOpacity 
+                style={[Styles.btnitif, {marginTop:20}]}
+                onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
+                >
+                <Text style={Styles.text}> Done </Text>
+            </TouchableOpacity>
+            </View>
             </View>
         </SafeAreaView>
     );

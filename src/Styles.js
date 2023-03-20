@@ -198,7 +198,8 @@ export const Styles = StyleSheet.create({
         padding: 10,
         borderRadius: 20,
         // marginTop: 10,
-        marginHorizontal:'20%'
+        marginHorizontal:'20%',
+        alignItems: "center",
     },
 
     btngif: {
@@ -233,10 +234,11 @@ export const Styles = StyleSheet.create({
     btnph: {
         backgroundColor: '#F88C8C',
         width: '50%',
-        marginTop: 10,
+        marginTop: 20,
         padding: 10,
         borderRadius: 20,
         marginLeft:60 ,
+        alignItems: "center",
     },
 
     selected: {
