@@ -70,7 +70,7 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, isInGroup } from '
             <View style={{flex:1}}>
                 <View style={{
                 padding:10,
-                backgroundColor: (hasread? (needreaction ? '#FFFFFF':'#B9BBB6'):'#FFFFFF'),
+                backgroundColor: (hasread? (needreaction ? '#FFFFFF':'#C7C6C1'):'#FFFFFF'),
                 borderBottomWidth: 1,
                 borderColor: '#48494B',
                 }}>

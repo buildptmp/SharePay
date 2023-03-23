@@ -12,7 +12,6 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     Modal,
-    Button,
     Pressable
  } from "react-native";
 import SectionList from 'react-native/Libraries/Lists/SectionList';
@@ -40,14 +39,14 @@ export default function AddingExpense({ route, navigation }) {
 
     const [Data, setData] = useState('');
     const dropdown = useRef(null);
+    
+    const [modalVisible, setModalVisible] = useState(false);
+    const [isaccept, setIsAccept] = useState(false);
+
     async function seeMember(){
         const mList = await getMemberListByGid(gid);
         setMemberList(mList);
     }
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [isaccept, setIsAccept] = useState(false);
-
     useEffect(() => {
         seeMember()
         // console.log(itemInfo)
@@ -441,33 +440,35 @@ export default function AddingExpense({ route, navigation }) {
         );
     }
 
-    const ListFooter = (
-        <View>  
-            <TouchableOpacity style={{flexDirection:'row', margin:10,}} onPress={()=>{
-                    setIsAccept(!isaccept)
-                }}>
-                <Fontisto name={(isaccept ? 'checkbox-active':'checkbox-passive')} size={16} style={{margin:2, marginLeft:10, marginRight:5}}></Fontisto>
-                <Text>Accept the rounded up two decimal point.</Text>
-            </TouchableOpacity>    
-                
-            {
-                isUpdate ? 
-                <Pressable 
-                    style={Styles.btnaddex}
-                    onPress= {()=>_updateExpense(isaccept)}
-                >
-                    <Text style={Styles.text}>update Expense</Text>
-                </Pressable> 
-                :
-                <Pressable 
-                    style={Styles.btnaddex}
-                    onPress= {()=> _addExpense(isaccept)} 
-                >
-                    <Text style={Styles.text}>Add Expense</Text>
-                </Pressable>
-            }   
-        </View>
-    ) 
+    const ListFooter = () =>{
+        return(
+            <View>  
+                <TouchableOpacity style={{flexDirection:'row', margin:10,}} onPress={()=>{
+                        setIsAccept(!isaccept)
+                    }}>
+                    <Fontisto name={(isaccept ? 'checkbox-active':'checkbox-passive')} size={16} style={{margin:2, marginLeft:10, marginRight:5}}></Fontisto>
+                    <Text>Accept the rounded up two decimal point.</Text>
+                </TouchableOpacity>    
+                    
+                {
+                    isUpdate ? 
+                    <Pressable 
+                        style={Styles.btnaddex}
+                        onPress= {()=>_updateExpense(isaccept)}
+                    >
+                        <Text style={Styles.text}>update Expense</Text>
+                    </Pressable> 
+                    :
+                    <Pressable 
+                        style={Styles.btnaddex}
+                        onPress= {()=> _addExpense(isaccept)} 
+                    >
+                        <Text style={Styles.text}>Add Expense</Text>
+                    </Pressable>
+                }   
+            </View>
+        )
+    }  
     
     const memoizedRenderItem = useMemo(() =>{
         return Checkbox;
