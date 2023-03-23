@@ -33,6 +33,7 @@
     "react-native-screens": "^3.18.2",
     "react-native-select-dropdown": "^3.2.1",
     "react-native-switch-selector": "^2.3.0",
+    "react-native-uuid": "^2.0.1",
     "react-native-vector-icons": "^9.2.0"
   },
   "devDependencies": {
