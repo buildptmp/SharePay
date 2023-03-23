@@ -88,7 +88,7 @@ function DebtList({data, page}) {
                         <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,fontSize:18, marginBottom:5,}} key={e+index}>{e.title}</Text>
                         { e.data && e.data.map((r,index) => {
                             return (
-                                <TouchableOpacity style={Styles.box} key={r+index} onPress={()=>{navigation.navigate('Detail',{detail: r.detail, DebtorDebtor: "Debt", gname:e.title, DebtorDebtorName:r.creditorName})}}>
+                                <TouchableOpacity style={Styles.box} key={r+index} onPress={()=>{navigation.navigate('Detail',{detail: r.detail, DebtorDebtor: "Creditor", gname:e.title, DebtorDebtorName:r.creditorName})}}>
                                 <Text key={r.creditorName} style={Styles.debttext1}>{r.creditorName}</Text>
                                 <Text key={r.debtStatus} style={Styles.debttext2}>{r.debtStatus}</Text>
                                 <Text key={r.calPrice}>{r.calPrice}</Text>
@@ -98,7 +98,7 @@ function DebtList({data, page}) {
                                 <TouchableOpacity 
                                     key={g.routeName}
                                     style={Styles.btnaddslip}
-                                    onPress={() => navigation.navigate(g.routeName)}
+                                    onPress={() => navigation.navigate(g.routeName, {amount:r.totolPrice, timestamp:r.timestamp,eid:r.eid, debtorid: r.debtorid, data:{detail: r.detail, gname:e.title, DebtorDebtorName:r.creditorName}})}
                                 >
                                     <Text style={Styles.text}>{g.displayText}</Text>
                                 </TouchableOpacity>
@@ -128,7 +128,7 @@ function DebtorList({data}) {
                                 <View>
                                 <TouchableOpacity style={Styles.box} 
                                 key={t+index} 
-                                onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtorDebtor: "Debtor", gname:e.title, DebtorDebtorName:t.debtorName})}}
+                                onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtorDebtor: "Debtor", gname:e.title, DebtorDebtorName:t.debtorName, DebtorDebtorId:t.debtorid})}}
                                 >
 
                                 <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>

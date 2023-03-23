@@ -124,36 +124,22 @@ export default function AddingExpense({ route, navigation }) {
             <View style={Styles.centeredView}>
                 <View style={Styles.modalView}>
                     <Text style={{textAlign:'center'}}>A decimal number that has more than two decimal point will be rounded up.</Text>
-                    <Text>This would benefit to creditor.</Text>
+                    <Text>Please check the box to continue.</Text>
                     <View style={{justifyContent:'center', margin:10}}>
-                        <View style={{flexDirection:'row', justifyContent:'space-evenly', width:'80%'}}>
+                        {/* <View style=s{{flexDirection:'row', justifyContent:'center', width:'80%'}}> */}
                         <TouchableOpacity 
                             style={Styles.btnpopup}
                             onPress={()=>{
-                                // console.log(isaccept);
-                                setIsAccept(true);
-                                setModalVisible(false);
-                                (isaddexpense ? _addExpense(true): _updateExpense(true))
-                            }} 
-                            
-                        >
-                            <Text style={Styles.text}>accept</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={Styles.btnpopup}
-                            onPress={()=>{
-                                setIsAccept(false);
-                                // console.log(isaccept);
+                                // setIsAccept(false);
                                 setModalVisible(false);
                             }} 
                         >
-                            <Text style={Styles.text}>decline</Text>
+                            <Text style={Styles.text}>Acknowledge</Text>
                         </TouchableOpacity>
-                        </View>    
+                        {/* </View>     */}
                     </View>
-                    <Text>Please select accept to continue.</Text>
+                    <Text>Please check the box to continue.</Text>
                 </View>
-
             </View>
         </Modal>
     )}
@@ -247,8 +233,8 @@ export default function AddingExpense({ route, navigation }) {
                 <View style={{flexDirection:'row'}}>
                     <Text style={Styles.textInputHeader}>Debtor  </Text> 
                     {
-                        !isSplitEqually && <Tooltip ModalComponent={Modal} popover={<Text>If you want some debtor to share the rest of the price, you can select them and let their price freedom. SharePay will set the debtors with the price in zero to share and split equally for the rest of the price.</Text>} 
-                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:130,width:250}}>
+                        !isSplitEqually && <Tooltip ModalComponent={Modal} popover={<Text>The debtors that are checked and leave a price in zero will be calculated equally in splitting method.</Text>} 
+                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:90,width:220}}>
                             <Feather name="alert-circle"/>
                         </Tooltip>
                     }

@@ -428,6 +428,11 @@ export const Styles = StyleSheet.create({
         borderRadius: 100 
     },
 
+    image_picker_slip: {
+        width: 350, 
+        height: 700,
+    },
+
     Iteminfo: {
         //width: '100%',
         // height: 50,

@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
-
+import { updateDebtor } from "../../database/DBConnection";
 export default function ExpenseDetail({ page, navigation, route}) {
-    const { detail, DebtorDebtor, gname, DebtorDebtorName} = route.params;
+    const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
     
     return(
         <SafeAreaView style={Styles.list_container}>
             {detail && <SectionList
                 style={{height:'100%'}}
                 sections={[
-                    {title: DebtorDebtor+" ("+DebtorDebtorName+")" , data: detail},
+                    {title: DebtorDebtor+": "+DebtorDebtorName , data: detail},
                 ]}
                 renderItem={({item}) => 
                     <TouchableWithoutFeedback style ={{flex: 1}} 
+                    // onLongPress={()=>{
+                    //     console.log(item.eid+":"+DebtorDebtorId)
+                    //     updateDebtor(item.eid,DebtorDebtorId)
+                    // }}
                     // onPress={() => {navigation.navigate('Item Information',{eid:item.eid, allowToEdit:false, gid:item.gid,gname:gname})}}
                         >
                         <View style={Styles.box}>
@@ -29,7 +33,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                 renderSectionHeader={({section}) => (
                     <View style={{justifyContent:'space-between', flexDirection:'row'}}>
                         <Text style={Styles.sectionHeader}>{section.title}</Text>
-                        <Text style={Styles.sectionHeader}>{gname}</Text>
+                        <Text style={Styles.sectionHeader}>Group: {gname}</Text>
                     </View>
                     
                 )}

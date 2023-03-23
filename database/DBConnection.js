@@ -12,7 +12,9 @@ import {
   query,
   where,
   deleteDoc,
-  Timestamp
+  Timestamp,
+  FieldValue,
+  arrayUnion
 } from "firebase/firestore"
 
 // const db = getFirestore(app);
@@ -103,6 +105,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
             creditorid: item.creditor.uid,
             totolPrice: Number(item.debtor[index].calculatedprice),
             debtStatus: item.debtor[index].debtstatus,
+            timestamp: item.timestamp,
             detail: [{
               eid: item.eid,
               gid: gid,
@@ -135,6 +138,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
                 debtorid: debtor.uid,
                 totolPrice: Number(debtor.calculatedprice),
                 debtStatus: debtor.debtstatus,
+                timestamp: item.timestamp,
                 detail: [{
                   eid: item.eid,
                   gid: gid,
@@ -325,12 +329,17 @@ export async function deleteGroup(gid){
 
 export async function addExpense(name, price, creditorid, method, gid,description=""){
   const creditorInfo = await getUserFromUid(creditorid)
+  const date = new Date (Date.now());
+  let dateFormat = (date.getHours()<10? '0'+date.getHours():date.getHours()) + ":" + (date.getMinutes()<10? '0'+date.getMinutes():date.getMinutes()) + ", "+ date.toDateString();
+  
   let _data = {
     name: name,
     price: price,
     creditor: creditorInfo, // an object
     method: method,
-    gid: gid
+    gid: gid,
+    timestamp: date,
+    dateFormat: dateFormat
   }
   if(description){
     _data.description = description
@@ -507,3 +516,49 @@ export async function setReadNeedReaction(nid,read, needreaction=""){
   }
   await updateDoc(notiRef, _data).catch(error => {console.log(error)})
 }
+
+function formatDate(date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('');
+}
+
+export function timecheck(t_create,t_slip){
+  time = t_create.toLocaleTimeString('it-IT')
+  if(time<t_slip){
+    return 1;
+  } else if(time==t_slip){
+    return 0;
+  } else {
+    return -1;
+  }
+}
+export function datecheck(d_create,d_slip){
+  formatdate = formatDate(d_create) 
+  if(formatdate<d_slip){
+    return 1;
+  } else if(formatdate==d_slip){
+    return 0;
+  } else{
+    return -1;
+  }
+}
+// prai example
+// export async function updateDebtor(docid, debtorid){
+//   const docRef = doc(db,'Test-Items',docid)
+//   await updateDoc(docRef,{
+//     debtor: arrayUnion({
+//       // uid: debtorid,
+//       // debtstatus: "paid"
+//       // debtor information
+//     })
+//   })
+// }
