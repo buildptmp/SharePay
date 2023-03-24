@@ -5,6 +5,7 @@ import auth from '@react-native-firebase/auth'
 import { getPersonalDebtAndDebtorListAllGroup } from "../../database/DBConnection";
 import { useNavigation } from '@react-navigation/native';
 import { AirbnbRating } from 'react-native-ratings'
+import SelectDropdown from 'react-native-select-dropdown'
 import { async } from "@firebase/util";
 
 export default function DebtView({page, navigation}){
@@ -29,9 +30,6 @@ export default function DebtView({page, navigation}){
         //console.log('Debt: ', listof.debt[0].data)
     }
 
-    async function _showDebtorRating(){
-        
-    }
 
     useEffect(() => {
         const uid = auth().currentUser.uid;
@@ -116,6 +114,17 @@ function DebtList({data, page}) {
 
 function DebtorList({data}) {
     const navigation = useNavigation();
+    // const [debtStatus, setdebtStatus] = useState("");
+    // const [showDebtorRating, setShowDebtorRating] = useState(false);
+
+    // useEffect(() => {
+    //         if(debtStatus === 'paid'){
+    //             setShowDebtorRating(true);
+    //             }
+    //         else {
+    //             setShowDebtorRating(false);
+    //         }
+    // }, [debtStatus]);
 
     return (
         <SafeAreaView>
@@ -125,7 +134,7 @@ function DebtorList({data}) {
                         <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,}}>{e.title}</Text>
                         { e.data && e.data.map((t,index) => {
                             return (
-                                <View>
+                                <View style={{backgroundColor:'white',}}>
                                 <TouchableOpacity style={Styles.box} 
                                 key={t+index} 
                                 onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtorDebtor: "Debtor", gname:e.title, DebtorDebtorName:t.debtorName, DebtorDebtorId:t.debtorid})}}
@@ -136,19 +145,28 @@ function DebtorList({data}) {
                                 <Text key={t.totolPrice} style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>{t.totolPrice}</Text>
                                 </TouchableOpacity>
 
-                                <AirbnbRating
-                                ratingContainerStyle={{backgroundColor:'white', borderColor:'#B6B6B6', borderBottomWidth:1, paddingBottom:10,}}
-                                reviews={['Very Bad','Bad','Good','Very Good','Excellent']}
-                                count={5}
-                                defaultRating={1}
-                                size={25}
-                                reviewSize={17}
-                                reviewColor='grey'
-                                showRating={false}
-                                onFinishRating={(rating) => alert(rating)}
-                                />
-                                </View>
                                 
+                                { t.debtStatus === 'paid' && 
+                                //<Text> Please rate the debtor </Text>
+                                <AirbnbRating
+                                    ratingContainerStyle={{backgroundColor:'white', paddingBottom:10,}}
+                                    reviews={['Very Bad','Bad','Good','Very Good','Excellent']}
+                                    count={5}
+                                    defaultRating={1}
+                                    size={25}
+                                    reviewSize={14}
+                                    reviewColor='#F88C8C'
+                                    showRating={true}
+                                    onFinishRating={(rating) => alert(rating)}
+                                />}
+
+                                { t.debtStatus === 'paid' && <TouchableOpacity 
+                                style={Styles.btnrate}
+                                //onPress={()}
+                                >
+                                    <Text style={Styles.text}> Confirm </Text>
+                                </TouchableOpacity> }
+                                </View>
                                 
                             )
                         })
