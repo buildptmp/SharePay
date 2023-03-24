@@ -427,8 +427,20 @@ export const Styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#fabbbb',
         marginBottom: 10,
-        },
+    },
+    
+    dropdownBtnStyle2: {
+        width: '25%',
+        height: 30,
+        backgroundColor: '#FFF',
+        borderRadius: 15,
+        borderWidth: 2,
+        borderColor: '#fabbbb',
+        //marginBottom: 5,
+    },
+
     dropdownBtnTxtStyle: {color: '#444', textAlign: 'left'},
+    dropdownBtnTxtStyle2: {color: '#444', textAlignVertical: 'center', paddingBottom: 5},
     dropdownDropdownStyle: {backgroundColor: '#EFEFEF', borderRadius:20},
     dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
     dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},

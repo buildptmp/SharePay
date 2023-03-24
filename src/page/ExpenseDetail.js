@@ -1,9 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
-import { updateDebtor } from "../../database/DBConnection";
+import SelectDropdown from 'react-native-select-dropdown'
+import { updateDebtStatus } from "../../database/DBConnection";
+//import { updateDebtor } from "../../database/DBConnection";
+
+// const toEditStatus = () => {
+    
+// }
+
+
+
 export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
+    const [status, setStatus] = useState('owed')
+    const debtorStatus = ['owed','paid']
+    const [editStatus, setEditStatus] = useState(true)
+    
+    const editDebtStatusBtn = () => {
+    return(
+        <View>
+            <TouchableOpacity style={Styles.btn}
+            onPress = {() => setEditStatus(false)}
+            >
+                <Text style={Styles.text}> Edit Debt Status </Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
     
     return(
         <SafeAreaView style={Styles.list_container}>
@@ -24,7 +48,27 @@ export default function ExpenseDetail({ page, navigation, route}) {
                             {/* <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/> */}
                             
                             <Text style={Styles.debttext1}>{item.itemName}</Text>
-                            <Text style={[Styles.debttext2, {textAlign:'center'}]}>{item.debtStatus}</Text>
+                            <SelectDropdown
+
+                                disabled={editStatus}
+                                defaultButtonText={item.debtStatus}
+                                //defaultValue={status}
+                                data={debtorStatus}
+                                onSelect={(selectedItem) => {
+                                    setStatus(selectedItem)
+                                }}
+                                buttonTextAfterSelection={(selectedItem) => {
+                                    return selectedItem
+                                }}
+                                rowTextForSelection={(item) => {
+                                    return item
+                                }}
+                                
+                                buttonStyle={Styles.dropdownBtnStyle2}
+                                buttonTextStyle={Styles.dropdownBtnTxtStyle2}
+                            />
+
+                            {/* <Text style={[Styles.debttext2, {textAlign:'center'}]}>{item.debtStatus}</Text> */}
                             <Text style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>{item.priceToPay}</Text>
                         </View>
                     </TouchableWithoutFeedback>
@@ -37,8 +81,11 @@ export default function ExpenseDetail({ page, navigation, route}) {
                     </View>
                     
                 )}
-            />}
+                ListFooterComponent={<editDebtStatusBtn />}
+            />
+            }
         </SafeAreaView>
     )
 }
+
 

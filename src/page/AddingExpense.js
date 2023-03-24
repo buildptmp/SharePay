@@ -442,7 +442,7 @@ export default function AddingExpense({ route, navigation }) {
                         style={Styles.btnaddex}
                         onPress= {()=>_updateExpense(isaccept)}
                     >
-                        <Text style={Styles.text}>update Expense</Text>
+                        <Text style={Styles.text}>Update Expense</Text>
                     </Pressable> 
                     :
                     <Pressable 
