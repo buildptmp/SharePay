@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, SectionList, SafeAreaView} from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Image, SectionList, SafeAreaView, RefreshControl} from 'react-native';
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
 import { getPersonalDebtAndDebtorListAllGroup } from "../../database/DBConnection";
@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AirbnbRating } from 'react-native-ratings'
 import SelectDropdown from 'react-native-select-dropdown'
 import { async } from "@firebase/util";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function DebtView({page, navigation}){
     const [debtorList, setDebtorList] = useState([]);
@@ -14,7 +15,17 @@ export default function DebtView({page, navigation}){
     const [isDebtAcitve, setDebtAcitve] = useState(true);
     const [isDebtorAcitve, setDebtorAcitve] = useState(false);
     const [isLoading, setLoading] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
 
+    const handleRefresh = React.useCallback(() => {
+        const uid = auth().currentUser.uid
+        setRefreshing(true);
+        setTimeout(async() => {
+            await _showDebtAndDebtorList(uid)
+            setRefreshing(false);
+        }, 2000);
+    }, []);
+    
     async function _showDebtAndDebtorList(uid){
         const listof = await getPersonalDebtAndDebtorListAllGroup(uid);
 
@@ -29,7 +40,6 @@ export default function DebtView({page, navigation}){
         //console.log('Debtor: ', listof.debtor[0].data)
         //console.log('Debt: ', listof.debt[0].data)
     }
-
 
     useEffect(() => {
         const uid = auth().currentUser.uid;
@@ -60,14 +70,18 @@ export default function DebtView({page, navigation}){
                 <Text style={Styles.text}>Debtor List</Text>
             </TouchableOpacity>
             </View>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                }>
+                {
+                    (isDebtAcitve && !isLoading) && <DebtList data={debtList} />
+                }
 
-            {
-                (isDebtAcitve && !isLoading) && <DebtList data={debtList} />
-            }
-
-            {
-                (isDebtorAcitve && !isLoading) && <DebtorList data={debtorList} />
-            }
+                {
+                    (isDebtorAcitve && !isLoading) && <DebtorList data={debtorList} />
+                }
+            </ScrollView>
         </SafeAreaView>
     );
 };
