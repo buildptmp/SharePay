@@ -5,6 +5,7 @@ import auth from '@react-native-firebase/auth'
 import { getPersonalDebtAndDebtorListAllGroup } from "../../database/DBConnection";
 import { useNavigation } from '@react-navigation/native';
 import { AirbnbRating } from 'react-native-ratings'
+import SelectDropdown from 'react-native-select-dropdown'
 import { async } from "@firebase/util";
 
 export default function DebtView({page, navigation}){
@@ -166,7 +167,6 @@ function DebtorList({data}) {
                                     <Text style={Styles.text}> Confirm </Text>
                                 </TouchableOpacity> }
                                 </View>
-                                
                                 
                             )
                         })

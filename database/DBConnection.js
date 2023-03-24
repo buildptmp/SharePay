@@ -507,3 +507,15 @@ export async function setReadNeedReaction(nid,read, needreaction=""){
   }
   await updateDoc(notiRef, _data).catch(error => {console.log(error)})
 }
+
+export async function updateDebtStatus(uid){
+  const docRef = doc(db,'Test-Items', uid)
+  const data = {
+    debtstatus: "paid"
+  };
+
+  await updateDoc(docRef, data)
+  .catch(error => {
+    console.log(error);
+  })
+}
