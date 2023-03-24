@@ -351,6 +351,15 @@ export const Styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 
+    sectionHeaderdebtdetail: {
+        paddingTop: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
     bio: {
         paddingTop: 2,
         paddingLeft: 10,

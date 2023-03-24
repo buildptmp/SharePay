@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
+<<<<<<< HEAD
 import SelectDropdown from 'react-native-select-dropdown'
 import { updateDebtStatus } from "../../database/DBConnection";
 //import { updateDebtor } from "../../database/DBConnection";
@@ -11,6 +12,10 @@ import { updateDebtStatus } from "../../database/DBConnection";
 
 
 
+=======
+import { updateDebtor } from "../../database/DBConnection";
+import SelectDropdown from "react-native-select-dropdown";
+>>>>>>> 480274a6322675a8b97d82c92f3aa7a7cece8f4d
 export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
     const [status, setStatus] = useState('owed')
@@ -29,6 +34,13 @@ export default function ExpenseDetail({ page, navigation, route}) {
     )
 }
     
+    const ListHeader = (
+        <View style={{justifyContent:'space-between', flexDirection:'row'}}>
+            <Text style={Styles.sectionHeader}>{DebtorDebtor}: {DebtorDebtorName}</Text>
+            <Text style={Styles.sectionHeader}>Group: {gname}</Text>
+        </View>
+    )
+
     return(
         <SafeAreaView style={Styles.list_container}>
             {detail && <SectionList
@@ -75,15 +87,26 @@ export default function ExpenseDetail({ page, navigation, route}) {
                 }
                 keyExtractor={(item, index) => item + index}
                 renderSectionHeader={({section}) => (
-                    <View style={{justifyContent:'space-between', flexDirection:'row'}}>
-                        <Text style={Styles.sectionHeader}>{section.title}</Text>
-                        <Text style={Styles.sectionHeader}>Group: {gname}</Text>
+                    <View style={Styles.box}>
+                        <Text style={Styles.debttext1}>Expense name</Text>
+                        <Text style={[Styles.debttext2, {textAlign:'center'}]}>Status</Text>
+                        <Text style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>Amount</Text>
                     </View>
-                    
                 )}
                 ListFooterComponent={<editDebtStatusBtn />}
             />
             }
+                ListHeaderComponent={ListHeader}
+                // ListFooterComponent={
+                // <SelectDropdown
+                //     data={['Owne', 'Paid']}
+                //     onSelect={(item)=>{
+
+                //     }}
+                // >
+
+                // </SelectDropdown>}
+            />}
         </SafeAreaView>
     )
 }
