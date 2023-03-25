@@ -466,14 +466,37 @@ export async function getAllNoti(uid){
     const docsnap = await getDocs(q);
 
     docsnap.forEach(doc=>{
-      notiList.push({nid:doc.id, ...doc.data()});
+      const date = new Date({...doc.data()}.timestamp);
+      let dateFormat = (date.getHours()<10? '0'+date.getHours():date.getHours()) + ":" + (date.getMinutes()<10? '0'+date.getMinutes():date.getMinutes()) + ", "+ date.toDateString();
+      notiList.push({nid:doc.id, ...doc.data(), dateFormat:dateFormat});
     })
 
-    // notiList.sort(function(x, y){
-    //   return x.timestamp - y.timestamp;
-    // })
-  return notiList;
+    notiList.sort(function(x, y){
+      return x.timestamp - y.timestamp;
+    })
+
+    return notiList;
     
+  } catch (error){
+    console.log(error);
+  }
+}
+
+export async function getGroupInv(fromuid,touid){
+  const notiRef = collection(db, 'Notification-records');
+  const q = query(notiRef,where("fromuid","==",fromuid),where("touid","==",touid), where("needreaction","==",true));
+
+  let notiList = [];
+  try {
+    const docsnap = await getDocs(q);
+
+    if(!docsnap.empty){
+      docsnap.forEach(doc=>{
+        notiList.push({nid:doc.id});
+      })
+      return notiList[0].nid;
+    }
+    return false
   } catch (error){
     console.log(error);
   }
@@ -483,7 +506,6 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   const notiType = await getDoc(doc(db,'Notification-props', 'groupinv')); 
   const notiRef = collection(db, 'Notification-records');
 
-  // const gname = gname;
   const uname = from.name;
   const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{uname}', uname).replace('{gname}', gname), header:'Group Invitation', group:{gid:gid,gname:gname}}
   // console.log(notification.message)
@@ -494,7 +516,7 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   let _data = {
     fromuid: from.uid,
     touid: to.uid,
-    timestamp: dateFormat,
+    timestamp: Date.now(),
     read:false,
     needreaction: needreaction,
     notification: notification,
@@ -502,7 +524,23 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   // const colRef = `${preText}UserGroup`;
   // const docID = `(${gid},${to.uid})`;
   // (notification.type=='groupinv'? _data.UserGroup=doc(db,colRef,docID) :null);
-  await addDoc(notiRef, _data).catch(error => {console.log(error)})
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
+}
+
+export async function delGroupInv(nid, gid, uid){ // Del noti and Del UserGroup
+  await deleteDoc(doc(db,'Notification-records',nid)).catch(error => {console.log(error)});
+  await deleteDoc(doc(db,preText+'UserGroup',`(${gid},${uid})`)).catch(error => {console.log(error)});
+}
+
+export async function setGroupInvResponse(nid, action){
+  const notiRef = doc(db, 'Notification-records', nid);
+  const date = new Date(Date.now())
+  let _data = {
+    update_timestamp: date,
+    action: action
+  }
+  await updateDoc(notiRef, _data).catch(error => {console.log(error)})
 }
 
 export async function setReadNeedReaction(nid,read, needreaction=""){
@@ -519,9 +557,9 @@ export async function setReadNeedReaction(nid,read, needreaction=""){
 
 function formatDate(date) {
   var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
+  month = '' + (d.getMonth() + 1),
+  day = '' + d.getDate(),
+  year = d.getFullYear();
 
   if (month.length < 2) 
       month = '0' + month;

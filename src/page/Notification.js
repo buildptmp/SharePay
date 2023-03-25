@@ -14,7 +14,7 @@ import { Button,
     Pressable,
     RefreshControl
 } from "react-native";
-import { getAllNoti, setReadNeedReaction, addEditGroupMember, isInGroup } from '../../database/DBConnection';
+import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvResponse } from '../../database/DBConnection';
 
  export default function Notification({ navigation, route }) {
     const {uid} = route.params;
@@ -45,24 +45,22 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, isInGroup } from '
         const hasread = props.read;
         const needreaction = props.reaction;
         const record = props.item.notification;
-        const time = props.item.timestamp;
+        const time = props.item.dateFormat;
+        const GroupInvResponse = props.item.action;
         const [invstatus, setinvStatus] = useState("");
 
         async function groupinvResponse(isaccept, touid, groupgid){
+            const action = isaccept? 'accepted': 'declined'
             await setReadNeedReaction( props.item.nid ,true, false);
-            await addEditGroupMember(groupgid,touid,isaccept? 'accepted': 'declined');
-            setinvStatus(isaccept? 'accepted': 'declined');
-        }
-        async function getinvStatus(){
-            await isInGroup(record.group.gid,uid).then((check) =>{
-                if (check.status != undefined) setinvStatus(check.status);
-            })
+            await addEditGroupMember(groupgid,touid,action);
+            await setGroupInvResponse(props.item.nid,action)
+            setinvStatus(action);
         }
 
         useEffect(()=>{
             if(!hasread)  setReadNeedReaction(props.item.nid,true);
-            if (record.type == 'groupinv' && !needreaction && hasread){
-                getinvStatus();
+            if (record.type == 'groupinv' && !needreaction && hasread && GroupInvResponse){
+                setinvStatus(GroupInvResponse);
             }
         },[invstatus])
 
@@ -77,8 +75,8 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, isInGroup } from '
                 <View style={{flexDirection:'row', marginBottom:5}}>
                     <View style={{width: '67%',flexDirection:'row'}}>
                         <Text style={{fontWeight:'bold', fontSize:20, marginRight:10}}>{record.header}</Text>
-                        {hasread? null:<Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( new )</Text>}
                         {invstatus ? <Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( {invstatus} )</Text>:null}
+                        {hasread || invstatus? null:<Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( new )</Text>}
                     </View>
                     
                     <View style={{width: '35%',justifyContent:'center'}}>

@@ -88,7 +88,7 @@ export default function ItemInfo({ route,navigation }) {
                 
                 <TouchableOpacity 
                     style={Styles.btnitif}
-                    onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
+                    onPress={()=>{navigation.navigate(-2)}}
                     >
                     <Text style={Styles.text}> Done </Text>
                 </TouchableOpacity>

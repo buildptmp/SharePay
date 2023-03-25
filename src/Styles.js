@@ -216,6 +216,12 @@ export const Styles = StyleSheet.create({
         marginHorizontal:'20%'
     },
 
+    btnitif_v2: {
+        backgroundColor: '#F88C8C',
+        padding: 10,
+        borderRadius: 20,
+    },
+
     btngif: {
         backgroundColor: '#F88C8C',
         // marginBottom: 10,

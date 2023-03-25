@@ -1,21 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
-<<<<<<< HEAD
-import SelectDropdown from 'react-native-select-dropdown'
-import { updateDebtStatus } from "../../database/DBConnection";
-//import { updateDebtor } from "../../database/DBConnection";
-
-// const toEditStatus = () => {
-    
-// }
-
-
-
-=======
 import { updateDebtor } from "../../database/DBConnection";
 import SelectDropdown from "react-native-select-dropdown";
->>>>>>> 480274a6322675a8b97d82c92f3aa7a7cece8f4d
+
 export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
     const [status, setStatus] = useState('owed')
@@ -23,16 +11,16 @@ export default function ExpenseDetail({ page, navigation, route}) {
     const [editStatus, setEditStatus] = useState(true)
     
     const editDebtStatusBtn = () => {
-    return(
-        <View>
-            <TouchableOpacity style={Styles.btn}
-            onPress = {() => setEditStatus(false)}
-            >
-                <Text style={Styles.text}> Edit Debt Status </Text>
-            </TouchableOpacity>
-        </View>
-    )
-}
+        return(
+            <View>
+                <TouchableOpacity style={Styles.btn}
+                onPress = {() => setEditStatus(false)}
+                >
+                    <Text style={Styles.text}> Edit Debt Status </Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
     
     const ListHeader = (
         <View style={{justifyContent:'space-between', flexDirection:'row'}}>
@@ -94,21 +82,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                     </View>
                 )}
                 ListFooterComponent={<editDebtStatusBtn />}
-            />
-            }
-                ListHeaderComponent={ListHeader}
-                // ListFooterComponent={
-                // <SelectDropdown
-                //     data={['Owne', 'Paid']}
-                //     onSelect={(item)=>{
-
-                //     }}
-                // >
-
-                // </SelectDropdown>}
-            />}
+            />}  
         </SafeAreaView>
     )
 }
-
-
