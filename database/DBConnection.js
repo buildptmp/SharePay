@@ -127,7 +127,39 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
         for(let debtor of item.debtor){
           if(debtor.uid != uid && debtor.debtstatus == "owed"){
             const slip = await getSlip(debtor.uid,gid,uid)
-            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
+            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid && obj.debtStatus == "owed"));
+            if(index_d >= 0 ){
+              data_debtorList[index_d].totolPrice += debtor.calculatedprice
+              data_debtorList[index_d].detail.push({
+                eid: item.eid,
+                // gid: gid,
+                itemName: item.name,
+                priceToPay: Number(debtor.calculatedprice),
+                debtStatus: debtor.debtstatus
+              })
+            }else{
+              const _data ={
+                debtorName: debtor.name,
+                debtorid: debtor.uid,
+                totolPrice: Number(debtor.calculatedprice),
+                debtStatus: debtor.debtstatus,
+                timestamp: item.timestamp,
+                slip: slip,
+                gid: gid,
+                detail: [{
+                  eid: item.eid,
+                  // gid: gid,
+                  itemName: item.name,
+                  priceToPay: Number(debtor.calculatedprice),
+                  debtStatus: debtor.debtstatus
+                }]
+              } 
+              // console.log("------",_data)
+              data_debtorList.push(_data);
+            }
+          } else if(debtor.uid != uid && debtor.debtstatus == "paid" && debtor.rating == undefined){
+            const slip = await getSlip(debtor.uid,gid,uid)
+            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid && obj.debtStatus == "paid"));
             if(index_d >= 0 ){
               data_debtorList[index_d].totolPrice += debtor.calculatedprice
               data_debtorList[index_d].detail.push({
@@ -446,7 +478,8 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
     let debtstatus = (creditorid === debtor.uid ? debtstatus_enum.owner : debtstatus_enum.owed);
     const debtorInfo = await getUserFromUid(debtor.uid)
     let _data = {
-      ...debtorInfo,
+      name:{...debtorInfo}.name,
+      uid:debtorInfo?.uid,
       calculatedprice: calculatedprice,
       debtstatus: debtstatus
     };
@@ -651,13 +684,22 @@ export async function getSlip(uid, gid, creditorid){
 }
 
 // prai example
-// export async function updateDebtor(docid, debtorid){
+// export async function updateDebtor(docid, debtorid, calculatedprice, name){
 //   const docRef = doc(db,'Test-Items',docid)
 //   await updateDoc(docRef,{
 //     debtor: arrayUnion({
 //       uid: debtorid,
-//       debtstatus: "paid"
-//       debtor information
+//       debtstatus: "paid",
+//       name:name,
+//       calculatedprice: calculatedprice
+//     })
+//   })
+//   await updateDoc(docRef,{
+//     debtor: arrayRemove({
+//       uid: debtorid,
+//       debtstatus: "owed",
+//       name:name,
+//       calculatedprice: calculatedprice
 //     })
 //   })
 // }

@@ -32,6 +32,7 @@ export default function AddingSlip({ navigation, route }) {
     ]
     const [apiRespose, setResponse] = useState("");
     const [slip, setSlip] = useState("");
+
     async function chooseFile() {
         const response = await imagePicker()
         if (!response.didCancel){
@@ -87,8 +88,8 @@ export default function AddingSlip({ navigation, route }) {
             callapi(transRef);
         }
         if(slipURL){
-            setPickerRes({uri:slipURL})
-            setSlip(slipURL)
+            setPickerRes({uri:slipURL.slipURL})
+            setSlip(slipURL.slipURL)
         }
         // console.log(transRef)
     },[transRef,slip])
@@ -115,10 +116,10 @@ export default function AddingSlip({ navigation, route }) {
                 </TouchableOpacity>
                 {
                     (slip || slipURL) && 
-                    <View>
+                    <View style={{flexDirection:'row', margin:10}}>
                         <Text style={{fontSize:40,color:'#4FC978',fontWeight:'bold'}}>Verified</Text>
-                        <Tooltip ModalComponent={Modal} popover={<Text>Verified only show that the uploaded slip is a real transaction occurred. (not for checking the amount price to pay)</Text>} 
-                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:90,width:220}}>
+                        <Tooltip ModalComponent={Modal} popover={<Text>Verified only show that the uploaded slip is a real transaction occurred. {"\n\n"}(not for checking the amount price to pay)</Text>} 
+                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:120,width:250}}>
                             <Feather name="alert-circle"/>
                         </Tooltip>
                     </View>

@@ -115,15 +115,14 @@ function DebtList({data, page}) {
                                     <Text key={r.debtStatus} style={Styles.debttext2}>{r.debtStatus}</Text>
                                     <Text key={r.totolPrice} style={Styles.debttext3}>{r.totolPrice}</Text> 
                                     <TouchableOpacity 
-                                        key={"Add Slip"}
+                                        key={r+"Add Slip"}
                                         style={Styles.btnaddslip}
                                         onPress={() => {
-                                            navigation.navigate("Add Slip", {amount:r.totolPrice, timestamp:r.timestamp, slip:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
+                                            navigation.navigate("Add Slip", {amount:r.totolPrice, timestamp:r.timestamp, slipURL:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
                                         }}
                                     >
                                         <Text style={Styles.text}>{r.slip ? "Check Slip":"Add slip"}</Text>
                                     </TouchableOpacity>
-                                
                                 </TouchableOpacity>
                             )
                         })}
@@ -157,7 +156,7 @@ function DebtorList({data}) {
                         { e.data && e.data.map((t,index) => {
                             return (
                                 <View style={{backgroundColor:'white',}}>
-                                <TouchableOpacity style={Styles.box} 
+                                <TouchableOpacity style={[Styles.box,{borderBottomColor:'white'}]} 
                                     key={t+index} 
                                     onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtorDebtor: "Debtor", gname:e.title, DebtorDebtorName:t.debtorName, DebtorDebtorId:t.debtorid})}}
                                 >
@@ -165,7 +164,7 @@ function DebtorList({data}) {
                                     <Text key={t.debtStatus} style={Styles.debttext2}>{t.debtStatus}</Text>
                                     <Text key={t.totolPrice} style={Styles.debttext3}>{t.totolPrice}</Text>
                                     <Pressable 
-                                        key={"Add Slip"}
+                                        key={t+"Add Slip"}
                                         disabled={t.slip? false:true}
                                         style={t.slip? Styles.btnaddslip:[Styles.btnaddslip,{backgroundColor:'lightgray'}]}
                                         onPress={() => {
@@ -191,9 +190,10 @@ function DebtorList({data}) {
                                     onFinishRating={(rating) => alert(rating)}
                                 />}
 
-                                { t.debtStatus === 'paid' && <TouchableOpacity 
-                                style={Styles.btnrate}
-                                //onPress={()}
+                                { t.debtStatus === 'paid' && 
+                                <TouchableOpacity 
+                                    style={Styles.btnrate}
+                                    //onPress={()}
                                 >
                                     <Text style={Styles.text}> Confirm </Text>
                                 </TouchableOpacity> }
