@@ -94,7 +94,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
           data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
           data_creditorList[index_c].detail.push({
             eid: item.eid,
-            gid: gid,
+            // gid: gid,
             itemName: item.name,
             priceToPay: Number(item.debtor[index].calculatedprice),
             debtStatus: item.debtor[index].debtstatus
@@ -106,9 +106,10 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
             totolPrice: Number(item.debtor[index].calculatedprice),
             debtStatus: item.debtor[index].debtstatus,
             timestamp: item.timestamp,
+            gid:gid,
             detail: [{
               eid: item.eid,
-              gid: gid,
+              // gid: gid,
               itemName: item.name,
               priceToPay: Number(item.debtor[index].calculatedprice),
               debtStatus: item.debtor[index].debtstatus
@@ -127,7 +128,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
               data_debtorList[index_d].totolPrice += debtor.calculatedprice
               data_debtorList[index_d].detail.push({
                 eid: item.eid,
-                gid: gid,
+                // gid: gid,
                 itemName: item.name,
                 priceToPay: Number(debtor.calculatedprice),
                 debtStatus: debtor.debtstatus
@@ -139,9 +140,10 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
                 totolPrice: Number(debtor.calculatedprice),
                 debtStatus: debtor.debtstatus,
                 timestamp: item.timestamp,
+                gid: gid,
                 detail: [{
                   eid: item.eid,
-                  gid: gid,
+                  // gid: gid,
                   itemName: item.name,
                   priceToPay: Number(debtor.calculatedprice),
                   debtStatus: debtor.debtstatus
@@ -509,9 +511,6 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   const uname = from.name;
   const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{uname}', uname).replace('{gname}', gname), header:'Group Invitation', group:{gid:gid,gname:gname}}
   // console.log(notification.message)
-  const date = new Date (Date.now())
-  let dateFormat = (date.getHours()<10? '0'+date.getHours():date.getHours()) + ":" + (date.getMinutes()<10? '0'+date.getMinutes():date.getMinutes()) + ", "+ date.toDateString();
-  // console.log(dateFormat)
 
   let _data = {
     fromuid: from.uid,
@@ -570,36 +569,50 @@ function formatDate(date) {
 }
 
 export function timecheck(t_create,t_slip){
-  time = t_create.toLocaleTimeString('it-IT')
-  if(time<t_slip){
+  time = new Date(t_create)
+  time_create = time.toLocaleTimeString('it-IT')
+  // console.log("time_create", time, "time_slip", t_slip)
+  if(time_create<t_slip){
     return 1;
-  } else if(time==t_slip){
+  } else if(time_create==t_slip){
     return 0;
   } else {
     return -1;
   }
 }
+
 export function datecheck(d_create,d_slip){
-  formatdate = formatDate(d_create) 
-  if(formatdate<d_slip){
+  date_create = formatDate(d_create) 
+  // console.log("date_create", date_create, "date_slip", d_slip)
+  if(date_create<d_slip){
     return 1;
-  } else if(formatdate==d_slip){
+  } else if(date_create==d_slip){
     return 0;
   } else{
     return -1;
   }
 }
+
+export async function debtReminder(from, to, needreaction, gid, gname){
+  const notiType = await getDoc(doc(db,'Notification-props', 'debtreminder'));
+  const notiRef = collection(db, 'Notification-records');
+
+  await getExpenseListByGroupMember()
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{gname}', gname).replace('{priceToPay}', priceToPay), header:'Debt Reminder', group:{gid:gid,gname:gname}}
+}
+
 // prai example
 // export async function updateDebtor(docid, debtorid){
 //   const docRef = doc(db,'Test-Items',docid)
 //   await updateDoc(docRef,{
 //     debtor: arrayUnion({
-//       // uid: debtorid,
-//       // debtstatus: "paid"
-//       // debtor information
+//       uid: debtorid,
+//       debtstatus: "paid"
+//       debtor information
 //     })
 //   })
 // }
+
 export async function updateDebtStatus(uid){
   const docRef = doc(db,'Test-Items', uid)
   const data = {

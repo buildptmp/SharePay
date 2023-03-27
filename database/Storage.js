@@ -65,7 +65,7 @@ export async function imagePicker(){
     //     },
     // };
     const res = await launchImageLibrary({},(response) => {
-        console.log('Response = ', response);
+        // console.log('Response = ', response);
         if (response.didCancel) {
                 console.log('User cancelled image picker', storage());
         } else if (response.error) {
@@ -78,7 +78,7 @@ export async function imagePicker(){
             // return res
         }
     });
-    console.log(res.didCancel ? res : res.assets[0])
+    console.log(res.didCancel ? res : "Response = ",res.assets[0])
     return res.didCancel ? res : res.assets[0]
 };
 

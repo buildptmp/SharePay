@@ -10,7 +10,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
     const debtorStatus = ['owed','paid']
     const [editStatus, setEditStatus] = useState(true)
     
-    const editDebtStatusBtn = () => {
+    const EditDebtStatusBtn = () => {
         return(
             <View>
                 <TouchableOpacity style={Styles.btn}
@@ -81,7 +81,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                         <Text style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>Amount</Text>
                     </View>
                 )}
-                ListFooterComponent={<editDebtStatusBtn />}
+                ListFooterComponent={<EditDebtStatusBtn />}
             />}  
         </SafeAreaView>
     )

@@ -19,7 +19,7 @@ export async function get_access_key(){
         body: JSON.stringify(_data),
     }).then((response) => response.json())
     .then((data) => {
-      console.log("Success:", data);
+      // console.log("Success:", data);
       return data
     })
     .catch((error) => {
@@ -47,14 +47,14 @@ export async function getpaymentInfo(transRef=""){
         }
     }).then((response) => response.json())
     .then((data) => {
-      console.log("Success:", data);
+      // console.log("Success:", data);
       return data
     })
     .catch((error) => {
       console.error("Error:", error);
       return error
     });
-    console.log({"amount":response.data.amount,"date":response.data.transDate,"time":response.data.transTime, status:response.status.description});
+    console.log("API Response  ",{"amount":response.data.amount,"date":response.data.transDate,"time":response.data.transTime, status:response.status.description});
 
     return {"amount":response.data.amount,"date":response.data.transDate,"time":response.data.transTime, status:response.status.description};
 }

@@ -10,16 +10,17 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
-    ScrollView
+    ScrollView,
+    Modal,
  } from "react-native";
 import { get_access_key, getpaymentInfo } from "../../database/api";
 import { timecheck, datecheck } from '../../database/DBConnection';
 import { imagePicker, uploadSlip } from '../../database/Storage'
 import auth from '@react-native-firebase/auth';
+import SuccessAdd from '../components/SuccessAdd';
 
 export default function AddingSlip({ navigation, route }) {
-    const {amount,timestamp, eid, data} = route.params
-    const uid = auth().currentUser.uid;
+    const {amount,timestamp, data} = route.params;
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
     const [pickerRes, setPickerRes] = useState({uri:""});
@@ -36,22 +37,37 @@ export default function AddingSlip({ navigation, route }) {
         }
     };
 
-    function checkSlip(){
-        if(apiRespose && apiRespose.statue == 'success'){
-            const t_check = timecheck(timestamp, apiRespose.time)
-            const d_check = datecheck(timestamp, apiRespose.date)
-            if(t_check>=0 && d_check>=0){
-                if(apiRespose.amount == amount){
-                    // await updateDebtor(eid, uid)
-                } else{
-                    alert("the amount in slip is not equal to the total amount of the expense price.")
+    async function checkSlip(){
+        if(pickerRes.fileName != undefined){
+            if(apiRespose && apiRespose.status == 'Success'){console.log("1")
+                const t_check = timecheck(timestamp, apiRespose.time)
+                const d_check = datecheck(timestamp, apiRespose.date)
+                if(t_check>=0 && d_check>=0){
+                    if(apiRespose.amount == amount){
+                        const uid = auth().currentUser.uid;
+                        // await updateDebtor(eid, uid)
+                    } else{
+                        alert("the amount in slip is not equal to the total amount of the expense price.")
+                    }
+                } else {
+                    alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
                 }
-            } else {
-                alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
+                
+                await _saveSlip()
+            } else{
+                alert("Fail to validate the slip.")
+                // show unsuccessmodal()
             }
-        } else{
-            alert("Fail to validate the slip.")
+        } else {
+            alert("Cannot find a slip.")
         }
+        
+    }
+
+    async function _saveSlip(){
+        // console.log(pickerRes.fileName,pickerRes.uri,pickerRes.type)
+        const photoURL = await uploadSlip(pickerRes.fileName,pickerRes.uri,pickerRes.type)
+        // console.log(photoURL);
     }
 
     useEffect(()=>{
@@ -62,7 +78,14 @@ export default function AddingSlip({ navigation, route }) {
         if(transRef){
             callapi(transRef);
         }
+        // console.log(transRef)
     },[transRef])
+
+    // const PoppuSlipVerificationSuccessful = (
+    //     <View>
+
+    //     </View>
+    // )
 
     return(
         <ScrollView>
@@ -74,28 +97,34 @@ export default function AddingSlip({ navigation, route }) {
                         <Image style = {Styles.image_picker_slip} source={{uri: pickerRes.uri}}></Image>
                         :
                         <View style={{ justifyContent:'center'}}>
-                            <Text style={{fontWeight:'bold',padding:100}}>upload a slip</Text>
+                            <Text style={{fontWeight:'bold',padding:100}}>select a slip</Text>
                         </View>
                     }
                 </TouchableOpacity>
             
         
                 <View style={[{ width: '100%', paddingHorizontal: 100, backgroundColor: '#F6EFEF', marginTop:10}]}>
-                    <Text style={Styles.textboxtop}>Group: (wait for data)</Text>
-                    <Text style={Styles.textboxtop}>From: 'Debtor'</Text>
-                    <Text style={Styles.textboxtop}>To: 'Creditor' </Text>
-                    <Text style={Styles.textboxtop}> Amount: 'Price' </Text>
+                    <Text style={Styles.textboxtop}>Group: {data.gname}</Text>
+                    <Text style={Styles.textboxtop}>From: {data.from}</Text>
+                    <Text style={Styles.textboxtop}>To: {data.to} </Text>
+                    <Text style={Styles.textboxtop}> Amount: {amount} </Text>
                     <TouchableOpacity 
                         // key={e.routeName}
                         style={Styles.btnslip}
-                        onPress={async ()=> {
+                        onPress={ ()=> {
                             // await checkSlip();
                             // alert('Upload Successfully.');
                             alert('Implementing.');
+                            // if("Slip is valid"){
+                                // checkSlip()
+                                // uploadSlip()
+                                // showSuccessModal()
+                            // } else {showUnsuccessModal()}
                         }}
                     >
                         <Text style={Styles.text}> Confirm </Text>
                     </TouchableOpacity>
+                    {/* <SuccessAdd /> */}
                 </View>
             </View> 
         </ScrollView>

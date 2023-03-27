@@ -44,7 +44,7 @@ export default function DebtView({page, navigation}){
     useEffect(() => {
         const uid = auth().currentUser.uid;
         if (!uid) return;
-        _showDebtAndDebtorList(uid)
+        _showDebtAndDebtorList(uid);
     }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
 
     return(
@@ -71,6 +71,7 @@ export default function DebtView({page, navigation}){
             </TouchableOpacity>
             </View>
             <ScrollView
+                style={{width:'100%'}}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
                 }>
@@ -91,7 +92,8 @@ function DebtList({data, page}) {
     const RouteMapping = [
         { routeName: 'Add Slip', displayText: 'Add Slip'},
     ]
-    
+    const currname = auth().currentUser?.displayName
+
     return (
         <SafeAreaView>
             {data.map((e, index) => {
@@ -110,7 +112,9 @@ function DebtList({data, page}) {
                                 <TouchableOpacity 
                                     key={g.routeName}
                                     style={Styles.btnaddslip}
-                                    onPress={() => navigation.navigate(g.routeName, {amount:r.totolPrice, timestamp:r.timestamp,eid:r.eid, debtorid: r.debtorid, data:{detail: r.detail, gname:e.title, DebtorDebtorName:r.creditorName}})}
+                                    onPress={() => {
+                                        navigation.navigate(g.routeName, {amount:r.totolPrice, timestamp:r.timestamp,eid:r.eid, debtorid: r.debtorid, data:{detail: r.detail, gname:e.title,from:currname, to:r.creditorName}})
+                                    }}
                                 >
                                     <Text style={Styles.text}>{g.displayText}</Text>
                                 </TouchableOpacity>
