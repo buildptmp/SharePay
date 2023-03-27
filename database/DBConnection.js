@@ -87,10 +87,13 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
       // Debt //
       const index = item.debtor.findIndex((obj => obj.uid == uid));
       if(item.creditor.uid != uid && item.debtor[index].debtstatus == "owed") {
-
+        const slip = await getSlip(uid,gid,item.creditor.uid)
         const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
 
         if(index_c >=0){
+          if(data_creditorList[index_c].timestamp<item.timestamp) {
+            data_creditorList[index_c].timestamp = item.timestamp
+          } 
           data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
           data_creditorList[index_c].detail.push({
             eid: item.eid,
@@ -106,6 +109,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
             totolPrice: Number(item.debtor[index].calculatedprice),
             debtStatus: item.debtor[index].debtstatus,
             timestamp: item.timestamp,
+            slip: slip,
             gid:gid,
             detail: [{
               eid: item.eid,
@@ -122,7 +126,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
       else{
         for(let debtor of item.debtor){
           if(debtor.uid != uid && debtor.debtstatus == "owed"){
-
+            const slip = await getSlip(debtor.uid,gid,uid)
             const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
             if(index_d >= 0 ){
               data_debtorList[index_d].totolPrice += debtor.calculatedprice
@@ -140,6 +144,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
                 totolPrice: Number(debtor.calculatedprice),
                 debtStatus: debtor.debtstatus,
                 timestamp: item.timestamp,
+                slip: slip,
                 gid: gid,
                 detail: [{
                   eid: item.eid,
@@ -599,6 +604,50 @@ export async function debtReminder(from, to, needreaction, gid, gname){
 
   await getExpenseListByGroupMember()
   const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{gname}', gname).replace('{priceToPay}', priceToPay), header:'Debt Reminder', group:{gid:gid,gname:gname}}
+}
+
+/* Slip verification */ 
+export async function uploadSlipDebt(creditorid,uid, gid, slipURL){
+  const slip = await getSlip(uid,gid,creditorid);
+  
+  if(!slip){ // add slip
+    const _data = {
+      gid: gid,
+      creditorid: creditorid,
+      uid:uid,
+      slipURL:slipURL
+    }
+    const colRef = collection(db,preText+"SlipDebt")
+    await addDoc(colRef,_data)
+  } else { // update slip
+    const docRef = doc(db,preText+"SlipDebt",slip.sid)
+    await setDoc(docRef,{slipURL:slipURL})
+  }
+  
+}
+export async function getSlip(uid, gid, creditorid){
+  const colRef = collection(db,preText+"SlipDebt")
+  const q = query(colRef,where("gid","==",gid),where("creditorid","==",creditorid),where("uid","==",uid))
+
+  try {
+    const slip = [];
+    const docsnap = await getDocs(q);
+
+    if(!docsnap.empty){
+      docsnap.forEach(doc=>{
+        slip.push({sid:doc.id,slipURL:{...doc.data()}.slipURL})
+      })
+      if(slip.length >1) console.log(slip)
+
+      return slip[0];
+
+    } else {
+      return false
+    }
+
+  } catch (error){
+    console.log(error);
+  }
 }
 
 // prai example

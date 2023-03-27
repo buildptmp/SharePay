@@ -234,7 +234,9 @@ export const Styles = StyleSheet.create({
         backgroundColor: '#F88C8C',
         padding: 10,
         borderRadius: 20,
-        width: '25%',
+        width:110,
+        marginLeft:10,
+        right:10
     }, 
 
     btnslip: {
@@ -280,8 +282,9 @@ export const Styles = StyleSheet.create({
         //textAlign: 'left',
         textAlignVertical: 'center',
         fontSize: 17,
-        width: '30%',
+        width: '25%',
         fontWeight: 'bold',
+        // backgroundColor:"pink"
     },
 
     debttext2: {
@@ -290,6 +293,8 @@ export const Styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: 'bold',
         width: '20%',
+        // backgroundColor:"lightblue",
+        textAlign:'center'
     },
 
     debttext3: {
@@ -298,6 +303,9 @@ export const Styles = StyleSheet.create({
         fontSize: 17,
         alignItems: 'flex-end',
         fontWeight: 'bold',
+        width: '25%',
+        textAlign:'right',
+        marginRight:10
     },
 
     containerLogin: {
@@ -484,7 +492,7 @@ export const Styles = StyleSheet.create({
 
     box: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         borderBottomWidth:1,
         borderTopWidth:1,
         borderColor: '#E3E3E3',

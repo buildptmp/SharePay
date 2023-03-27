@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, SectionList, SafeAreaView, RefreshControl} from 'react-native';
+import { View, 
+    Text, 
+    Button, 
+    StyleSheet, 
+    TouchableOpacity, 
+    Image, SectionList, 
+    SafeAreaView, 
+    RefreshControl, 
+    Pressable
+} from 'react-native';
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
 import { getPersonalDebtAndDebtorListAllGroup } from "../../database/DBConnection";
@@ -89,10 +98,9 @@ export default function DebtView({page, navigation}){
 
 function DebtList({data, page}) {
     const navigation = useNavigation();
-    const RouteMapping = [
-        { routeName: 'Add Slip', displayText: 'Add Slip'},
-    ]
-    const currname = auth().currentUser?.displayName
+    const currentUser = auth().currentUser
+    const currname = currentUser?.displayName
+    const uid = currentUser?.uid
 
     return (
         <SafeAreaView>
@@ -103,23 +111,19 @@ function DebtList({data, page}) {
                         { e.data && e.data.map((r,index) => {
                             return (
                                 <TouchableOpacity style={Styles.box} key={r+index} onPress={()=>{navigation.navigate('Detail',{detail: r.detail, DebtorDebtor: "Creditor", gname:e.title, DebtorDebtorName:r.creditorName})}}>
-                                <Text key={r.creditorName} style={Styles.debttext1}>{r.creditorName}</Text>
-                                <Text key={r.debtStatus} style={Styles.debttext2}>{r.debtStatus}</Text>
-                                <Text key={r.calPrice}>{r.calPrice}</Text>
-                                <Text key={r.totolPrice} style={Styles.debttext3}>{r.totolPrice}</Text> 
-                                {RouteMapping.map((g, index) => {
-                                    return(
-                                <TouchableOpacity 
-                                    key={g.routeName}
-                                    style={Styles.btnaddslip}
-                                    onPress={() => {
-                                        navigation.navigate(g.routeName, {amount:r.totolPrice, timestamp:r.timestamp,eid:r.eid, debtorid: r.debtorid, data:{detail: r.detail, gname:e.title,from:currname, to:r.creditorName}})
-                                    }}
-                                >
-                                    <Text style={Styles.text}>{g.displayText}</Text>
-                                </TouchableOpacity>
-                                )
-                                })}
+                                    <Text key={r.creditorName} style={Styles.debttext1}>{r.creditorName}</Text>
+                                    <Text key={r.debtStatus} style={Styles.debttext2}>{r.debtStatus}</Text>
+                                    <Text key={r.totolPrice} style={Styles.debttext3}>{r.totolPrice}</Text> 
+                                    <TouchableOpacity 
+                                        key={"Add Slip"}
+                                        style={Styles.btnaddslip}
+                                        onPress={() => {
+                                            navigation.navigate("Add Slip", {amount:r.totolPrice, timestamp:r.timestamp, slip:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
+                                        }}
+                                    >
+                                        <Text style={Styles.text}>{r.slip ? "Check Slip":"Add slip"}</Text>
+                                    </TouchableOpacity>
+                                
                                 </TouchableOpacity>
                             )
                         })}
@@ -154,13 +158,22 @@ function DebtorList({data}) {
                             return (
                                 <View style={{backgroundColor:'white',}}>
                                 <TouchableOpacity style={Styles.box} 
-                                key={t+index} 
-                                onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtorDebtor: "Debtor", gname:e.title, DebtorDebtorName:t.debtorName, DebtorDebtorId:t.debtorid})}}
+                                    key={t+index} 
+                                    onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtorDebtor: "Debtor", gname:e.title, DebtorDebtorName:t.debtorName, DebtorDebtorId:t.debtorid})}}
                                 >
-
-                                <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>
-                                <Text key={t.debtStatus} style={[Styles.debttext2, {textAlign:'center'}]}>{t.debtStatus}</Text>
-                                <Text key={t.totolPrice} style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>{t.totolPrice}</Text>
+                                    <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>
+                                    <Text key={t.debtStatus} style={Styles.debttext2}>{t.debtStatus}</Text>
+                                    <Text key={t.totolPrice} style={Styles.debttext3}>{t.totolPrice}</Text>
+                                    <Pressable 
+                                        key={"Add Slip"}
+                                        disabled={t.slip? false:true}
+                                        style={t.slip? Styles.btnaddslip:[Styles.btnaddslip,{backgroundColor:'lightgray'}]}
+                                        onPress={() => {
+                                            navigation.navigate("Add Slip", {amount:r.totolPrice, timestamp:r.timestamp, slip:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
+                                        }}
+                                    >
+                                        <Text style={Styles.text}>Check Slip</Text>
+                                    </Pressable>
                                 </TouchableOpacity>
 
                                 

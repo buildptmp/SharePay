@@ -52,7 +52,7 @@ export async function uploadSlip(fileName, file, type){
     const url = task.then( async () => {
         const url = await reference.getDownloadURL()
         return url
-    })
+    }).catch(error=>{return false})
     return url
 }
 

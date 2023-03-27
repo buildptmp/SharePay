@@ -14,13 +14,15 @@ import { Button,
     Modal,
  } from "react-native";
 import { get_access_key, getpaymentInfo } from "../../database/api";
-import { timecheck, datecheck } from '../../database/DBConnection';
+import { timecheck, datecheck, uploadSlipDebt, getSlip} from '../../database/DBConnection';
 import { imagePicker, uploadSlip } from '../../database/Storage'
+import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
 import SuccessAdd from '../components/SuccessAdd';
+import { Tooltip } from 'react-native-elements';
 
 export default function AddingSlip({ navigation, route }) {
-    const {amount,timestamp, data} = route.params;
+    const {amount,timestamp, data, slipURL} = route.params;
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
     const [pickerRes, setPickerRes] = useState({uri:""});
@@ -29,7 +31,7 @@ export default function AddingSlip({ navigation, route }) {
         { routeName: 'Add Member', displayText: 'Add Member', }
     ]
     const [apiRespose, setResponse] = useState("");
-
+    const [slip, setSlip] = useState("");
     async function chooseFile() {
         const response = await imagePicker()
         if (!response.didCancel){
@@ -40,20 +42,21 @@ export default function AddingSlip({ navigation, route }) {
     async function checkSlip(){
         if(pickerRes.fileName != undefined){
             if(apiRespose && apiRespose.status == 'Success'){console.log("1")
+                const uid = auth().currentUser.uid;
+                await _saveSlip()
+
                 const t_check = timecheck(timestamp, apiRespose.time)
                 const d_check = datecheck(timestamp, apiRespose.date)
                 if(t_check>=0 && d_check>=0){
                     if(apiRespose.amount == amount){
                         const uid = auth().currentUser.uid;
-                        // await updateDebtor(eid, uid)
+                        // await updateDebtor(eid, uid) to be paid
                     } else{
                         alert("the amount in slip is not equal to the total amount of the expense price.")
                     }
                 } else {
                     alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
                 }
-                
-                await _saveSlip()
             } else{
                 alert("Fail to validate the slip.")
                 // show unsuccessmodal()
@@ -67,7 +70,12 @@ export default function AddingSlip({ navigation, route }) {
     async function _saveSlip(){
         // console.log(pickerRes.fileName,pickerRes.uri,pickerRes.type)
         const photoURL = await uploadSlip(pickerRes.fileName,pickerRes.uri,pickerRes.type)
-        // console.log(photoURL);
+        if(photoURL) {
+            await uploadSlipDebt(data.to.uid,data.from.uid,data.group.gid,photoURL);
+            // alert("upload a slip successfully")
+            setSlip(photoURL)
+        } else console.log("upload error")
+        
     }
 
     useEffect(()=>{
@@ -78,8 +86,12 @@ export default function AddingSlip({ navigation, route }) {
         if(transRef){
             callapi(transRef);
         }
+        if(slipURL){
+            setPickerRes({uri:slipURL})
+            setSlip(slipURL)
+        }
         // console.log(transRef)
-    },[transRef])
+    },[transRef,slip])
 
     // const PoppuSlipVerificationSuccessful = (
     //     <View>
@@ -101,25 +113,28 @@ export default function AddingSlip({ navigation, route }) {
                         </View>
                     }
                 </TouchableOpacity>
-            
-        
-                <View style={[{ width: '100%', paddingHorizontal: 100, backgroundColor: '#F6EFEF', marginTop:10}]}>
-                    <Text style={Styles.textboxtop}>Group: {data.gname}</Text>
-                    <Text style={Styles.textboxtop}>From: {data.from}</Text>
-                    <Text style={Styles.textboxtop}>To: {data.to} </Text>
-                    <Text style={Styles.textboxtop}> Amount: {amount} </Text>
+                {
+                    (slip || slipURL) && 
+                    <View>
+                        <Text style={{fontSize:40,color:'#4FC978',fontWeight:'bold'}}>Verified</Text>
+                        <Tooltip ModalComponent={Modal} popover={<Text>Verified only show that the uploaded slip is a real transaction occurred. (not for checking the amount price to pay)</Text>} 
+                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:90,width:220}}>
+                            <Feather name="alert-circle"/>
+                        </Tooltip>
+                    </View>
+                }
+                    
+                <View style={[{backgroundColor: '#F6EFEF', marginTop:10, justifyContent:'center', alignItems:'center'}]}>
+                    <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Information</Text>
+                    <Text>Group: {data.group.name}</Text>
+                    <Text>From: {data.from.name}</Text>
+                    <Text>To: {data.to.name} </Text>
+                    <Text> Amount: {amount} </Text>
                     <TouchableOpacity 
                         // key={e.routeName}
-                        style={Styles.btnslip}
-                        onPress={ ()=> {
-                            // await checkSlip();
-                            // alert('Upload Successfully.');
-                            alert('Implementing.');
-                            // if("Slip is valid"){
-                                // checkSlip()
-                                // uploadSlip()
-                                // showSuccessModal()
-                            // } else {showUnsuccessModal()}
+                        style={[Styles.btnslip, {marginBottom:10}]}
+                        onPress={ async ()=> {
+                            await checkSlip();
                         }}
                     >
                         <Text style={Styles.text}> Confirm </Text>

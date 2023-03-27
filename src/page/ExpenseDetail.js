@@ -3,24 +3,23 @@ import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionLi
 import { Styles } from "../Styles"
 import { updateDebtor } from "../../database/DBConnection";
 import SelectDropdown from "react-native-select-dropdown";
+import { useRef } from "react";
+import AntDesign from 'react-native-vector-icons/AntDesign'; 
 
 export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
-    const [status, setStatus] = useState('owed')
-    const debtorStatus = ['owed','paid']
-    const [editStatus, setEditStatus] = useState(true)
     
-    const EditDebtStatusBtn = () => {
-        return(
-            <View>
-                <TouchableOpacity style={Styles.btn}
-                onPress = {() => setEditStatus(false)}
-                >
-                    <Text style={Styles.text}> Edit Debt Status </Text>
-                </TouchableOpacity>
-            </View>
-        )
-    }
+    // const EditDebtStatusBtn = () => {
+    //     return(
+    //         <View>
+    //             <TouchableOpacity style={[Styles.btn,{width:150, alignSelf:'flex-end', margin:10}]}
+    //             onPress = {() => setEditStatus(false)}
+    //             >
+    //                 <Text style={Styles.text}> Edit Debt Status </Text>
+    //             </TouchableOpacity>
+    //         </View>
+    //     )
+    // }
     
     const ListHeader = (
         <View style={{justifyContent:'space-between', flexDirection:'row'}}>
@@ -28,6 +27,55 @@ export default function ExpenseDetail({ page, navigation, route}) {
             <Text style={Styles.sectionHeader}>Group: {gname}</Text>
         </View>
     )
+
+    RenderItem = (props) =>{
+        const item = props.item
+        const ref = useRef("")
+        const [status, setStatus] = useState('owed')
+        const debtorStatus = ['owed','paid']
+        // const [editStatus, setEditStatus] = useState(true)
+        let editStatus = true
+        return(
+            <TouchableWithoutFeedback style ={{flex: 1}}>
+                <View style={[Styles.box,{justifyContent:'space-between'}]}>
+                    {/* <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/> */}
+                    
+                    <Text style={Styles.debttext1}>{item.itemName}</Text>
+                    <SelectDropdown
+                        ref={ref}
+                        disabled={editStatus}
+                        defaultButtonText={item.debtStatus}
+                        //defaultValue={status}
+                        data={debtorStatus}
+                        onSelect={(selectedItem) => {
+                            setStatus(selectedItem)
+                        }}
+                        buttonTextAfterSelection={(selectedItem) => {
+                            return selectedItem
+                        }}
+                        rowTextForSelection={(item) => {
+                            return item
+                        }}
+                        
+                        buttonStyle={Styles.dropdownBtnStyle2}
+                        buttonTextStyle={Styles.dropdownBtnTxtStyle2}
+                    />
+                    <AntDesign 
+                        name='edit'
+                        size={18}
+                        style={{alignItems:'center', marginTop:5}}
+                        onPress={()=>{
+                            editStatus = false
+                            ref.current.openDropdown()
+                        }}
+                    />
+
+                    {/* <Text style={[Styles.debttext2, {textAlign:'center'}]}>{item.debtStatus}</Text> */}
+                    <Text style={Styles.debttext3}>{item.priceToPay}</Text>
+                </View>
+            </TouchableWithoutFeedback>
+        )
+    }
 
     return(
         <SafeAreaView style={Styles.list_container}>
@@ -37,51 +85,17 @@ export default function ExpenseDetail({ page, navigation, route}) {
                     {title: DebtorDebtor+": "+DebtorDebtorName , data: detail},
                 ]}
                 renderItem={({item}) => 
-                    <TouchableWithoutFeedback style ={{flex: 1}} 
-                    // onLongPress={()=>{
-                    //     console.log(item.eid+":"+DebtorDebtorId)
-                    //     updateDebtor(item.eid,DebtorDebtorId)
-                    // }}
-                    // onPress={() => {navigation.navigate('Item Information',{eid:item.eid, allowToEdit:false, gid:item.gid,gname:gname})}}
-                        >
-                        <View style={Styles.box}>
-                            {/* <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/> */}
-                            
-                            <Text style={Styles.debttext1}>{item.itemName}</Text>
-                            <SelectDropdown
-
-                                disabled={editStatus}
-                                defaultButtonText={item.debtStatus}
-                                //defaultValue={status}
-                                data={debtorStatus}
-                                onSelect={(selectedItem) => {
-                                    setStatus(selectedItem)
-                                }}
-                                buttonTextAfterSelection={(selectedItem) => {
-                                    return selectedItem
-                                }}
-                                rowTextForSelection={(item) => {
-                                    return item
-                                }}
-                                
-                                buttonStyle={Styles.dropdownBtnStyle2}
-                                buttonTextStyle={Styles.dropdownBtnTxtStyle2}
-                            />
-
-                            {/* <Text style={[Styles.debttext2, {textAlign:'center'}]}>{item.debtStatus}</Text> */}
-                            <Text style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>{item.priceToPay}</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
+                    <RenderItem item={item} />
                 }
                 keyExtractor={(item, index) => item + index}
                 renderSectionHeader={({section}) => (
-                    <View style={Styles.box}>
+                    <View style={[Styles.box,{justifyContent:'space-between'}]}>
                         <Text style={Styles.debttext1}>Expense name</Text>
-                        <Text style={[Styles.debttext2, {textAlign:'center'}]}>Status</Text>
-                        <Text style={[Styles.debttext3,{width:'30%', textAlign:'right'}]}>Amount</Text>
+                        <Text style={Styles.debttext2}>Status</Text>
+                        <Text style={Styles.debttext3}>Amount</Text>
                     </View>
                 )}
-                ListFooterComponent={<EditDebtStatusBtn />}
+                // ListFooterComponent={<EditDebtStatusBtn />}
             />}  
         </SafeAreaView>
     )
