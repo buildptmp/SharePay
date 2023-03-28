@@ -747,7 +747,6 @@ export async function getSlip(uid, gid, creditorid){
   }
 }
 
-// prai example
 export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
   const docRef = doc(db,'Test-Items',docid)
   // console.log(debtorid, calculatedprice, name);
