@@ -30,7 +30,7 @@ const Screens = [
 const Tab = createBottomTabNavigator();
 
 function Navbar() {
-  
+
   return (
     <Tab.Navigator
       initialRouteName={ Homepage }
@@ -53,6 +53,7 @@ function Navbar() {
               tabBarIcon: ({ color, size }) => (
                 <Icon name={e.icon} color={color} size={size} />
               ),
+              tabBarBadge: e.name == "Profile" && global.NotiSignal ? "":null
             }}
           />
         );
