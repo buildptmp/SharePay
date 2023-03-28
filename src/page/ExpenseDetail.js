@@ -10,18 +10,18 @@ export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
     const [editDebtStatusList, setEditStatusList] = useState([])
 
-    const EditDebtStatusBtn = async () => {
+    const EditDebtStatusBtn = () => {
         return(
             <View>
                 {
                     DebtorDebtor == "Debtor" &&
                     <TouchableOpacity style={[Styles.btn,{width:100, alignSelf:'flex-end', margin:10}]}
-                        onPress = {
+                        onPress={async() => {
                             // PopupConfirm
-                            await _saveEditDebtStatus
-                            alert("Update success")
+                            await _saveEditDebtStatus();
+                            alert("Update success");
                             // PopupSuccess
-                        }
+                        }}
                     >
                         <Text style={Styles.text}> Save </Text>
                     </TouchableOpacity>
@@ -53,9 +53,9 @@ export default function ExpenseDetail({ page, navigation, route}) {
     }
 
     const ListHeader = (
-        <View style={{justifyContent:'space-between', flexDirection:'row'}}>
-            <Text style={Styles.sectionHeader}>{DebtorDebtor}: {DebtorDebtorName}</Text>
-            <Text style={Styles.sectionHeader}>Group: {gname}</Text>
+        <View style={[Styles.box,{justifyContent:'space-between', flexDirection:'row', backgroundColor:'#F88C8C'}]}>
+            <Text style={Styles.sectionHeaderDebtDebtorList}>{DebtorDebtor}: {DebtorDebtorName}</Text>
+            <Text style={Styles.sectionHeaderDebtDebtorList}>Group: {gname}</Text>
         </View>
     )
 
@@ -127,10 +127,11 @@ export default function ExpenseDetail({ page, navigation, route}) {
                 renderSectionHeader={({section}) => (
                     <View style={[Styles.box,{justifyContent:'space-between'}]}>
                         <Text style={Styles.debttext1}>Expense name</Text>
-                        <Text style={Styles.debttext2}>Status</Text>
+                        <Text style={[Styles.debttext2,{borderLeftWidth:1,borderRightWidth:1,width:'40%'}]}>Status</Text>
                         <Text style={Styles.debttext3}>Amount</Text>
                     </View>
                 )}
+                ListHeaderComponent={ListHeader}
                 ListFooterComponent={<EditDebtStatusBtn />}
             />}  
         </SafeAreaView>

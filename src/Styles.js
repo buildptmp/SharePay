@@ -366,6 +366,11 @@ export const Styles = StyleSheet.create({
         fontWeight: 'bold',
     },
 
+    sectionHeaderDebtDebtorList: {
+        fontSize: 22,
+        fontWeight: 'bold',
+    },
+
     sectionHeaderdebtdetail: {
         paddingTop: 2,
         paddingLeft: 10,

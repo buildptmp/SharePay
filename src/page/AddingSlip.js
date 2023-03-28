@@ -42,15 +42,13 @@ export default function AddingSlip({ navigation, route }) {
     async function checkSlip(){
         if(pickerRes.fileName != undefined){
             if(apiRespose && apiRespose.status == 'Success'){
-                const uid = auth().currentUser.uid;
                 
                 const t_check = timecheck(timestamp, apiRespose.time)
                 const d_check = datecheck(timestamp, apiRespose.date)
                 if(t_check>=0 && d_check>=0){
                     if(apiRespose.amount == amount){
-                        const uid = auth().currentUser.uid;
                         for(let item of data.detail){
-                            await updateDebtStatus(item.eid,uid); // to be paid
+                            await updateDebtStatus(item.eid,data.from.uid,amount, data.from.name); // to be paid
                         }
                         setIsSuccess(true)
                         await _saveSlip(true)

@@ -135,17 +135,9 @@ function DebtList({data, page}) {
 
 function DebtorList({data}) {
     const navigation = useNavigation();
-    // const [debtStatus, setdebtStatus] = useState("");
-    // const [showDebtorRating, setShowDebtorRating] = useState(false);
-
-    // useEffect(() => {
-    //         if(debtStatus === 'paid'){
-    //             setShowDebtorRating(true);
-    //             }
-    //         else {
-    //             setShowDebtorRating(false);
-    //         }
-    // }, [debtStatus]);
+    const currentUser = auth().currentUser
+    const currname = currentUser?.displayName
+    const uid = currentUser?.uid
 
     return (
         <SafeAreaView>
@@ -168,7 +160,7 @@ function DebtorList({data}) {
                                         disabled={t.slip? false:true}
                                         style={t.slip? Styles.btnaddslip:[Styles.btnaddslip,{backgroundColor:'lightgray'}]}
                                         onPress={() => {
-                                            navigation.navigate('Add Slip', {amount:r.totolPrice, timestamp:r.timestamp, slip:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
+                                            navigation.navigate('Add Slip', {amount:t.totolPrice, timestamp:t.timestamp, slipURL:t.slip, data:{detail: t.detail, group:{gid:t.gid,name:e.title},to:{uid:uid,name:currname}, from:{uid:t.debtorid,name:t.debtorName}}})
                                         }}
                                     >
                                         <Text style={Styles.text}>Check Slip</Text>
