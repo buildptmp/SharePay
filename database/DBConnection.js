@@ -14,7 +14,8 @@ import {
   deleteDoc,
   Timestamp,
   FieldValue,
-  arrayUnion
+  arrayUnion,
+  arrayRemove
 } from "firebase/firestore"
 
 // const db = getFirestore(app);
@@ -702,7 +703,7 @@ export async function sendPersonalDebtReminder(uid){
 }
 
 /* Slip verification */ 
-export async function uploadSlipDebt(creditorid,uid, gid, slipURL){
+export async function uploadSlipDebt(creditorid,uid, gid, slipURL, verificationStatus){
   const slip = await getSlip(uid,gid,creditorid);
   
   if(!slip){ // add slip
@@ -710,13 +711,14 @@ export async function uploadSlipDebt(creditorid,uid, gid, slipURL){
       gid: gid,
       creditorid: creditorid,
       uid:uid,
-      slipURL:slipURL
+      slipURL:slipURL,
+      status: verificationStatus
     }
     const colRef = collection(db,preText+"SlipDebt")
     await addDoc(colRef,_data)
   } else { // update slip
     const docRef = doc(db,preText+"SlipDebt",slip.sid)
-    await setDoc(docRef,{slipURL:slipURL})
+    await updateDoc(docRef,{slipURL:slipURL,status: verificationStatus})
   }
   
 }
@@ -730,7 +732,7 @@ export async function getSlip(uid, gid, creditorid){
 
     if(!docsnap.empty){
       docsnap.forEach(doc=>{
-        slip.push({sid:doc.id,slipURL:{...doc.data()}.slipURL})
+        slip.push({sid:doc.id,slipURL:{...doc.data()}.slipURL,status:{...doc.data()}.status})
       })
       if(slip.length >1) console.log(slip)
 
@@ -746,34 +748,35 @@ export async function getSlip(uid, gid, creditorid){
 }
 
 // prai example
-// export async function updateDebtor(docid, debtorid, calculatedprice, name){
-//   const docRef = doc(db,'Test-Items',docid)
-//   await updateDoc(docRef,{
-//     debtor: arrayUnion({
-//       uid: debtorid,
-//       debtstatus: "paid",
-//       name:name,
-//       calculatedprice: calculatedprice
-//     })
-//   })
-//   await updateDoc(docRef,{
-//     debtor: arrayRemove({
-//       uid: debtorid,
-//       debtstatus: "owed",
-//       name:name,
-//       calculatedprice: calculatedprice
-//     })
-//   })
-// }
-
-export async function updateDebtStatus(uid){
-  const docRef = doc(db,'Test-Items', uid)
-  const data = {
-    debtstatus: "paid"
-  };
-
-  await updateDoc(docRef, data)
-  .catch(error => {
-    console.log(error);
+export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
+  const docRef = doc(db,'Test-Items',docid)
+  // console.log(debtorid, calculatedprice, name);
+  await updateDoc(docRef,{
+    debtor: arrayUnion({
+      uid: debtorid,
+      debtstatus: "paid",
+      name:name,
+      calculatedprice: calculatedprice
+    })
+  })
+  await updateDoc(docRef,{
+    debtor: arrayRemove({
+      uid: debtorid,
+      debtstatus: "owed",
+      name:name,
+      calculatedprice: calculatedprice
+    })
   })
 }
+
+// export async function updateDebtStatus(uid){
+//   const docRef = doc(db,'Test-Items', uid)
+//   const data = {
+//     debtstatus: "paid"
+//   };
+
+//   await updateDoc(docRef, data)
+//   .catch(error => {
+//     console.log(error);
+//   })
+// }

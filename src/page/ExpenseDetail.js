@@ -1,26 +1,57 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
-import { updateDebtor } from "../../database/DBConnection";
+import { updateDebtStatus } from "../../database/DBConnection";
 import SelectDropdown from "react-native-select-dropdown";
 import { useRef } from "react";
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
 
 export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
+    const [editDebtStatusList, setEditStatusList] = useState([])
+
+    const EditDebtStatusBtn = async () => {
+        return(
+            <View>
+                {
+                    DebtorDebtor == "Debtor" &&
+                    <TouchableOpacity style={[Styles.btn,{width:100, alignSelf:'flex-end', margin:10}]}
+                        onPress = {
+                            // PopupConfirm
+                            await _saveEditDebtStatus
+                            alert("Update success")
+                            // PopupSuccess
+                        }
+                    >
+                        <Text style={Styles.text}> Save </Text>
+                    </TouchableOpacity>
+                }
+            </View>
+        )
+    }
     
-    // const EditDebtStatusBtn = () => {
-    //     return(
-    //         <View>
-    //             <TouchableOpacity style={[Styles.btn,{width:150, alignSelf:'flex-end', margin:10}]}
-    //             onPress = {() => setEditStatus(false)}
-    //             >
-    //                 <Text style={Styles.text}> Edit Debt Status </Text>
-    //             </TouchableOpacity>
-    //         </View>
-    //     )
-    // }
-    
+    async function _saveEditDebtStatus(){
+        if(editDebtStatusList.length>0){
+            for(item of editDebtStatusList){
+                await updateDebtStatus(item.eid,DebtorDebtorId,item.priceToPay,DebtorDebtorName)
+            }
+        }
+    }
+
+    function crudOfEditDebtStatus(eid, priceToPay, status){
+        let temp = editDebtStatusList;
+
+        const index = temp.findIndex((obj => obj.eid == eid))
+        if(index>=0 && status=="owed"){// del from edit list if owed
+            temp = temp.filter(obj => obj.eid != eid)
+        } else if(index<0 && status == "paid") {// add to edit list if paid
+            temp.push({eid:eid,priceToPay:priceToPay})
+        }
+        
+        setEditStatusList(temp)
+        console.log(temp)
+    }
+
     const ListHeader = (
         <View style={{justifyContent:'space-between', flexDirection:'row'}}>
             <Text style={Styles.sectionHeader}>{DebtorDebtor}: {DebtorDebtorName}</Text>
@@ -49,6 +80,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                         data={debtorStatus}
                         onSelect={(selectedItem) => {
                             setStatus(selectedItem)
+                            crudOfEditDebtStatus(item.eid,item.priceToPay,selectedItem)
                         }}
                         buttonTextAfterSelection={(selectedItem) => {
                             return selectedItem
@@ -60,15 +92,19 @@ export default function ExpenseDetail({ page, navigation, route}) {
                         buttonStyle={Styles.dropdownBtnStyle2}
                         buttonTextStyle={Styles.dropdownBtnTxtStyle2}
                     />
-                    <AntDesign 
-                        name='edit'
-                        size={18}
-                        style={{alignItems:'center', marginTop:5}}
-                        onPress={()=>{
-                            editStatus = false
-                            ref.current.openDropdown()
-                        }}
-                    />
+                    {
+                        DebtorDebtor == "Debtor" &&
+                        <AntDesign 
+                            name='edit'
+                            size={18}
+                            style={{alignItems:'center', marginTop:5}}
+                            onPress={()=>{
+                                editStatus = false
+                                ref.current.openDropdown()
+                            }}
+                        />
+                    }
+                    
 
                     {/* <Text style={[Styles.debttext2, {textAlign:'center'}]}>{item.debtStatus}</Text> */}
                     <Text style={Styles.debttext3}>{item.priceToPay}</Text>
@@ -95,7 +131,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                         <Text style={Styles.debttext3}>Amount</Text>
                     </View>
                 )}
-                // ListFooterComponent={<EditDebtStatusBtn />}
+                ListFooterComponent={<EditDebtStatusBtn />}
             />}  
         </SafeAreaView>
     )

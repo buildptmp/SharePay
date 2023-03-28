@@ -244,6 +244,7 @@ export const Styles = StyleSheet.create({
         marginTop: 20,
         padding: 10,
         borderRadius: 20,
+        width:100
     },
 
     btndetail: {
