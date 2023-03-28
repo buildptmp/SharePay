@@ -7,15 +7,31 @@ import {
  } from "react-native";
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth';
+import { sendPersonalDebtReminder } from '../../database/DBConnection';
 
 export default function UserSelect({ navigation }) {
     const RouteMapping = [
         //{ routeName: 'Login', displayText: 'Log in', },
         { routeName: 'Register', displayText: 'Register / Log in', },
     ]
+    let sendOneTime = true
 
     function onAuthStateChanged(user) {
         if (user) {
+            setInterval(async ()=>{
+                const time = new Date(Date.now());
+                if(time.toLocaleString().split(", ")[1] == "7:00:00 AM"){
+                // if(time.toLocaleString().split(", ")[1] == "2:31:40 PM"){
+                    if(sendOneTime){
+                        sendOneTime = false
+                        await sendPersonalDebtReminder(user.uid)
+                        console.log("Sent debt reminder.")
+                    }
+                }
+                else{
+                  console.log(time.toLocaleString())
+                }
+            },1000)
             navigation.navigate('Root');
         }
     }

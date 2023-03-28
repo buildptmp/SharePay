@@ -50,18 +50,6 @@ const FontsLoader = () => {
 const App = () => {
   FontsLoader()
 
-  React.useEffect(()=>{
-    setInterval(()=>{
-      const time = new Date(Date.now());
-      if(time.toLocaleString().split(", ")[1] == "7:00:00 AM"){
-        console.log("sent debt reminder.")
-      }
-      else{
-        // console.log(time.toLocaleString())
-      }
-    },1000)
-  },[])
-
   return (
     <NavigationContainer>
       <Stack.Navigator 

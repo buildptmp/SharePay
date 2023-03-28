@@ -214,6 +214,48 @@ export async function getPersonalDebtAndDebtorListAllGroup(uid){
   // console.log("creditorList: ", creditorList)
   return {debtor:debtorList, debt:creditorList, havedata:havedata}
 }
+async function getPersonalDebtor(uid){
+  
+  const groupList = await getGroupListByUid(uid);
+  
+  let creditorList = [];  
+  
+  let havedata = false;
+  for(let g of groupList){
+
+    const items = await getExpenseListByGroupMember(g.gid,uid);
+    let data_creditorList = [];   
+    let totolGroupDebt = 0;
+
+    if(items.length >0){
+      for(let item of items){
+        // Debt //
+        const index = item.debtor.findIndex((obj => obj.uid == uid));
+        if(item.creditor.uid != uid && item.debtor[index].debtstatus == "owed") {
+          const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
+
+          if(index_c >=0){
+            if(data_creditorList[index_c].timestamp<item.timestamp) {
+              data_creditorList[index_c].timestamp = item.timestamp
+            } 
+          }else{
+            const _data = {
+              creditorid: item.creditor.uid,
+              timestamp: item.timestamp
+            };
+            data_creditorList.push(_data);
+          }
+          totolGroupDebt += Number(item.debtor[index].calculatedprice);
+        }
+      }
+    }
+    const data = {creditor:data_creditorList}
+
+    if(data.creditor.length>0) { creditorList.push({gname:g.name,gid:g.gid,totolGroupDebt:totolGroupDebt,data:data.creditor}); havedata = true }
+  }
+  // console.log("creditorList: ", creditorList)
+  return {debt:creditorList, havedata:havedata}
+}
 
 /* Group management*/
 
@@ -547,12 +589,13 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   const notiRef = collection(db, 'Notification-records');
 
   const uname = from.name;
-  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{uname}', uname).replace('{gname}', gname), header:'Group Invitation', group:{gid:gid,gname:gname}}
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{uname}', uname).replace('{gname}', gname), header:'Group Invitation'}
   // console.log(notification.message)
 
   let _data = {
     fromuid: from.uid,
     touid: to.uid,
+    group: {gid:gid,gname:gname},
     timestamp: Date.now(),
     read:false,
     needreaction: needreaction,
@@ -631,12 +674,31 @@ export function datecheck(d_create,d_slip){
   }
 }
 
-export async function debtReminder(from, to, needreaction, gid, gname){
+export async function debtReminder(/*from,*/ to, needreaction, gid, gname, priceToPay){
   const notiType = await getDoc(doc(db,'Notification-props', 'debtreminder'));
   const notiRef = collection(db, 'Notification-records');
 
-  await getExpenseListByGroupMember()
-  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{gname}', gname).replace('{priceToPay}', priceToPay), header:'Debt Reminder', group:{gid:gid,gname:gname}}
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{gname}', gname).replace('{priceToPay}', priceToPay), header:'Debt Reminder'}
+  let _data = {
+    // fromuid: from.uid,
+    touid: to.uid,
+    group: {gid:gid,gname:gname},
+    timestamp: Date.now(),
+    read:false,
+    needreaction: needreaction,
+    notification: notification,
+  }
+
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
+}
+export async function sendPersonalDebtReminder(uid){
+  const debtList = await getPersonalDebtor(uid);
+  if(debtList.havedata){
+    for(debt of debtList.debt){
+      await debtReminder({uid:uid},false,debt.gid,debt.gname,debt.totolGroupDebt)
+    }
+  }
 }
 
 /* Slip verification */ 
