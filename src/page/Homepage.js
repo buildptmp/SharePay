@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { Styles } from "../Styles"
 import { getGroupListByUid } from "../../database/DBConnection";
 import { ListItem } from "react-native-elements";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Homepage({page, navigation, route}){
     const [curUser, setUser] = useState(null);
@@ -19,18 +20,30 @@ export default function Homepage({page, navigation, route}){
         setGroupList(gList)
 
     };
+    useFocusEffect(
+        React.useCallback(() => {
+            auth().onAuthStateChanged( (user) => {
+                if (user) {
+                    setUser(user);
+                    _showGroupList(user.uid);
     
-    useEffect(() => {
-        auth().onAuthStateChanged((user) => {
-            if (user) {
-                setUser(user);
-                _showGroupList(user.uid);
+                } else {
+                    setUser(null);
+                }
+            });
+        }, [curUser])
+    )
+    // useEffect(() => {
+    //     auth().onAuthStateChanged((user) => {
+    //         if (user) {
+    //             setUser(user);
+    //             _showGroupList(user.uid);
 
-            } else {
-                setUser(null);
-            }
-        });
-    }, [curUser])
+    //         } else {
+    //             setUser(null);
+    //         }
+    //     });
+    // }, [curUser])
 
     const handleRefresh = React.useCallback(() => {
         const uid = auth().currentUser.uid

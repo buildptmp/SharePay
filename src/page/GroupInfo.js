@@ -20,6 +20,7 @@ import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember, isInGro
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
 import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function GroupInfo({ route, navigation }) {
     const { gid } = route.params
@@ -67,9 +68,15 @@ export default function GroupInfo({ route, navigation }) {
             alert("The system detect that you are not a member in the group. Your status is "+allowtostay.status+". \n\nPlease go back to the homepage and do pull to refresh.")
         }
     }
-    useEffect(() => {
-        isinGroup();        
-    },[]);
+    // useEffect(() => {
+    //     isinGroup();        
+    // },[]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            isinGroup();
+        }, [])
+    )
 
     const handleRefresh = React.useCallback(() => {
         setRefreshing(true);

@@ -88,7 +88,10 @@ export default function ItemInfo({ route,navigation }) {
                 
                 <TouchableOpacity 
                     style={Styles.btnitif}
-                    onPress={()=>{navigation.navigate(-2)}}
+                    onPress={()=>{
+                        navigation.goBack();
+                        navigation.goBack();
+                    }}
                     >
                     <Text style={Styles.text}> Done </Text>
                 </TouchableOpacity>

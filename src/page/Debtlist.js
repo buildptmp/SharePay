@@ -118,7 +118,7 @@ function DebtList({data, page}) {
                                         key={r+"Add Slip"}
                                         style={Styles.btnaddslip}
                                         onPress={() => {
-                                            navigation.navigate("Add Slip", {amount:r.totolPrice, timestamp:r.timestamp, slipURL:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
+                                            navigation.navigate('Add Slip', {amount:r.totolPrice, timestamp:r.timestamp, slipURL:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
                                         }}
                                     >
                                         <Text style={Styles.text}>{r.slip ? "Check Slip":"Add slip"}</Text>
@@ -168,7 +168,7 @@ function DebtorList({data}) {
                                         disabled={t.slip? false:true}
                                         style={t.slip? Styles.btnaddslip:[Styles.btnaddslip,{backgroundColor:'lightgray'}]}
                                         onPress={() => {
-                                            navigation.navigate("Add Slip", {amount:r.totolPrice, timestamp:r.timestamp, slip:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
+                                            navigation.navigate('Add Slip', {amount:r.totolPrice, timestamp:r.timestamp, slip:r.slip, data:{detail: r.detail, group:{gid:r.gid,name:e.title},from:{uid:uid,name:currname}, to:{uid:r.creditorid,name:r.creditorName}}})
                                         }}
                                     >
                                         <Text style={Styles.text}>Check Slip</Text>

@@ -232,7 +232,11 @@ import { Button,
             
             <TouchableOpacity 
                 style={[Styles.btnitif, {position:'absolute', top:500}]}
-                onPress={()=>{navigation.navigate(-1)}}
+                onPress={()=>{
+                    navigation.goBack();
+                    navigation.navigate('Group',{gid:gid})
+                    
+                }}
                 >
                 <Text style={Styles.text}> Done </Text>
             </TouchableOpacity>
