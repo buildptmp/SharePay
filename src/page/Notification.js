@@ -64,6 +64,26 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
             }
         },[invstatus])
 
+        const TapToPadding = (props) =>{
+            const [openPad, setOpenPad] = useState(false);
+            return (
+                <Pressable onPress={()=>setOpenPad(!openPad)}>
+                    <Text style={{fontSize:16, color:'grey'}}>{props.message}</Text>
+                    {
+                        openPad ?
+                        <>
+                            <Text style={{fontSize:16, color:'grey'}}>{props.padding}</Text>
+                            <Text style={{fontSize:16, color:'grey'}}>{props.endding}</Text>
+                        </>
+                        :
+                        <>
+                            <Text style={{fontSize:16, color:'grey'}}>{props.endding}</Text>
+                            <Text style={{fontWeight:'bold'}}>Click for more information</Text>
+                        </>
+                    }
+                </Pressable>
+            )
+        }
         return (
             <View style={{flex:1}}>
                 <View style={{
@@ -74,7 +94,7 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
                 }}>
                 <View style={{flexDirection:'row', marginBottom:5}}>
                     <View style={{width: '67%',flexDirection:'row'}}>
-                        <Text style={{fontWeight:'bold', fontSize:20, marginRight:10}}>{record.header}</Text>
+                        <Text style={{fontWeight:'bold', fontSize:20, marginRight:6}}>{record.header}</Text>
                         {invstatus ? <Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( {invstatus} )</Text>:null}
                         {hasread || invstatus? null:<Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( new )</Text>}
                     </View>
@@ -85,7 +105,12 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
                 </View>
 
                 <View>
-                    <Text style={{fontSize:16, color:'grey'}}>{record.message}</Text>
+                    {
+                        record.type == "payment-paid" ?
+                        <TapToPadding message={record.message} padding={record.padding} endding={record.endding}/>
+                        : 
+                        <Text style={{fontSize:16, color:'grey'}}>{record.message}</Text>
+                    }
                 </View>
                 {
                     record.type == 'groupinv' && needreaction? 

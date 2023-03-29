@@ -215,7 +215,7 @@ export async function getPersonalDebtAndDebtorListAllGroup(uid){
   // console.log("creditorList: ", creditorList)
   return {debtor:debtorList, debt:creditorList, havedata:havedata}
 }
-async function getPersonalDebtor(uid){
+async function getPersonalDebt(uid){
   
   const groupList = await getGroupListByUid(uid);
   
@@ -327,12 +327,21 @@ export async function getGroupByGid(gid){
       console.log(error)
   }
 }
-export async function checkAllowToleave(uid, gid){ //A-edit
+export async function checkAllowToleave(uid, gid){
 
   try {
     const data = await getPersonalDebtAndDebtorListbyGid(gid, uid);
-
-    return {creditor:(data.creditor.length == 0), debtor:(data.debtor.length == 0)}; // True if empty.
+    
+    let pass = true
+    if(data.debtor.length > 0){
+      for(debtor of data.debtor){
+        if(debtor.debtstatus=="owed"){
+          pass = false;
+          break;
+        }
+      }
+    }
+    return {creditor:(data.creditor.length == 0), debtor:(data.debtor.length == 0) || pass}; // True if empty.
 
   } catch (error){
     console.log(error);
@@ -411,8 +420,6 @@ export async function deleteGroup(gid){
 
 export async function addExpense(name, price, creditorid, method, gid,description=""){
   const creditorInfo = await getUserFromUid(creditorid)
-  const date = new Date (Date.now());
-  let dateFormat = (date.getHours()<10? '0'+date.getHours():date.getHours()) + ":" + (date.getMinutes()<10? '0'+date.getMinutes():date.getMinutes()) + ", "+ date.toDateString();
   
   let _data = {
     name: name,
@@ -420,7 +427,7 @@ export async function addExpense(name, price, creditorid, method, gid,descriptio
     creditor: creditorInfo, // an object
     method: method,
     gid: gid,
-    timestamp: date,
+    timestamp: Date.now(),
     dateFormat: dateFormat
   }
   if(description){
@@ -555,7 +562,7 @@ export async function getAllNoti(uid){
     })
 
     notiList.sort(function(x, y){
-      return x.timestamp - y.timestamp;
+      return y.timestamp - x.timestamp;
     })
 
     return notiList;
@@ -564,7 +571,6 @@ export async function getAllNoti(uid){
     console.log(error);
   }
 }
-
 export async function getGroupInv(fromuid,touid){
   const notiRef = collection(db, 'Notification-records');
   const q = query(notiRef,where("fromuid","==",fromuid),where("touid","==",touid), where("needreaction","==",true));
@@ -584,7 +590,6 @@ export async function getGroupInv(fromuid,touid){
     console.log(error);
   }
 }
-
 export async function sendGroupInv(from, to, needreaction, gid, gname){
   const notiType = await getDoc(doc(db,'Notification-props', 'groupinv')); 
   const notiRef = collection(db, 'Notification-records');
@@ -608,12 +613,10 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
   return nid
 }
-
 export async function delGroupInv(nid, gid, uid){ // Del noti and Del UserGroup
   await deleteDoc(doc(db,'Notification-records',nid)).catch(error => {console.log(error)});
   await deleteDoc(doc(db,preText+'UserGroup',`(${gid},${uid})`)).catch(error => {console.log(error)});
 }
-
 export async function setGroupInvResponse(nid, action){
   const notiRef = doc(db, 'Notification-records', nid);
   const date = new Date(Date.now())
@@ -623,7 +626,6 @@ export async function setGroupInvResponse(nid, action){
   }
   await updateDoc(notiRef, _data).catch(error => {console.log(error)})
 }
-
 export async function setReadNeedReaction(nid,read, needreaction=""){
   const notiRef = doc(db, 'Notification-records',nid);
   let _data = {
@@ -635,7 +637,6 @@ export async function setReadNeedReaction(nid,read, needreaction=""){
   }
   await updateDoc(notiRef, _data).catch(error => {console.log(error)})
 }
-
 function formatDate(date) {
   var d = new Date(date),
   month = '' + (d.getMonth() + 1),
@@ -649,11 +650,10 @@ function formatDate(date) {
 
   return [year, month, day].join('');
 }
-
 export function timecheck(t_create,t_slip){
   time = new Date(t_create)
   time_create = time.toLocaleTimeString('it-IT')
-  // console.log("time_create", time, "time_slip", t_slip)
+  // console.log("time_create"+ time_create, "time_slip", t_slip)
   if(time_create<t_slip){
     return 1;
   } else if(time_create==t_slip){
@@ -662,10 +662,9 @@ export function timecheck(t_create,t_slip){
     return -1;
   }
 }
-
 export function datecheck(d_create,d_slip){
   date_create = formatDate(d_create) 
-  // console.log("date_create", date_create, "date_slip", d_slip)
+  // console.log("date_create"+ date_create, "date_slip", d_slip)
   if(date_create<d_slip){
     return 1;
   } else if(date_create==d_slip){
@@ -674,8 +673,7 @@ export function datecheck(d_create,d_slip){
     return -1;
   }
 }
-
-export async function debtReminder(/*from,*/ to, needreaction, gid, gname, priceToPay){
+export async function debtReminder(/*from,*/ to, gid, gname, priceToPay){
   const notiType = await getDoc(doc(db,'Notification-props', 'debtreminder'));
   const notiRef = collection(db, 'Notification-records');
 
@@ -686,7 +684,7 @@ export async function debtReminder(/*from,*/ to, needreaction, gid, gname, price
     group: {gid:gid,gname:gname},
     timestamp: Date.now(),
     read:false,
-    needreaction: needreaction,
+    needreaction: false,
     notification: notification,
   }
 
@@ -694,16 +692,62 @@ export async function debtReminder(/*from,*/ to, needreaction, gid, gname, price
   return nid
 }
 export async function sendPersonalDebtReminder(uid){
-  const debtList = await getPersonalDebtor(uid);
+  const debtList = await getPersonalDebt(uid);
   if(debtList.havedata){
     for(debt of debtList.debt){
-      await debtReminder({uid:uid},false,debt.gid,debt.gname,debt.totolGroupDebt)
+      await debtReminder({uid:uid},debt.gid,debt.gname,debt.totolGroupDebt)
     }
   }
 }
+export async function sendPaidDebtNoti(from, to, gid, gname,  expense){
+  const notiType = await getDoc(doc(db,'Notification-props', 'payment-paid'));
+  const notiRef = collection(db, 'Notification-records');
+
+  let message = {...notiType.data()}.message.replace('{uname}', from.name).replace('{gname}',gname);
+  let message_padding = "\n"+{...notiType.data()}.padding+"\n"
+  let n = 0;
+  for(e of expense){
+    n++;
+    message_padding += {...notiType.data()}.expenseList.replace('{n}', n).replace('{ename}', e.ename).replace('{priceToPay}', e.priceToPay)
+    message_padding += "\n"
+  }
+  let message_endding = {...notiType.data()}.endding.replace('{uname}', from.name)
+
+  const notification = {type:notiType.id, message:message, padding:message_padding, endding:message_endding, header:'Your debt is paid in full'}
+  let _data = {
+    fromuid: from.uid,
+    touid: to.uid,
+    group: {gid:gid,gname:gname},
+    timestamp: Date.now(),
+    read:false,
+    needreaction: false,
+    notification: notification,
+  }
+
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
+}
+export async function sendDebtClearNoti(touid, gid, gname){
+  const notiType = await getDoc(doc(db,'Notification-props', 'payment-clear'));
+  const notiRef = collection(db, 'Notification-records');
+
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{gname}', gname), header:`Zero Debt in ${gname}`}
+  let _data = {
+    // fromuid: from.uid,
+    touid: touid,
+    group: {gid:gid,gname:gname},
+    timestamp: Date.now(),
+    read:false,
+    needreaction: false,
+    notification: notification,
+  }
+
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
+}
 
 /* Slip verification */ 
-export async function uploadSlipDebt(creditorid,uid, gid, slipURL, verificationStatus){
+export async function uploadSlipDebt(creditorid,uid, gid, slipURL, verificationStatus, pickerRes){
   const slip = await getSlip(uid,gid,creditorid);
   
   if(!slip){ // add slip
@@ -712,15 +756,15 @@ export async function uploadSlipDebt(creditorid,uid, gid, slipURL, verificationS
       creditorid: creditorid,
       uid:uid,
       slipURL:slipURL,
-      status: verificationStatus
+      status: verificationStatus,
+      pickerRes:pickerRes
     }
     const colRef = collection(db,preText+"SlipDebt")
     await addDoc(colRef,_data)
   } else { // update slip
     const docRef = doc(db,preText+"SlipDebt",slip.sid)
-    await updateDoc(docRef,{slipURL:slipURL,status: verificationStatus})
+    await updateDoc(docRef,{slipURL:slipURL,status: verificationStatus,pickerRes:pickerRes})
   }
-  
 }
 export async function getSlip(uid, gid, creditorid){
   const colRef = collection(db,preText+"SlipDebt")
@@ -732,7 +776,7 @@ export async function getSlip(uid, gid, creditorid){
 
     if(!docsnap.empty){
       docsnap.forEach(doc=>{
-        slip.push({sid:doc.id,slipURL:{...doc.data()}.slipURL,status:{...doc.data()}.status})
+        slip.push({sid:doc.id,slipURL:{...doc.data()}.slipURL,status:{...doc.data()}.status, pickerRes:{...doc.data()}.pickerRes})
       })
       if(slip.length >1) console.log(slip)
 
@@ -746,7 +790,6 @@ export async function getSlip(uid, gid, creditorid){
     console.log(error);
   }
 }
-
 export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
   const docRef = doc(db,'Test-Items',docid)
   // console.log(debtorid, calculatedprice, name);
@@ -767,6 +810,7 @@ export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
     })
   })
 }
+
 
 // export async function updateDebtStatus(uid){
 //   const docRef = doc(db,'Test-Items', uid)

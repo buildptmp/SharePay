@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, TouchableOpacity, SectionList, StyleSheet, SafeAreaView, RefreshControl  } from 'react-native';
+import { View, Image, Text, TouchableOpacity, SectionList, StyleSheet, SafeAreaView, RefreshControl } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { Styles } from "../Styles"
 import { getGroupListByUid } from "../../database/DBConnection";
 import { ListItem } from "react-native-elements";
 import { useFocusEffect } from "@react-navigation/native";
+import { Pressable } from "react-native";
+import { sendDebtClearNoti, sendPaidDebtNoti } from "../../database/DBConnection";
 
 export default function Homepage({page, navigation, route}){
     const [curUser, setUser] = useState(null);
@@ -54,6 +56,30 @@ export default function Homepage({page, navigation, route}){
         }, 2000);
     }, []);
 
+    const ListFooter =( // for test
+        <View>
+            <Pressable 
+                style={Styles.btnaddex}
+                onPress= {()=>{
+                    from = {uid:"1tmvjTfbUSRTCdTMldSpVZXhXLP2",name:"J"}
+                    to = {uid: "NZA9HHxQTmaGyANy0071ybo7WDr2",name:"Pop"}
+                    gid = "7LYCdIH5J2zHCNh88GAW"
+                    ex = []
+                    for(let n=0;n<5;n++){
+                        ex.push({ename:`test-${n}`,priceToPay:10*n})
+                    }
+                    
+                    // sendDebtClearNoti(to,gid,"My moon")
+                    sendPaidDebtNoti(from,to,gid,"My moon",ex)
+                    alert("Sent noti")
+                    
+                }}
+            >
+                <Text style={Styles.text}>Send Noti</Text>
+            </Pressable> 
+        </View>
+    )
+
     return(
         <SafeAreaView style={Styles.list_container}>
             {groupList && <SectionList
@@ -86,7 +112,7 @@ export default function Homepage({page, navigation, route}){
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
                 }
-                // ListFooterComponentStyle={{heigth:'100%',backgroundColor:'#F6EFEF'}}
+                // ListFooterComponent={ListFooter}
             />}
         </SafeAreaView>
     );
