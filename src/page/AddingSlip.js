@@ -12,9 +12,10 @@ import { Button,
     TouchableOpacity,
     ScrollView,
     Modal,
+    Pressable,
  } from "react-native";
 import { get_access_key, getpaymentInfo } from "../../database/api";
-import { timecheck, datecheck, uploadSlipDebt, getSlip} from '../../database/DBConnection';
+import { timecheck, datecheck, uploadSlipDebt, getSlip, updateDebtStatus, sendPaidDebtNoti,sendDebtClearNoti, checkAllowToleave} from '../../database/DBConnection';
 import { imagePicker, uploadSlip } from '../../database/Storage'
 import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
@@ -22,16 +23,16 @@ import SuccessAdd from '../components/SuccessAdd';
 import { Tooltip } from 'react-native-elements';
 
 export default function AddingSlip({ navigation, route }) {
-    const {amount,timestamp, data, slipURL} = route.params;
+    const {amount,timestamp, data, slip, status} = route.params;
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
     const [pickerRes, setPickerRes] = useState({uri:""});
-    const [transRef, setTransRef] = useState("202303143qO8X3qczVArfqJ");
-    const RouteMapping = [
-        { routeName: 'Add Member', displayText: 'Add Member', }
-    ]
+    const [transRef, setTransRef] = useState("2023032937wGEyNrQmdwKsq");
+    // "2023032937wGEyNrQmdwKsq" 500
+    // "202303143qO8X3qczVArfqJ" 1000
     const [apiRespose, setResponse] = useState("");
-    const [slip, setSlip] = useState("");
+    const [slipURL, setSlip] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
 
     async function chooseFile() {
         const response = await imagePicker()
@@ -40,22 +41,45 @@ export default function AddingSlip({ navigation, route }) {
         }
     };
 
+    async function sendNoti(){
+        let expenses = [];
+        for(let item of data.detail){
+            await updateDebtStatus(item.eid,data.from.uid,item.priceToPay, data.from.name); // to be paid
+            expenses.push({eid:item.eid,ename:item.itemName,priceToPay:item.priceToPay})
+        }
+        await sendPaidDebtNoti(data.from,data.to,data.group.gid,data.group.name,expenses)
+
+        // check the debt is clear?
+        for(uid of [data.from.uid,data.to.uid]){
+            const check = await checkAllowToleave(uid,data.group.gid)
+            if(check.creditor && check.debtor){
+                await sendDebtClearNoti(uid,data.group.gid,data.group.name)
+                if(uid==data.to.uid){
+                    global.NotiSignal = true
+                }
+            }
+        }
+    }
+
     async function checkSlip(){
         if(pickerRes.fileName != undefined){
-            if(apiRespose && apiRespose.status == 'Success'){console.log("1")
-                const uid = auth().currentUser.uid;
-                await _saveSlip()
-
+            if(apiRespose && apiRespose.status == 'Success'){
+                
                 const t_check = timecheck(timestamp, apiRespose.time)
                 const d_check = datecheck(timestamp, apiRespose.date)
+                // console.log(t_check, d_check)
                 if(t_check>=0 && d_check>=0){
                     if(apiRespose.amount == amount){
-                        const uid = auth().currentUser.uid;
-                        // await updateDebtor(eid, uid) to be paid
+                        await sendNoti();
+                        await _saveSlip(true)
+                        setIsSuccess(true)
+                        alert("Verification Pass")
                     } else{
-                        alert("the amount in slip is not equal to the total amount of the expense price.")
+                        await _saveSlip(false)
+                        alert("the amount in slip is not equal to the total amount of the expense price.") 
                     }
                 } else {
+                    await _saveSlip(false)
                     alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
                 }
             } else{
@@ -65,18 +89,15 @@ export default function AddingSlip({ navigation, route }) {
         } else {
             alert("Cannot find a slip.")
         }
-        
     }
 
-    async function _saveSlip(){
-        // console.log(pickerRes.fileName,pickerRes.uri,pickerRes.type)
-        const photoURL = await uploadSlip(pickerRes.fileName,pickerRes.uri,pickerRes.type)
+    async function _saveSlip(verificationStatus){
+        const photoURL = await uploadSlip(pickerRes.fileName,pickerRes.uri,pickerRes.type, slip.slipURL)
         if(photoURL) {
-            await uploadSlipDebt(data.to.uid,data.from.uid,data.group.gid,photoURL);
+            await uploadSlipDebt(data.to.uid,data.from.uid,data.group.gid,photoURL,verificationStatus,pickerRes);
             // alert("upload a slip successfully")
             setSlip(photoURL)
         } else console.log("upload error")
-        
     }
 
     useEffect(()=>{
@@ -84,15 +105,25 @@ export default function AddingSlip({ navigation, route }) {
             const response = await getpaymentInfo(transRef);
             setResponse(response);
         }
+        
+        if(slip){
+            setPickerRes(slip.pickerRes)
+            setSlip(slip.slipURL)
+            if(isSuccess){
+                setIsSuccess(isSuccess)
+            } else{
+                setIsSuccess(slip.status)
+            }
+
+            if(slip.status){
+                setTransRef("")
+            }
+        }
         if(transRef){
             callapi(transRef);
         }
-        if(slipURL){
-            setPickerRes({uri:slipURL.slipURL})
-            setSlip(slipURL.slipURL)
-        }
         // console.log(transRef)
-    },[transRef,slip])
+    },[transRef,isSuccess])
 
     // const PoppuSlipVerificationSuccessful = (
     //     <View>
@@ -114,36 +145,68 @@ export default function AddingSlip({ navigation, route }) {
                         </View>
                     }
                 </TouchableOpacity>
-                {
-                    (slip || slipURL) && 
-                    <View style={{flexDirection:'row', margin:10}}>
-                        <Text style={{fontSize:40,color:'#4FC978',fontWeight:'bold'}}>Verified</Text>
-                        <Tooltip ModalComponent={Modal} popover={<Text>Verified only show that the uploaded slip is a real transaction occurred. {"\n\n"}(not for checking the amount price to pay)</Text>} 
-                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:120,width:250}}>
-                            <Feather name="alert-circle"/>
-                        </Tooltip>
+                <View style={styles.centeredView}>
+                    <View style={[styles.modalView,{backgroundColor: 'white', marginTop:10, justifyContent:'center', alignItems:'center', paddingHorizontal:20}]}>
+                        {
+                            (slipURL ?
+                            (isSuccess ? 
+                            <View style={{flexDirection:'row', margin:10}}>
+                                <Text style={{fontSize:40,color:'#2E8B57',fontWeight:'bold'}}>Verified✓</Text>
+                            </View>
+                            :
+                            <View style={{flexDirection:'row', margin:10}}>
+                                <Text style={{fontSize:30,color:'red',fontWeight:'bold'}}>Verification Fail</Text>
+                                <Tooltip ModalComponent={Modal} popover={<Text>This might occur for the following reasons.{"\n\n"}  - The amount of price is not equal.{"\n"}  - The age of the slip is older than the time of the lastest expense creation.{"\n\n"}Suggestion: Please check your transaction or contact the creditor to change your debt status.</Text>} 
+                                    containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:220,width:250, left:140}}>
+                                    <Feather name="alert-circle"/>
+                                </Tooltip>
+                            </View>) : null )
+                        }
+                        <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Expense Information</Text>
+                        <Text>Group: {data.group.name}</Text>
+                        <Text>From: {data.from.name}</Text>
+                        <Text>To: {data.to.name} </Text>
+                        <Text> Amount: {amount} </Text>
+                        <Pressable 
+                            // key={e.routeName}
+                            style={isSuccess? [Styles.btnslip, {marginBottom:10, backgroundColor:'#2E8B57'}]:[Styles.btnslip, {marginBottom:10}]}
+                            onPress={ async ()=> {
+                                await checkSlip();
+                            }}
+                            disabled={isSuccess}
+                        >
+                            <Text style={Styles.text}>{isSuccess? "Verified":"Confirm" }</Text>
+                        </Pressable>
+                        {/* <SuccessAdd /> */}
                     </View>
-                }
-                    
-                <View style={[{backgroundColor: '#F6EFEF', marginTop:10, justifyContent:'center', alignItems:'center'}]}>
-                    <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Information</Text>
-                    <Text>Group: {data.group.name}</Text>
-                    <Text>From: {data.from.name}</Text>
-                    <Text>To: {data.to.name} </Text>
-                    <Text> Amount: {amount} </Text>
-                    <TouchableOpacity 
-                        // key={e.routeName}
-                        style={[Styles.btnslip, {marginBottom:10}]}
-                        onPress={ async ()=> {
-                            await checkSlip();
-                        }}
-                    >
-                        <Text style={Styles.text}> Confirm </Text>
-                    </TouchableOpacity>
-                    {/* <SuccessAdd /> */}
                 </View>
             </View> 
         </ScrollView>
     );
 };
 
+const styles = StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 20,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    
+  });
+  

@@ -1,30 +1,74 @@
 import React, { useState, useEffect } from "react";
 import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
-import { updateDebtor } from "../../database/DBConnection";
+import { updateDebtStatus, checkAllowToleave, sendDebtClearNoti } from "../../database/DBConnection";
 import SelectDropdown from "react-native-select-dropdown";
 import { useRef } from "react";
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
 
 export default function ExpenseDetail({ page, navigation, route}) {
-    const { detail, DebtorDebtor, gname, DebtorDebtorName, DebtorDebtorId} = route.params;
+    const { detail, DebtOrDebtor, DebtOrDebtorName, DebtOrDebtorId, group, currUser} = route.params;
+    const [editDebtStatusList, setEditStatusList] = useState([])
+
+    const EditDebtStatusBtn = () => {
+        return(
+            <View>
+                {
+                    DebtOrDebtor == "Debtor" &&
+                    <TouchableOpacity style={[Styles.btn,{width:100, alignSelf:'flex-end', margin:10}]}
+                        onPress={async() => {
+                            // PopupConfirm
+                            await _saveEditDebtStatus();
+                            alert("Update success");
+                            // PopupSuccess
+                        }}
+                    >
+                        <Text style={Styles.text}> Save </Text>
+                    </TouchableOpacity>
+                }
+            </View>
+        )
+    }
     
-    // const EditDebtStatusBtn = () => {
-    //     return(
-    //         <View>
-    //             <TouchableOpacity style={[Styles.btn,{width:150, alignSelf:'flex-end', margin:10}]}
-    //             onPress = {() => setEditStatus(false)}
-    //             >
-    //                 <Text style={Styles.text}> Edit Debt Status </Text>
-    //             </TouchableOpacity>
-    //         </View>
-    //     )
-    // }
-    
+    async function _saveEditDebtStatus(){
+        if(editDebtStatusList.length>0){
+            for(item of editDebtStatusList){
+                await updateDebtStatus(item.eid,DebtOrDebtorId,item.priceToPay,DebtOrDebtorName)//Debtor
+            }
+
+            for(uid of [DebtOrDebtorId,currUser.uid]){
+                const check = await checkAllowToleave(uid,group.gid)
+                
+                if(check.creditor && check.debtor){
+                    await sendDebtClearNoti(uid,group.gid,group.name)
+                    if(uid==currUser.uid){
+                        global.NotiSignal = true
+                    }
+                }
+            }
+        } else {
+            // PopupNothing to be changed
+        }
+    }
+
+    function crudOfEditDebtStatus(eid, priceToPay, status){
+        let temp = editDebtStatusList;
+
+        const index = temp.findIndex((obj => obj.eid == eid))
+        if(index>=0 && status=="owed"){// del from edit list if owed
+            temp = temp.filter(obj => obj.eid != eid)
+        } else if(index<0 && status == "paid") {// add to edit list if paid
+            temp.push({eid:eid,priceToPay:priceToPay})
+        }
+        
+        setEditStatusList(temp)
+        console.log(temp)
+    }
+
     const ListHeader = (
-        <View style={{justifyContent:'space-between', flexDirection:'row'}}>
-            <Text style={Styles.sectionHeader}>{DebtorDebtor}: {DebtorDebtorName}</Text>
-            <Text style={Styles.sectionHeader}>Group: {gname}</Text>
+        <View style={[Styles.box,{justifyContent:'space-between', flexDirection:'row', backgroundColor:'#F88C8C'}]}>
+            <Text style={Styles.sectionHeaderDebtDebtorList}>{DebtOrDebtor}: {DebtOrDebtorName}</Text>
+            <Text style={Styles.sectionHeaderDebtDebtorList}>Group: {group.name}</Text>
         </View>
     )
 
@@ -49,6 +93,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                         data={debtorStatus}
                         onSelect={(selectedItem) => {
                             setStatus(selectedItem)
+                            crudOfEditDebtStatus(item.eid,item.priceToPay,selectedItem)
                         }}
                         buttonTextAfterSelection={(selectedItem) => {
                             return selectedItem
@@ -60,16 +105,18 @@ export default function ExpenseDetail({ page, navigation, route}) {
                         buttonStyle={Styles.dropdownBtnStyle2}
                         buttonTextStyle={Styles.dropdownBtnTxtStyle2}
                     />
-                    <AntDesign 
-                        name='edit'
-                        size={18}
-                        style={{alignItems:'center', marginTop:5}}
-                        onPress={()=>{
-                            editStatus = false
-                            ref.current.openDropdown()
-                        }}
-                    />
-
+                    {
+                        DebtOrDebtor == "Debtor" &&
+                        <AntDesign 
+                            name='edit'
+                            size={18}
+                            style={{alignItems:'center', marginTop:5}}
+                            onPress={()=>{
+                                editStatus = false
+                                ref.current.openDropdown()
+                            }}
+                        />
+                    }
                     {/* <Text style={[Styles.debttext2, {textAlign:'center'}]}>{item.debtStatus}</Text> */}
                     <Text style={Styles.debttext3}>{item.priceToPay}</Text>
                 </View>
@@ -82,7 +129,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
             {detail && <SectionList
                 style={{height:'100%'}}
                 sections={[
-                    {title: DebtorDebtor+": "+DebtorDebtorName , data: detail},
+                    {title: DebtOrDebtor+": "+DebtOrDebtorName , data: detail},
                 ]}
                 renderItem={({item}) => 
                     <RenderItem item={item} />
@@ -91,11 +138,12 @@ export default function ExpenseDetail({ page, navigation, route}) {
                 renderSectionHeader={({section}) => (
                     <View style={[Styles.box,{justifyContent:'space-between'}]}>
                         <Text style={Styles.debttext1}>Expense name</Text>
-                        <Text style={Styles.debttext2}>Status</Text>
+                        <Text style={[Styles.debttext2,{borderLeftWidth:1,borderRightWidth:1,width:'40%'}]}>Status</Text>
                         <Text style={Styles.debttext3}>Amount</Text>
                     </View>
                 )}
-                // ListFooterComponent={<EditDebtStatusBtn />}
+                ListHeaderComponent={ListHeader}
+                ListFooterComponent={<EditDebtStatusBtn />}
             />}  
         </SafeAreaView>
     )

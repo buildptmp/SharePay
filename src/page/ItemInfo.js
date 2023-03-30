@@ -89,7 +89,9 @@ export default function ItemInfo({ route,navigation }) {
                 <TouchableOpacity 
                     style={Styles.btnitif}
                     onPress={()=>{
-                        navigation.goBack();
+                        if(allowToEdit){
+                            navigation.goBack();
+                        } 
                         navigation.goBack();
                     }}
                     >

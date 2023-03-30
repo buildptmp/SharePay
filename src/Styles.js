@@ -244,6 +244,7 @@ export const Styles = StyleSheet.create({
         marginTop: 20,
         padding: 10,
         borderRadius: 20,
+        width:100
     },
 
     btndetail: {
@@ -361,6 +362,11 @@ export const Styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         paddingBottom: 10,
+        fontSize: 22,
+        fontWeight: 'bold',
+    },
+
+    sectionHeaderDebtDebtorList: {
         fontSize: 22,
         fontWeight: 'bold',
     },

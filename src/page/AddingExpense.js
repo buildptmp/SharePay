@@ -124,7 +124,6 @@ export default function AddingExpense({ route, navigation }) {
             <View style={Styles.centeredView}>
                 <View style={Styles.modalView}>
                     <Text style={{textAlign:'center'}}>A decimal number that has more than two decimal point will be rounded up.</Text>
-                    <Text>Please check the box to continue.</Text>
                     <View style={{justifyContent:'center', margin:10}}>
                         {/* <View style=s{{flexDirection:'row', justifyContent:'center', width:'80%'}}> */}
                         <TouchableOpacity 

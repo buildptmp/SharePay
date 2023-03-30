@@ -38,7 +38,10 @@ export async function uploadGroupImg(fileName, file, type){
     return url
 }
 
-export async function uploadSlip(fileName, file, type){
+export async function uploadSlip(fileName, file, type, oldSlipURL=""){
+    if(oldSlipURL){
+        storage().refFromURL(oldSlipURL).delete();
+    }
     const reference = storage().ref("/slip/"+fileName);
     // uploads file
     const task = reference.putFile(file);
@@ -78,7 +81,7 @@ export async function imagePicker(){
             // return res
         }
     });
-    console.log(res.didCancel ? res : "Response = ",res.assets[0])
-    return res.didCancel ? res : res.assets[0]
+    console.log(res.didCancel ? storage() : "Response = ",res.assets[0])
+    return res.didCancel ? storage() : res.assets[0]
 };
 
