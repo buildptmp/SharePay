@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { View, 
     Text, 
     Button, 
@@ -17,6 +18,8 @@ import { AirbnbRating } from 'react-native-ratings'
 import SelectDropdown from 'react-native-select-dropdown'
 import { async } from "@firebase/util";
 import { ScrollView } from "react-native-gesture-handler";
+import { updateRating } from "../../database/DBConnection";
+
 
 export default function DebtView({page, navigation}){
     const [debtorList, setDebtorList] = useState([]);
@@ -133,8 +136,21 @@ function DebtList({data, page}) {
     )
 }
 
-function DebtorList({data}) {
+function DebtorList({data, uid}) {
     const navigation = useNavigation();
+    const [rating, setRating] = useState(null);
+    const [ratedByUser, setRatedByUser] = useState(false);
+
+    const handleRating = async (rating) => {
+        await updateRating(uid, rating);
+        setRatedByUser(true);
+      };
+    
+      if (ratedByUser) {
+        return null;
+      }
+
+
     // const [debtStatus, setdebtStatus] = useState("");
     // const [showDebtorRating, setShowDebtorRating] = useState(false);
 
@@ -176,9 +192,10 @@ function DebtorList({data}) {
                                 </TouchableOpacity>
 
                                 
-                                { t.debtStatus === 'paid' && 
+                                { t.debtStatus === 'owed' && 
                                 //<Text> Please rate the debtor </Text>
                                 <AirbnbRating
+                                    key={t='rating'}
                                     ratingContainerStyle={{backgroundColor:'white', paddingBottom:10,}}
                                     reviews={['Very Bad','Bad','Good','Very Good','Excellent']}
                                     count={5}
@@ -187,16 +204,21 @@ function DebtorList({data}) {
                                     reviewSize={14}
                                     reviewColor='#F88C8C'
                                     showRating={true}
-                                    onFinishRating={(rating) => alert(rating)}
+                                    rating={rating}
+                                    onFinishRating={(rating) =>{
+                                        setRating(rating)
+                                        handleRating(rating)
+                                    }}
                                 />}
 
-                                { t.debtStatus === 'paid' && 
+
+                                {/* { t.debtStatus === 'paid' && 
                                 <TouchableOpacity 
                                     style={Styles.btnrate}
                                     //onPress={()}
                                 >
                                     <Text style={Styles.text}> Confirm </Text>
-                                </TouchableOpacity> }
+                                </TouchableOpacity> } */}
                                 </View>
                                 
                             )
@@ -221,55 +243,3 @@ function DebtorList({data}) {
         </SafeAreaView>
     )
 }
-
-// function Rating({data}) {
-//     const [defautRating, setdefaultRating] = useState(0)
-//     const [maxRating, setmaxRating] = useState([1,2,3,4,5])
-
-//     const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png'
-//     const startImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png'
-
-//     const CustomRatingBar = () => {
-//         return(
-//             <View style={Styles.customRatingStyle}>
-//                 { maxRating.map((item, key) => {
-//                     return(
-//                         <TouchableOpacity
-//                         activeOpacity={0.7}
-//                         key = {item}
-//                         onPress={() => setdefaultRating(item)}
-//                         >
-//                             <Image
-//                                 style={Styles.starImg}
-//                                 source={
-//                                     item <= defautRating
-//                                         ? {uri: starImgFilled}
-//                                         : {uri: startImgCorner}
-//                                 }
-//                             />
-
-//                         </TouchableOpacity>
-//                     )
-//                 })}
-//             </View>
-//         )
-//     }
-
-//     return(
-//         <SafeAreaView>
-//             <Text> Please Rate! </Text>
-//             <CustomRatingBar/>
-//             <Text>
-//                 {defautRating + ' / ' + maxRating.length}
-//             </Text>
-//             <TouchableOpacity
-//                 activeOpacity={0.7}
-//                 style = {Styles.ratBtn}
-//                 onPress={() => alert(defautRating)}
-//             >
-//                 <Text> Get Selected Value </Text>
-
-//             </TouchableOpacity>
-//         </SafeAreaView>
-//     );
-// }

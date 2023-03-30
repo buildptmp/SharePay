@@ -16,6 +16,7 @@ import {
   FieldValue,
   arrayUnion
 } from "firebase/firestore"
+import { AirbnbRating } from 'react-native-elements';
 
 // const db = getFirestore(app);
 const db = initializeFirestore(app, {
@@ -777,3 +778,50 @@ export async function updateDebtStatus(uid){
     console.log(error);
   })
 }
+
+export async function updateRating(uid, rating){
+  const docRef = doc(db, preText+'Users', uid)
+  const data = {
+    ratings: {
+      [uid]: rating
+    }
+  };
+  try{
+    await updateDoc(docRef, data)
+   } catch(error) {
+    console.error('Error updating item rating:', error);
+    throw new Error('Error updating item rating');
+   }
+  };
+
+
+
+const calculateAvgRating = async () => {
+  const ratingCollectionRef = collection(db, preText+'Users');
+  const ratingDocsSnapshot = await getDocs(ratingCollectionRef);
+
+  let totalRating = 0;
+  let numRatings = ratingDocsSnapshot.size;
+
+  ratingDocsSnapshot.forEach((doc) => {
+    totalRating += doc.data().rating;
+  });
+
+  return totalRating/numRatings;
+}
+// export async function getRatingByUid(uid){
+//   const db = getFirestore();
+//   const docRef = doc(db, 'Test-Users', uid);
+//   const docSnap = await getDoc(docRef);
+
+//   docSnap.data();
+
+//   try {
+//     const docSnap = await getDoc(docRef);
+//     console.log(docSnap.data());
+//     } catch(error) {
+//         console.log(error)
+//     }
+// }
+
+
