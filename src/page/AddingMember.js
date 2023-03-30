@@ -216,8 +216,9 @@ import { Button,
                 {isNotNewuser ? (
                     <View>
                         <Image source = {{uri:member.image}} style={{width: 160, height: 160, paddingBottom: 10}}/>
-                        <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}>{member.name}</Text>
-                        <Text style={{ color: 'pink', fontSize: 12 }}>{member.bio}</Text>
+                        <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}>Name: {member.name}</Text>
+                        <Text style={{ color: 'pink', fontSize: 12, fontWeight:'bold' }}>Bio: {member.bio}</Text>
+                        {member.avgRating == undefined? null:<Text style={{ color: 'pink', fontSize: 12, fontWeight:'bold' }}>Avg rating: {member.avgRating}</Text>}
                         <TouchableOpacity 
                             style={[Styles.btnitif_v2, {marginTop:10}]}
                             onPress={_addMember}

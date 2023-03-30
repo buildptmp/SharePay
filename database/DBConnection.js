@@ -163,7 +163,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
             const slip = await getSlip(debtor.uid,gid,uid)
             const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid && obj.debtStatus == "paid"));
             if(index_d >= 0 ){
-              data_debtorList[index_d].totolPrice += debtor.calculatedprice
+              data_debtorList[index_d].totolPrice += Number(debtor.calculatedprice)
               data_debtorList[index_d].detail.push({
                 eid: item.eid,
                 // gid: gid,
@@ -813,60 +813,80 @@ export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
 }
 
 /* Rating */
+export async function updateDebtRating(docid, debtorid, calculatedprice, name, rating){
+  const docRef = doc(db,'Test-Items',docid)
+  // console.log(debtorid, calculatedprice, name);
+  await updateDoc(docRef,{
+    debtor: arrayUnion({
+      uid: debtorid,
+      debtstatus: "paid",
+      name:name,
+      calculatedprice: calculatedprice,
+      rating: rating
+    })
+  })
+  await updateDoc(docRef,{
+    debtor: arrayRemove({
+      uid: debtorid,
+      debtstatus: "paid",
+      name:name,
+      calculatedprice: calculatedprice
+    })
+  })
+}
 export async function updateRating(uid, rating){
   const docRef = doc(db, preText+'Users', uid)
+  const UserRef = await getDoc(doc(db,preText+'Users',uid))
+
+  const ratingAll = rating + ({...UserRef.data()}.ratingAll == undefined ? 0: {...UserRef.data()}.ratingAll);
+  const times = 1 + ({...UserRef.data()}.times == undefined ? 0:{...UserRef.data()}.times);
+  const avgRating = Math.round(ratingAll/times*100)/100
+
   const data = {
-    // ratings: {
-    //   [uid]: rating
-    // }
-    rating: rating
+    ratingAll: ratingAll,
+    times: times,
+    avgRating: avgRating
   };
+
   try{
     await updateDoc(docRef, data)
-   } catch(error) {
+  } catch(error) {
     console.error('Error updating item rating:', error);
     throw new Error('Error updating item rating');
-   }
-  };
+  }
+};
 
-const calculateAvgRating = async () => {
-  const ratingCollectionRef = collection(db, preText+'Users');
-  const ratingDocsSnapshot = await getDocs(ratingCollectionRef);
+export async function calculateAvgRating (uid) {
+  // const ratingCollectionRef = collection(db, preText+'Users');
+  // const ratingDocsSnapshot = await getDocs(ratingCollectionRef);
+  const UserRef = await getDoc(doc(db,preText+'Users',uid))
 
-  let totalRating = 0;
-  let numRatings = ratingDocsSnapshot.size;
+  const totalRating = {...UserRef.data()}.ratingAll;
+  const times = {...UserRef.data()}.times;
 
-  ratingDocsSnapshot.forEach((doc) => {
-    totalRating += doc.data().rating;
-  });
+  const avgRating = Math.round(totalRating/times*100)/100
 
-  return totalRating/numRatings;
+  return avgRating;
+  // let totalRating = 0;
+  // let numRatings = ratingDocsSnapshot.size;
+
+  // ratingDocsSnapshot.forEach((doc) => {
+  //   totalRating += doc.data().rating;
+  // });
+
+  // return totalRating/numRatings;
 }
-// export async function getRatingByUid(uid){
-//   const db = getFirestore();
-//   const docRef = doc(db, 'Test-Users', uid);
-//   const docSnap = await getDoc(docRef);
 
-//   docSnap.data();
+export async function getRatingByUid(uid){
+  const docRef = doc(db, 'Test-Users', uid);
+  const docSnap = await getDoc(docRef);
 
-//   try {
-//     const docSnap = await getDoc(docRef);
-//     console.log(docSnap.data());
-//     } catch(error) {
-//         console.log(error)
-//     }
-// }
+  docSnap.data();
 
-
-
-// export async function updateDebtStatus(uid){
-//   const docRef = doc(db,'Test-Items', uid)
-//   const data = {
-//     debtstatus: "paid"
-//   };
-
-//   await updateDoc(docRef, data)
-//   .catch(error => {
-//     console.log(error);
-//   })
-// }
+  try {
+    const docSnap = await getDoc(docRef);
+    console.log(docSnap.data());
+    } catch(error) {
+        console.log(error)
+    }
+}

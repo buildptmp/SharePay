@@ -164,8 +164,6 @@ export default function GroupInfo({ route, navigation }) {
                 console.log(props.item.name))  
             }>
                 <View style={{
-                    // width: '100%',
-                    // height: 50,
                     paddingVertical:3,
                     backgroundColor: '#FFFFFF',
                     borderBottomWidth: 1,
@@ -180,7 +178,7 @@ export default function GroupInfo({ route, navigation }) {
                         </View>
                     </View>
                     <View style={{width: '40%',justifyContent:'center'}}>
-                        {props.title == "Expense item" ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.price}</Text>:null}
+                        <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.title == "Expense item"  ? `${props.item.price}` : (props.item.avgRating == undefined ? "":`${props.item.avgRating}`)}</Text>
                     </View>
                 </View>
             </TouchableOpacity>

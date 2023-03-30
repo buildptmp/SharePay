@@ -13,12 +13,11 @@ import { View,
 } from 'react-native';
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
-import { getPersonalDebtAndDebtorListAllGroup } from "../../database/DBConnection";
+import { getPersonalDebtAndDebtorListAllGroup, updateDebtRating, updateRating } from "../../database/DBConnection";
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 import { AirbnbRating } from 'react-native-ratings'
 import SelectDropdown from 'react-native-select-dropdown'
 import { async } from "@firebase/util";
-import { updateRating } from "../../database/DBConnection";
 
 
 export default function DebtView({page, navigation}){
@@ -53,19 +52,19 @@ export default function DebtView({page, navigation}){
         //console.log('Debt: ', listof.debt[0].data)
     }
 
-    // useEffect(() => {
-    //     const uid = auth().currentUser.uid;
-    //     if (!uid) return;
-    //     _showDebtAndDebtorList(uid);
-    // }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
-
-    useFocusEffect(
-        React.useCallback(() => {
-            const uid = auth().currentUser.uid;
+    useEffect(() => {
+        const uid = auth().currentUser.uid;
         if (!uid) return;
         _showDebtAndDebtorList(uid);
-        },[auth().currentUser.toString, isDebtAcitve, isDebtorAcitve])
-    )
+    }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
+
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         const uid = auth().currentUser.uid;
+    //     if (!uid) return;
+    //     _showDebtAndDebtorList(uid);
+    //     },[auth().currentUser.toString, isDebtAcitve, isDebtorAcitve])
+    // )
 
     return(
         <SafeAreaView style={{backgroundColor: '#F6EFEF'}}>
@@ -146,14 +145,6 @@ function DebtList({data, page}) {
 
 function DebtorList({data}) {
     const navigation = useNavigation();
-    const [rating, setRating] = useState(null);
-    const [ratedByUser, setRatedByUser] = useState(false);
-
-    const handleRating = async (rating, debtorid) => {
-        await updateRating(debtorid, rating);
-        setRatedByUser(true);
-      };
-    
     //   if (ratedByUser) {
     //     return null;
     //   }
@@ -181,58 +172,8 @@ function DebtorList({data}) {
                     <React.Fragment key={index}>
                         <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,}} key={e+index}>{e.title}</Text>
                         { e.data && e.data.map((t,index) => {
-                            return (
-                                <View key={e+t+index} style={{backgroundColor:'white',}}>
-                                <TouchableOpacity style={[Styles.box,{borderBottomColor:'white'}]} 
-                                    key={t+index} 
-                                    onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtOrDebtor: "Debtor", DebtOrDebtorName:t.debtorName, DebtOrDebtorId:t.debtorid, group:{gid:t.gid,name:e.title},currUser:{uid:uid,name:currname}})}}
-                                >
-                                    <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>
-                                    <Text key={t.debtStatus} style={Styles.debttext2}>{t.debtStatus}</Text>
-                                    <Text key={t.totolPrice} style={Styles.debttext3}>{t.totolPrice}</Text>
-                                    <Pressable 
-                                        key={t+"Add Slip"}
-                                        disabled={t.slip? false:true}
-                                        style={t.slip? Styles.btnaddslip:[Styles.btnaddslip,{backgroundColor:'lightgray'}]}
-                                        onPress={() => {
-                                            navigation.navigate('Add Slip', {amount:t.totolPrice, timestamp:t.timestamp, slip:t.slip, data:{detail: t.detail, group:{gid:t.gid,name:e.title},to:{uid:uid,name:currname}, from:{uid:t.debtorid,name:t.debtorName}}})
-                                        }}
-                                    >
-                                        <Text style={Styles.text}>Check Slip</Text>
-                                    </Pressable>
-                                </TouchableOpacity>
-
-                                
-                                { (t.debtStatus === 'owed' && !ratedByUser) &&
-                                //<Text> Please rate the debtor </Text>
-                                <AirbnbRating
-                                    key={t+"stars"}
-                                    ratingContainerStyle={{backgroundColor:'white', paddingBottom:10,}}
-                                    reviews={['Very Bad','Bad','Good','Very Good','Excellent']}
-                                    count={5}
-                                    defaultRating={1}
-                                    size={25}
-                                    reviewSize={14}
-                                    reviewColor='#F88C8C'
-                                    showRating={true}
-                                    rating={rating}
-                                    onFinishRating={(rating) =>{
-                                        setRating(rating)
-                                        handleRating(rating, t.debtorid)
-                                    }}
-                                />}
-
-
-                                {/* { t.debtStatus === 'paid' && 
-                                <TouchableOpacity 
-                                    style={Styles.btnrate}
-                                    key={t+"stars confirm"}
-                                    //onPress={()}
-                                >
-                                    <Text style={Styles.text}> Confirm </Text>
-                                </TouchableOpacity> } */}
-                                </View>
-                                
+                            return(
+                                <ListComponent e={e} t={t} index={index} key={t+index}/>
                             )
                         })
                         }                        
@@ -247,5 +188,75 @@ function DebtorList({data}) {
                 )
             })}
         </SafeAreaView>
+    )
+}
+const handleRating = async (rate, debtorid) => {
+    await updateRating(debtorid, rate);
+};
+    
+async function setDebtRating(detail,debtorid,debtorname,rate){
+    for(item of detail){
+        // console.log(item.eid,debtorid,item.priceToPay,debtorname,rate)
+        await updateDebtRating(item.eid,debtorid,item.priceToPay,debtorname,rate)
+    }
+    alert("Give rating successful")
+}
+function ListComponent({e,t,index}) {
+    const [rating, setRating] = useState(1);
+    const [ratedByUser, setRatedByUser] = useState(false);
+    
+    return (
+        <View style={{backgroundColor:'white',}}>
+            {
+                !ratedByUser &&
+                <>
+                <TouchableOpacity style={[Styles.box,{borderBottomColor:'white'}]} 
+                    onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtOrDebtor: "Debtor", DebtOrDebtorName:t.debtorName, DebtOrDebtorId:t.debtorid, group:{gid:t.gid,name:e.title},currUser:{uid:uid,name:currname}})}}
+                >
+                    <Text key={t.debtorName} style={Styles.debttext1}>{t.debtorName}</Text>
+                    <Text key={t.debtStatus} style={Styles.debttext2}>{t.debtStatus}</Text>
+                    <Text key={t.totolPrice} style={Styles.debttext3}>{t.totolPrice}</Text>
+                    <Pressable 
+                        disabled={t.slip? false:true}
+                        style={t.slip? Styles.btnaddslip:[Styles.btnaddslip,{backgroundColor:'lightgray'}]}
+                        onPress={() => {
+                            navigation.navigate('Add Slip', {amount:t.totolPrice, timestamp:t.timestamp, slip:t.slip, data:{detail: t.detail, group:{gid:t.gid,name:e.title},to:{uid:uid,name:currname}, from:{uid:t.debtorid,name:t.debtorName}}})
+                        }}
+                    >
+                        <Text style={Styles.text}>Check Slip</Text>
+                    </Pressable>
+                </TouchableOpacity>
+                { (t.debtStatus === 'paid') &&
+                    <View style={{flexDirection:'row'}}>
+                    <Text style={{textAlign:'center',margin:10}}> Give a rating! </Text>
+                    
+                    <AirbnbRating
+                        ratingContainerStyle={{backgroundColor:'white', paddingBottom:10,}}
+                        reviews={['Very Bad','Bad','Good','Very Good','Excellent']}
+                        count={5}
+                        defaultRating={1}
+                        size={25}
+                        reviewSize={14}
+                        reviewColor='#F88C8C'
+                        // showRating={true}
+                        rating={rating}
+                        onFinishRating={(rating) =>{
+                            setRating(rating)
+                        }}
+                    />
+                    <TouchableOpacity 
+                        style={[Styles.btnrate, {margin:30}]}
+                        onPress={async()=>{
+                            handleRating(rating, t.debtorid)
+                            await setDebtRating(t.detail,t.debtorid,t.debtorName,rating)
+                            setRatedByUser(true);
+                        }}
+                    >
+                        <Text style={Styles.text}> Confirm </Text>
+                    </TouchableOpacity> 
+                </View>}
+                </>
+            }
+        </View>
     )
 }
