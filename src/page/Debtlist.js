@@ -18,7 +18,6 @@ import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/n
 import { AirbnbRating } from 'react-native-ratings'
 import SelectDropdown from 'react-native-select-dropdown'
 import { async } from "@firebase/util";
-import { ScrollView } from "react-native-gesture-handler";
 import { updateRating } from "../../database/DBConnection";
 
 
@@ -145,7 +144,7 @@ function DebtList({data, page}) {
     )
 }
 
-function DebtorList({data, uid}) {
+function DebtorList({data}) {
     const navigation = useNavigation();
     const [rating, setRating] = useState(null);
     const [ratedByUser, setRatedByUser] = useState(false);
