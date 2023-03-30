@@ -812,12 +812,14 @@ export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
   })
 }
 
+/* Rating */
 export async function updateRating(uid, rating){
   const docRef = doc(db, preText+'Users', uid)
   const data = {
-    ratings: {
-      [uid]: rating
-    }
+    // ratings: {
+    //   [uid]: rating
+    // }
+    rating: rating
   };
   try{
     await updateDoc(docRef, data)
