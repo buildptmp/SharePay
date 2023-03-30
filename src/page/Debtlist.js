@@ -150,14 +150,14 @@ function DebtorList({data, uid}) {
     const [rating, setRating] = useState(null);
     const [ratedByUser, setRatedByUser] = useState(false);
 
-    const handleRating = async (rating) => {
-        await updateRating(uid, rating);
+    const handleRating = async (rating, debtorid) => {
+        await updateRating(debtorid, rating);
         setRatedByUser(true);
       };
     
-      if (ratedByUser) {
-        return null;
-      }
+    //   if (ratedByUser) {
+    //     return null;
+    //   }
 
 
     // const [debtStatus, setdebtStatus] = useState("");
@@ -204,7 +204,7 @@ function DebtorList({data, uid}) {
                                 </TouchableOpacity>
 
                                 
-                                { t.debtStatus === 'owed' && 
+                                { (t.debtStatus === 'owed' && !ratedByUser) &&
                                 //<Text> Please rate the debtor </Text>
                                 <AirbnbRating
                                     key={t+"stars"}
@@ -219,7 +219,7 @@ function DebtorList({data, uid}) {
                                     rating={rating}
                                     onFinishRating={(rating) =>{
                                         setRating(rating)
-                                        handleRating(rating)
+                                        handleRating(rating, t.debtorid)
                                     }}
                                 />}
 

@@ -829,8 +829,6 @@ export async function updateRating(uid, rating){
    }
   };
 
-
-
 const calculateAvgRating = async () => {
   const ratingCollectionRef = collection(db, preText+'Users');
   const ratingDocsSnapshot = await getDocs(ratingCollectionRef);
