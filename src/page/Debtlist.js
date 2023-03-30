@@ -161,9 +161,7 @@ function DebtorList({data}) {
     //             setShowDebtorRating(false);
     //         }
     // }, [debtStatus]);
-    const currentUser = auth().currentUser
-    const currname = currentUser?.displayName
-    const uid = currentUser?.uid
+    
 
     return (
         <SafeAreaView style={{paddingBottom:80}}>
@@ -202,8 +200,12 @@ async function setDebtRating(detail,debtorid,debtorname,rate){
     alert("Give rating successful")
 }
 function ListComponent({e,t,index}) {
+    const navigation = useNavigation();
     const [rating, setRating] = useState(1);
     const [ratedByUser, setRatedByUser] = useState(false);
+    const currentUser = auth().currentUser
+    const currname = currentUser?.displayName
+    const uid = currentUser?.uid
     
     return (
         <View style={{backgroundColor:'white',}}>
@@ -228,7 +230,7 @@ function ListComponent({e,t,index}) {
                 </TouchableOpacity>
                 { (t.debtStatus === 'paid') &&
                     <View style={{flexDirection:'row'}}>
-                    <Text style={{textAlign:'center',margin:10}}> Give a rating! </Text>
+                    <Text style={{textAlign:'center',margin:10}}> Please rate the debtor </Text>
                     
                     <AirbnbRating
                         ratingContainerStyle={{backgroundColor:'white', paddingBottom:10,}}
