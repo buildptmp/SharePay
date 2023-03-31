@@ -482,8 +482,22 @@ export const Styles = StyleSheet.create({
     },
 
     image_picker_slip: {
-        width: 350, 
-        height: 700,
+        width: 350,
+        // width,
+        height: 500,
+        // backgroundColor: "white",
+        resizeMode: 'contain'
+    },
+
+    image_picker_sip_shadow: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
     },
 
     Iteminfo: {

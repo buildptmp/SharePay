@@ -67,21 +67,21 @@ export async function imagePicker(){
     //         path: 'images', // store camera images under Pictures/images for android and Documents/images for iOS
     //     },
     // };
-    const res = await launchImageLibrary({},(response) => {
+    const response = await launchImageLibrary({},(response) => {
         // console.log('Response = ', response);
         if (response.didCancel) {
-                console.log('User cancelled image picker', storage());
+            console.log('User cancelled image picker', storage());
         } else if (response.error) {
             console.log('ImagePicker Error: ', response.error);
         } else if (response.customButton) {
             console.log('User tapped custom button: ', response.customButton);
         } else {
             const res = response.assets[0]
-            // resp = res
-            // return res
+            console.log( "Response = ",res.assets[0])
+            return  res.assets[0]
         }
+        return response
     });
-    console.log(res.didCancel ? storage() : "Response = ",res.assets[0])
-    return res.didCancel ? storage() : res.assets[0]
+    return response
 };
 

@@ -429,7 +429,7 @@ export async function addExpense(name, price, creditorid, method, gid,descriptio
     method: method,
     gid: gid,
     timestamp: Date.now(),
-    dateFormat: dateFormat
+    // dateFormat: dateFormat
   }
   if(description){
     _data.description = description
@@ -751,6 +751,8 @@ export async function sendDebtClearNoti(touid, gid, gname){
 export async function uploadSlipDebt(creditorid,uid, gid, slipURL, verificationStatus, pickerRes){
   const slip = await getSlip(uid,gid,creditorid);
   
+  pickerRes.uri = slipURL
+
   if(!slip){ // add slip
     const _data = {
       gid: gid,

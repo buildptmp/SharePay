@@ -36,7 +36,7 @@ export default function AddingSlip({ navigation, route }) {
 
     async function chooseFile() {
         const response = await imagePicker()
-        if (!response.didCancel){
+        if (!response.didCancel && !response.error){
             setPickerRes(response)
         }
     };
@@ -135,7 +135,7 @@ export default function AddingSlip({ navigation, route }) {
         <ScrollView>
             <View style={Styles.container}>
                 {/* <View style={[{flex:1}]} /> */}
-                <TouchableOpacity onPress={chooseFile}>
+                <TouchableOpacity onPress={chooseFile} style={[Styles.image_picker_sip_shadow,{backgroundColor:'white'}]}>
                     {
                         pickerRes.uri ? 
                         <Image style = {Styles.image_picker_slip} source={{uri: pickerRes.uri}}></Image>
