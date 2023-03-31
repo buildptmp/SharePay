@@ -77,9 +77,10 @@ export async function imagePicker(){
             console.log('User tapped custom button: ', response.customButton);
         } else {
             const res = response.assets[0]
-            console.log( "Response = ",res.assets[0])
-            return  res.assets[0]
+            // console.log( "Response picker = ",res)
+            return  res
         }
+        console.log( "Response = ",response)
         return response
     });
     return response

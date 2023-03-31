@@ -12,6 +12,7 @@ import { Button,
     Image,
     TouchableOpacity,
     Modal,
+    Pressable,
  } from "react-native";
  import auth from '@react-native-firebase/auth';
  import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
@@ -26,8 +27,10 @@ import { Button,
     const [showUser, setshowUser] = useState(false);
     const [isNotNewuser, setIsNotNewuser] = useState(false);
     const [checkInGroup, setcheckInGroup] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
+    const [ResendgroupInvModalVisible, setResendgroupInvModalVisible] = useState(false);
+    const [ConfiremTodeletePopupModalVisible, setConfiremTodeletePopupModalVisible] = useState(false);
     const [nid_GroupInv, setNid] = useState("")
+
     async function setCurrUser(){
         const u = await getUserFromUid(uid)
         setCurrentUser(u);
@@ -61,42 +64,77 @@ import { Button,
         }
     },[currentUser,PhoneNum,nid_GroupInv])
 
-    const Popup = (
+    const ResendgroupInvPopup = (
         <Modal
             animationType='slide'
             transparent={true}
-            visible={modalVisible}
+            visible={ResendgroupInvModalVisible}
             onRequestClose={()=>{
-                setModalVisible(false);
+                setResendgroupInvModalVisible(false);
             }}
         >
             <View style={Styles.centeredView}>
                 <View style={Styles.modalView}>
                     <View>
                         <Text style={{textAlign:'center'}}>The invitation has been declined by {member.name}.</Text>
-                        <Text style={{textAlign:'center'}}>Would you like to send the it again?</Text>
+                        <Text style={{textAlign:'center'}}>Would you like to send it again?</Text>
                         <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', paddingHorizontal:30}}>
-                            {/* <View style={{flexDirection:'row', borderWidth:1,alignItems:'flex-start'}}> */}
                             <TouchableOpacity 
                                 style={Styles.btnpopup}
                                 onPress={async ()=>{
-                                    // setIsAccept(false);
                                     await _reAddMember();
-                                    setModalVisible(false);
-                                }} 
-                            >
-                                <Text style={Styles.text}>   No   </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity 
-                                style={Styles.btnpopup}
-                                onPress={()=>{
-                                    // setIsAccept(false);
-                                    setModalVisible(false);
+                                    setResendgroupInvModalVisible(false);
                                 }} 
                             >
                                 <Text style={Styles.text}>  Yes  </Text>
                             </TouchableOpacity>
-                            {/* </View>     */}
+                            <TouchableOpacity 
+                                style={Styles.btnpopup}
+                                onPress={()=>{
+                                    setResendgroupInvModalVisible(false);
+                                }} 
+                            >
+                                <Text style={Styles.text}>   No   </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    )
+
+    const ConfirmTodeletePopup = (
+        <Modal
+            animationType='slide'
+            transparent={true}
+            visible={ConfiremTodeletePopupModalVisible}
+            onRequestClose={()=>{
+                setConfiremTodeletePopupModalVisible(false)
+            }}
+        >
+            <View style={Styles.centeredView}>
+                <View style={Styles.modalView}>
+                    <View>
+                        {/* <Text style={{textAlign:'center'}}>The invitation has been declined by {member.name}.</Text> */}
+                        <Text style={{textAlign:'center'}}>Please confirm to delect the invitation.</Text>
+                        <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', paddingHorizontal:30}}>
+                            <TouchableOpacity 
+                                style={Styles.btnpopup}
+                                onPress={async ()=>{
+                                    await _removeInv();
+                                    setConfiremTodeletePopupModalVisible(false);
+                                }} 
+                            >
+                                <Text style={Styles.text}>  Confirm  </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={Styles.btnpopup}
+                                onPress={()=>{
+                                    setConfiremTodeletePopupModalVisible(false);
+                                }} 
+                            >
+                                <Text style={Styles.text}>   Back   </Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -109,7 +147,7 @@ import { Button,
             const check = await isInGroup(gid,member.uid)
             if(check.isInGroup || check.status !=  undefined){
                 if(check.status=="declined"){
-                    setModalVisible(true);
+                    setResendgroupInvModalVisible(true);
                 }
                 else{
                     check.status == 'accepted' ? alert('This user is already in the group '+ gname+".") : alert('Invitation status is ' + check.status+".")
@@ -126,7 +164,7 @@ import { Button,
             }
         }
         else{
-            alert('Can not find an account with phone number '+ PhoneNum+".")
+            alert('Cannot find an account with phone number '+ PhoneNum+".")
         }
     }
 
@@ -142,7 +180,7 @@ import { Button,
             setNid(nid);
         }
         else{
-            alert('Can not find an account with phone number '+ PhoneNum+".")
+            alert('Cannot find an account with phone number '+ PhoneNum+".")
         }
     }
 
@@ -157,8 +195,7 @@ import { Button,
             setNid("");
         }
         else{
-            
-            alert('Can not find an account with phone number '+ PhoneNum+"."+nid_GroupInv)
+            alert('Cannot find an account with phone number '+ PhoneNum+"."+nid_GroupInv)
         }
     }
 
@@ -166,7 +203,8 @@ import { Button,
         <SafeAreaView style={{flex: 1}}>
             <View style={Styles.containerAddmem}>
             <View style={{marginHorizontal:30}}>
-                {Popup}
+                {ResendgroupInvPopup}
+                {ConfirmTodeletePopup}
                 <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
                 <View style={{flexDirection: 'row', width: '80%', marginLeft:10}}>
                 <TextInput
@@ -176,28 +214,38 @@ import { Button,
                     onChangeText={(text) => setPhoneNum(text)}
                     autoCapitalize={"none"}
                 />
-                <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:8}} onPress={
-                    _addMember}>
-                <FontAwesome
+                
+                {/* {
+                    checkInGroup.status != "pending" && 
+                    <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:8}} onPress={
+                        _addMember}>
+                    <FontAwesome
                     name="plus"
                     color="white"
                     size={18}
                     style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
-                    />
-                </TouchableOpacity>
+                    /></TouchableOpacity>
+                } */}
+                
                 {
                     checkInGroup.status ==  'pending' &&
-                    <TouchableOpacity style={{width:30, height:30, borderRadius:15, backgroundColor:"#F88C8C", margin:5, marginLeft:10}} 
-                        onPress={_removeInv}
-                        >
-                    <FontAwesome
-                        name="minus"
-                        color="white"
-                        size={18}
-                        style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
-                        // onPress={_removeInv}
-                    />
-                    </TouchableOpacity>
+                    // <View style={{width:50}}>
+                        <TouchableOpacity style={{ borderRadius:20, backgroundColor:"#F88C8C", margin:5, marginLeft:10, padding:8}} 
+                            onPress={()=>{
+                                setConfiremTodeletePopupModalVisible(true)
+                            }}
+                            >
+                        {/* <FontAwesome
+                            name="minus"
+                            color="white"
+                            size={18}
+                            style={{alignSelf:'center', marginVertical:6, marginLeft:0.6}}
+                            // onPress={_removeInv}
+                        /> */}
+                        <Text style={{textAlign:'center', color:'white', fontWeight:'bold',textAlignVertical:'center'}}>delete</Text>
+                        </TouchableOpacity>
+                        
+                    // </View>
                 }
                 
                 {/* </TouchableOpacity> */}
@@ -219,14 +267,15 @@ import { Button,
                         <Text style={{ color: 'black', fontSize: 18, fontWeight: 'bold' }}>Name: {member.name}</Text>
                         <Text style={{ color: 'pink', fontSize: 12, fontWeight:'bold' }}>Bio: {member.bio}</Text>
                         {member.avgRating == undefined? null:<Text style={{ color: 'pink', fontSize: 12, fontWeight:'bold' }}>Avg rating: {member.avgRating}</Text>}
-                        <TouchableOpacity 
+                        <Pressable 
                             style={[Styles.btnitif_v2, {marginTop:10}]}
                             onPress={_addMember}
+                            disabled={checkInGroup.status=="pending"}
                             >
-                            <Text style={Styles.text}>Add Member</Text>
-                        </TouchableOpacity>
+                            <Text style={Styles.text}>{ checkInGroup.status=="pending" ? checkInGroup.status:"Add Member"}</Text>
+                        </Pressable>{ checkInGroup.status=="declined" ? <Text style={{color:'grey'}}>status: declined</Text>:null}
                     </View>
-                    ): <Text style={{ color: 'black', fontSize: 18}}>Can not find the account</Text>
+                    ): <Text style={{ color: 'black', fontSize: 18}}>Cannot find the account</Text>
                 }
                 </View>
             }

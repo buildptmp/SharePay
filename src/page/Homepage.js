@@ -70,7 +70,7 @@ export default function Homepage({page, navigation, route}){
                     }
                     
                     // sendDebtClearNoti(to,gid,"My moon")
-                    sendPaidDebtNoti(from,to,gid,"My moon",ex)
+                    // sendPaidDebtNoti(from,to,gid,"My moon",ex)
                     alert("Sent noti")
                     
                 }}

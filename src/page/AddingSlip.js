@@ -39,7 +39,8 @@ export default function AddingSlip({ navigation, route }) {
     async function chooseFile() {
         const response = await imagePicker()
         if (!response.didCancel && !response.error){
-            setPickerRes(response)
+            // console.log("Adding Slip",response)
+            setPickerRes(response.assets[0])
         }
     };
 
@@ -62,11 +63,11 @@ export default function AddingSlip({ navigation, route }) {
         await sendPaidDebtNoti(data.from,data.to,data.group.gid,data.group.name,expenses)
 
         // check the debt is clear?
-        for(uid of [data.from.uid,data.to.uid]){
+        for(let uid of [data.from.uid,data.to.uid]){
             const check = await checkAllowToleave(uid,data.group.gid)
             if(check.creditor && check.debtor){
                 await sendDebtClearNoti(uid,data.group.gid,data.group.name)
-                if(uid==data.to.uid){
+                if(uid==data.from.uid){
                     global.NotiSignal = true
                 }
             }
@@ -165,15 +166,18 @@ export default function AddingSlip({ navigation, route }) {
                             <View style={{flexDirection:'row', margin:10}}>
                                 <Text style={{fontSize:40,color:'#2E8B57',fontWeight:'bold'}}>Verified✓</Text>
                             </View>
-                            :
+                            :<>
                             <View style={{flexDirection:'row', margin:10}}>
                                 <Text style={{fontSize:30,color:'red',fontWeight:'bold'}}>Verification Fail</Text>
                                 <Tooltip ModalComponent={Modal} popover={<Text>This might occur for the following reasons.{"\n\n"}  - The amount of price is not equal.{"\n"}  - The age of the slip is older than the time of the lastest expense creation.{"\n\n"}Suggestion: Please check your transaction or contact the creditor to change your debt status.</Text>} 
                                     containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:220,width:250, left:140}}>
                                     <Feather name="alert-circle"/>
                                 </Tooltip>
-                            </View>) : null )
+                            </View>
+                            <Text style={{fontSize:10,color:'red'}}>Please add a slip again and click confirm</Text></>
+                            ) : null )
                         }
+                        
                         <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Expense Information</Text>
                         <Text>Group: {data.group.name}</Text>
                         <Text>From: {data.from.name}</Text>
@@ -187,7 +191,13 @@ export default function AddingSlip({ navigation, route }) {
                             }}
                             disabled={isSuccess}
                         >
-                            <Text style={Styles.text}>{isSuccess? "Verified":"Confirm" }</Text>
+                            {
+                                slipURL ?
+                                <Text style={Styles.text}>{isSuccess? "Verified":"Confirm" }</Text>
+                                :
+                                <Text style={Styles.text}>Confirm</Text>
+                            }
+                            {/* <Text style={Styles.text}>{isSuccess? "Verified":"" }</Text> */}
                         </Pressable>
                     </View>
                 </View>

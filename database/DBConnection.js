@@ -336,13 +336,13 @@ export async function checkAllowToleave(uid, gid){
     let pass = true
     if(data.debtor.length > 0){
       for(debtor of data.debtor){
-        if(debtor.debtstatus=="owed"){
+        if(debtor.debtStatus=="owed"){
           pass = false;
           break;
         }
       }
     }
-    return {creditor:(data.creditor.length == 0), debtor:(data.debtor.length == 0) || pass}; // True if empty.
+    return {creditor:(data.creditor.length == 0), debtor:(data.debtor.length == 0 || pass)}; // True if empty.
 
   } catch (error){
     console.log(error);
@@ -620,9 +620,9 @@ export async function delGroupInv(nid, gid, uid){ // Del noti and Del UserGroup
 }
 export async function setGroupInvResponse(nid, action){
   const notiRef = doc(db, 'Notification-records', nid);
-  const date = new Date(Date.now())
+  // const date = new Date(Date.now())
   let _data = {
-    update_timestamp: date,
+    update_timestamp: Date.now(),
     action: action
   }
   await updateDoc(notiRef, _data).catch(error => {console.log(error)})
@@ -744,6 +744,7 @@ export async function sendDebtClearNoti(touid, gid, gname){
   }
 
   const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  // console.log("nid"+nid+"  "+touid)
   return nid
 }
 
