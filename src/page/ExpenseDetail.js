@@ -5,10 +5,13 @@ import { updateDebtStatus, checkAllowToleave, sendDebtClearNoti } from "../../da
 import SelectDropdown from "react-native-select-dropdown";
 import { useRef } from "react";
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
+import LoadingModal from '../components/LoadingModal';
 
 export default function ExpenseDetail({ page, navigation, route}) {
     const { detail, DebtOrDebtor, DebtOrDebtorName, DebtOrDebtorId, group, currUser} = route.params;
     const [editDebtStatusList, setEditStatusList] = useState([])
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const EditDebtStatusBtn = () => {
         return(
@@ -18,8 +21,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                     <TouchableOpacity style={[Styles.btn,{width:100, alignSelf:'flex-end', margin:10}]}
                         onPress={async() => {
                             // PopupConfirm
-                            await _saveEditDebtStatus();
-                            alert("Update success");
+                            await handleButtonClick()
                             // PopupSuccess
                         }}
                     >
@@ -29,11 +31,21 @@ export default function ExpenseDetail({ page, navigation, route}) {
             </View>
         )
     }
-    
+
+    const handleButtonClick = async() => {
+        setIsLoading(true);
+        await _saveEditDebtStatus();
+        alert("Update success");
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2000);
+        navigation.goBack();
+    };
+
     async function _saveEditDebtStatus(){
         if(editDebtStatusList.length>0){
             for(item of editDebtStatusList){
-                await updateDebtStatus(item.eid,DebtOrDebtorId,item.priceToPay,DebtOrDebtorName)//Debtor
+                await updateDebtStatus(item.eid,DebtOrDebtorId,item.priceToPay,DebtOrDebtorName,item.debtstatus)//Debtor
             }
 
             for(uid of [DebtOrDebtorId,currUser.uid]){
@@ -51,14 +63,14 @@ export default function ExpenseDetail({ page, navigation, route}) {
         }
     }
 
-    function crudOfEditDebtStatus(eid, priceToPay, status){
+    function crudOfEditDebtStatus(eid, priceToPay, statusChangeTo, status){
         let temp = editDebtStatusList;
 
         const index = temp.findIndex((obj => obj.eid == eid))
-        if(index>=0 && status=="owed"){// del from edit list if owed
+        if(index>=0 && status==statusChangeTo){// del from edit list if owed
             temp = temp.filter(obj => obj.eid != eid)
-        } else if(index<0 && status == "paid") {// add to edit list if paid
-            temp.push({eid:eid,priceToPay:priceToPay})
+        } else if(index<0 && status != statusChangeTo) {// add to edit list if paid
+            temp.push({eid:eid,priceToPay:priceToPay,debtstatus:statusChangeTo})
         }
         
         setEditStatusList(temp)
@@ -72,10 +84,9 @@ export default function ExpenseDetail({ page, navigation, route}) {
         </View>
     )
 
-    RenderItem = (props) =>{
-        const item = props.item
+    RenderItem = ({item}) =>{
         const ref = useRef("")
-        const [status, setStatus] = useState('owed')
+        const [status, setStatus] = useState(item.debtStatus)
         const debtorStatus = ['owed','paid']
         // const [editStatus, setEditStatus] = useState(true)
         let editStatus = true
@@ -88,12 +99,12 @@ export default function ExpenseDetail({ page, navigation, route}) {
                     <SelectDropdown
                         ref={ref}
                         disabled={editStatus}
-                        defaultButtonText={item.debtStatus}
-                        //defaultValue={status}
+                        // defaultButtonText={status}
+                        defaultValue={status}
                         data={debtorStatus}
                         onSelect={(selectedItem) => {
                             setStatus(selectedItem)
-                            crudOfEditDebtStatus(item.eid,item.priceToPay,selectedItem)
+                            crudOfEditDebtStatus(item.eid,item.priceToPay,selectedItem, item.debtStatus)
                         }}
                         buttonTextAfterSelection={(selectedItem) => {
                             return selectedItem
@@ -145,6 +156,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                 ListHeaderComponent={ListHeader}
                 ListFooterComponent={<EditDebtStatusBtn />}
             />}  
+            <LoadingModal visible={isLoading} />
         </SafeAreaView>
     )
 }

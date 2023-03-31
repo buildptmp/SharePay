@@ -421,7 +421,7 @@ export async function deleteGroup(gid){
 
 export async function addExpense(name, price, creditorid, method, gid,description=""){
   const creditorInfo = await getUserFromUid(creditorid)
-  
+
   let _data = {
     name: name,
     price: price,
@@ -793,13 +793,13 @@ export async function getSlip(uid, gid, creditorid){
     console.log(error);
   }
 }
-export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
+export async function updateDebtStatus(docid, debtorid, calculatedprice, name, debtstatusChangeTo){
   const docRef = doc(db,'Test-Items',docid)
   // console.log(debtorid, calculatedprice, name);
   await updateDoc(docRef,{
     debtor: arrayUnion({
       uid: debtorid,
-      debtstatus: "paid",
+      debtstatus: (debtstatusChangeTo == "paid" ? "paid":"owed"),
       name:name,
       calculatedprice: calculatedprice
     })
@@ -807,7 +807,7 @@ export async function updateDebtStatus(docid, debtorid, calculatedprice, name){
   await updateDoc(docRef,{
     debtor: arrayRemove({
       uid: debtorid,
-      debtstatus: "owed",
+      debtstatus: (debtstatusChangeTo == "paid" ? "owed":"paid"),
       name:name,
       calculatedprice: calculatedprice
     })

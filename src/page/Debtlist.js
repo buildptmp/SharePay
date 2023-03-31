@@ -52,19 +52,19 @@ export default function DebtView({page, navigation}){
         //console.log('Debt: ', listof.debt[0].data)
     }
 
-    useEffect(() => {
-        const uid = auth().currentUser.uid;
-        if (!uid) return;
-        _showDebtAndDebtorList(uid);
-    }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
-
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         const uid = auth().currentUser.uid;
+    // useEffect(() => {
+    //     const uid = auth().currentUser.uid;
     //     if (!uid) return;
     //     _showDebtAndDebtorList(uid);
-    //     },[auth().currentUser.toString, isDebtAcitve, isDebtorAcitve])
-    // )
+    // }, [auth().currentUser.toString, isDebtAcitve, isDebtorAcitve, isLoading])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            const uid = auth().currentUser.uid;
+        if (!uid) return;
+        _showDebtAndDebtorList(uid);
+        },[auth().currentUser.toString, isDebtAcitve, isDebtorAcitve])
+    )
 
     return(
         <SafeAreaView style={{backgroundColor: '#F6EFEF'}}>
@@ -230,7 +230,7 @@ function ListComponent({e,t,index}) {
                 </TouchableOpacity>
                 { (t.debtStatus === 'paid') &&
                     <View style={{flexDirection:'row'}}>
-                    <Text style={{textAlign:'center',margin:10}}> Please rate the debtor </Text>
+                    <Text style={{textAlign:'left',margin:10, width:'23%'}}>Please rate the debtor </Text>
                     
                     <AirbnbRating
                         ratingContainerStyle={{backgroundColor:'white', paddingBottom:10,}}

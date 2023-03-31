@@ -21,7 +21,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Tooltip } from 'react-native-elements';
 import {addExpense, addDebtor, getMemberListByGid, editExpenseAfterView} from '../../database/DBConnection'
 import SwitchSelector from 'react-native-switch-selector';
-// import TooltipAddingExpense from '../components/TooltipAddingExpense';
+import LoadingModal from '../components/LoadingModal';
 
 export default function AddingExpense({ route, navigation }) {
     const { gid, gname, itemInfo, isUpdate} = route.params  
@@ -42,6 +42,8 @@ export default function AddingExpense({ route, navigation }) {
     
     const [modalVisible, setModalVisible] = useState(false);
     const [isaccept, setIsAccept] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     async function seeMember(){
         const mList = await getMemberListByGid(gid);
@@ -64,6 +66,19 @@ export default function AddingExpense({ route, navigation }) {
             console.log("update ", itemInfo.eid);
         }
     },[itemInfo])
+
+    const handleButtonClick = (func) => {
+        setIsLoading(true);
+        if(func == "add"){
+            _addExpense(isaccept)
+        }
+        else if(func == "update"){
+            _updateExpense(isaccept)
+        }
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 3000);
+      };
 
     async function _addExpense(isaccepted){
         const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
@@ -143,7 +158,6 @@ export default function AddingExpense({ route, navigation }) {
         </Modal>
     )}
     
-
     const SetItemInfo = (
         <View>
             <Text style={Styles.textInputHeader}>Item Name</Text>
@@ -439,14 +453,14 @@ export default function AddingExpense({ route, navigation }) {
                     isUpdate ? 
                     <Pressable 
                         style={Styles.btnaddex}
-                        onPress= {()=>_updateExpense(isaccept)}
+                        onPress= {()=> handleButtonClick("update")}
                     >
                         <Text style={Styles.text}>Update Expense</Text>
                     </Pressable> 
                     :
                     <Pressable 
                         style={Styles.btnaddex}
-                        onPress= {()=> _addExpense(isaccept)} 
+                        onPress= {()=> handleButtonClick("add")} 
                     >
                         <Text style={Styles.text}>Add Expense</Text>
                     </Pressable>
@@ -474,7 +488,9 @@ export default function AddingExpense({ route, navigation }) {
                 renderSectionHeader={() => <View style={{height:20, marginHorizontal:20, borderTopLeftRadius: 20, borderTopRightRadius: 20,backgroundColor:'#F88C8C'}} />}
                 ListFooterComponent={<ListFooter />}
                 stickySectionHeadersEnabled={true}
-            /></SafeAreaView>
+            />
+            <LoadingModal visible={isLoading} />
+            </SafeAreaView>
         </View>
     );
 };

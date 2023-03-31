@@ -19,8 +19,8 @@ import { timecheck, datecheck, uploadSlipDebt, getSlip, updateDebtStatus, sendPa
 import { imagePicker, uploadSlip } from '../../database/Storage'
 import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
-import SuccessAdd from '../components/SuccessAdd';
 import { Tooltip } from 'react-native-elements';
+import LoadingModal from '../components/LoadingModal';
 
 export default function AddingSlip({ navigation, route }) {
     const {amount,timestamp, data, slip, status} = route.params;
@@ -34,12 +34,24 @@ export default function AddingSlip({ navigation, route }) {
     const [slipURL, setSlip] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     async function chooseFile() {
         const response = await imagePicker()
         if (!response.didCancel && !response.error){
             setPickerRes(response)
         }
     };
+
+    const handleButtonClick = async() => {
+        setIsLoading(true);
+        
+        await checkSlip();
+
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2000);
+      };
 
     async function sendNoti(){
         let expenses = [];
@@ -170,16 +182,16 @@ export default function AddingSlip({ navigation, route }) {
                         <Pressable 
                             // key={e.routeName}
                             style={isSuccess? [Styles.btnslip, {marginBottom:10, backgroundColor:'#2E8B57'}]:[Styles.btnslip, {marginBottom:10}]}
-                            onPress={ async ()=> {
-                                await checkSlip();
+                            onPress={ ()=> {
+                                handleButtonClick();
                             }}
                             disabled={isSuccess}
                         >
                             <Text style={Styles.text}>{isSuccess? "Verified":"Confirm" }</Text>
                         </Pressable>
-                        {/* <SuccessAdd /> */}
                     </View>
                 </View>
+                <LoadingModal visible={isLoading} />
             </View> 
         </ScrollView>
     );
