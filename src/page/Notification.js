@@ -45,6 +45,7 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
         const hasread = props.read;
         const needreaction = props.reaction;
         const record = props.item.notification;
+        const group = props.item.group;
         const time = props.item.dateFormat;
         const GroupInvResponse = props.item.action;
         const [invstatus, setinvStatus] = useState("");
@@ -117,13 +118,13 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
                     <View style={{padding:5, paddingTop:10, flexDirection:'row', justifyContent:'space-around'}}>
                         <Pressable 
                             style={Styles.btnpopup}
-                            onPress= {()=> groupinvResponse(true,props.item.touid,record.group.gid)} 
+                            onPress= {()=> groupinvResponse(true,props.item.touid,group.gid)} 
                         >
                             <Text style={Styles.text}>accept</Text>
                         </Pressable>
                         <Pressable 
                             style={Styles.btnpopup}
-                            onPress= {()=> groupinvResponse(false,props.item.touid,record.group.gid)}
+                            onPress= {()=> groupinvResponse(false,props.item.touid,group.gid)}
                         >
                             <Text style={Styles.text}>decline</Text>
                         </Pressable>
