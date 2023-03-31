@@ -54,7 +54,7 @@ const SuccessAdd = () => {
           <View style={styles.header}>
             <TouchableOpacity onPress={() => setVisible(false)}>
               <Image
-                source={require('./assets/success.png')}
+                source={require('../assets/success.png')}
                 style={{height: 30, width: 30}}
               />
             </TouchableOpacity>
@@ -62,7 +62,7 @@ const SuccessAdd = () => {
         </View>
         <View style={{alignItems: 'center'}}>
           <Image
-            source={require('./assets/success.png')}
+            source={require('../assets/success.png')}
             style={{height: 150, width: 150, marginVertical: 10}}
           />
         </View>
@@ -71,7 +71,7 @@ const SuccessAdd = () => {
           This member has sucessfully invited
         </Text>
       </ModalPoup>
-      <Button title="Open Modal" onPress={() => setVisible(true)} />
+      <Button title="Upload a slip" onPress={() => setVisible(true)} />
     </View>
   );
 };

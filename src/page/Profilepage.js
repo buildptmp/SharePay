@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import { useFocusEffect } from "@react-navigation/native";
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
 import { getUserFromUid } from "../../database/DBConnection";
@@ -18,19 +19,34 @@ export default function Profilepage({page, navigation}){
         setUserName(user.name);
     }
 
-    useEffect(() => {
-        auth().onAuthStateChanged(async (user) => {
-            if (user) {
-                setUser(user);
-                setReady(true);
-                await getUserInfo(user.uid);
-            } else {
-                setUser(null);
-                setReady(false);
-            }
-        });
-        // console.log(curUser)
-    }, [curUser])
+    // useEffect(() => {
+    //     auth().onAuthStateChanged(async (user) => {
+    //         if (user) {
+    //             setUser(user);
+    //             setReady(true);
+    //             await getUserInfo(user.uid);
+    //         } else {
+    //             setUser(null);
+    //             setReady(false);
+    //         }
+    //     });
+    //     // console.log(curUser)
+    // }, [curUser,global.NotiSignal])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    setUser(user);
+                    setReady(true);
+                    await getUserInfo(user.uid);
+                } else {
+                    setUser(null);
+                    setReady(false);
+                }
+            });
+        }, [curUser,global.NotiSignal])
+      );
 
     function _signOut() {
         auth()
@@ -51,9 +67,15 @@ export default function Profilepage({page, navigation}){
             </TouchableOpacity> 
             <TouchableOpacity
                 style={Styles.btnprofile}
-                onPress={() => {navigation.navigate('Notification',{uid:curUser.uid})}}
+                onPress={() => {
+                    navigation.navigate('Notification',{uid:curUser.uid})
+                    global.NotiSignal = false
+                }}
             >
                 <Text style={Styles.text}>Notification</Text>
+                {
+                   (global.NotiSignal) ? <View style={{position:'absolute',top:-5,right:-5,padding:10,borderRadius:20,backgroundColor:'red',color:'white'}}/> : null
+                }
             </TouchableOpacity> 
             
              {/* /* <Text style={[Styles.sectionHeaderwithsub,{alignSelf:'flex-start'}]}>Creditor List</Text>

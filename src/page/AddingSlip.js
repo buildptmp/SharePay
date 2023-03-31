@@ -1,11 +1,5 @@
-import { NavigationContainer, StackActions } from '@react-navigation/native';
 import * as React from 'react';
-// import { useNavigation } from '@react-navigation/native';
-// import { useHistory } from "react-router-dom";
-// import { createStackNavigator } from '@react-navigation/stack';
-import Homepage from './Homepage';
 import { Styles } from "../Styles"
-// import { NavigationScreenProps } from "react-navigation";
 import { FC, useEffect, ReactElement, useState } from "react";
 import { Button, 
     StyleSheet, 
@@ -16,46 +10,215 @@ import { Button,
     SafeAreaView, 
     Image,
     TouchableOpacity,
+    ScrollView,
+    Modal,
+    Pressable,
  } from "react-native";
+import { get_access_key, getpaymentInfo } from "../../database/api";
+import { timecheck, datecheck, uploadSlipDebt, getSlip, updateDebtStatus, sendPaidDebtNoti,sendDebtClearNoti, checkAllowToleave} from '../../database/DBConnection';
+import { imagePicker, uploadSlip } from '../../database/Storage'
+import Feather from 'react-native-vector-icons/Feather';
+import auth from '@react-native-firebase/auth';
+import { Tooltip } from 'react-native-elements';
+import LoadingModal from '../components/LoadingModal';
 
- export default function AddingSlip({ navigation }) {
+export default function AddingSlip({ navigation, route }) {
+    const {amount,timestamp, data, slip, status} = route.params;
     const [GroupName, setGroupName] = useState(null);
     const [GroupDesc, setGroupDesc] = useState(null);
-    const [pickerRes, setPickerRes] = useState({uri:"https://firebasestorage.googleapis.com/v0/b/sharepay-77c6c.appspot.com/o/assets%2FAddMem.png?alt=media&token=713f3955-809a-47e6-9f4c-4e93ac53dcd9"});
-    const RouteMapping = [
-        { routeName: 'Add Member', displayText: 'Add Member', }
-    ]
+    const [pickerRes, setPickerRes] = useState({uri:""});
+    const [transRef, setTransRef] = useState("2023032937wGEyNrQmdwKsq");
+    // "2023032937wGEyNrQmdwKsq" 500
+    // "202303143qO8X3qczVArfqJ" 1000
+    const [apiRespose, setResponse] = useState("");
+    const [slipURL, setSlip] = useState("");
+    const [isSuccess, setIsSuccess] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     async function chooseFile() {
         const response = await imagePicker()
-        if (!response.didCancel){
+        if (!response.didCancel && !response.error){
             setPickerRes(response)
         }
     };
 
+    const handleButtonClick = async() => {
+        setIsLoading(true);
+        
+        await checkSlip();
+
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2000);
+      };
+
+    async function sendNoti(){
+        let expenses = [];
+        for(let item of data.detail){
+            await updateDebtStatus(item.eid,data.from.uid,item.priceToPay, data.from.name); // to be paid
+            expenses.push({eid:item.eid,ename:item.itemName,priceToPay:item.priceToPay})
+        }
+        await sendPaidDebtNoti(data.from,data.to,data.group.gid,data.group.name,expenses)
+
+        // check the debt is clear?
+        for(uid of [data.from.uid,data.to.uid]){
+            const check = await checkAllowToleave(uid,data.group.gid)
+            if(check.creditor && check.debtor){
+                await sendDebtClearNoti(uid,data.group.gid,data.group.name)
+                if(uid==data.to.uid){
+                    global.NotiSignal = true
+                }
+            }
+        }
+    }
+
+    async function checkSlip(){
+        if(pickerRes.fileName != undefined){
+            if(apiRespose && apiRespose.status == 'Success'){
+                
+                const t_check = timecheck(timestamp, apiRespose.time)
+                const d_check = datecheck(timestamp, apiRespose.date)
+                // console.log(t_check, d_check)
+                if(t_check>=0 && d_check>=0){
+                    if(apiRespose.amount == amount){
+                        await sendNoti();
+                        await _saveSlip(true)
+                        setIsSuccess(true)
+                        alert("Verification Pass")
+                    } else{
+                        await _saveSlip(false)
+                        alert("the amount in slip is not equal to the total amount of the expense price.") 
+                    }
+                } else {
+                    await _saveSlip(false)
+                    alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
+                }
+            } else{
+                alert("Fail to validate the slip.")
+                // show unsuccessmodal()
+            }
+        } else {
+            alert("Cannot find a slip.")
+        }
+    }
+
+    async function _saveSlip(verificationStatus){
+        const photoURL = await uploadSlip(pickerRes.fileName,pickerRes.uri,pickerRes.type, slip.slipURL)
+        if(photoURL) {
+            await uploadSlipDebt(data.to.uid,data.from.uid,data.group.gid,photoURL,verificationStatus,pickerRes);
+            // alert("upload a slip successfully")
+            setSlip(photoURL)
+        } else console.log("upload error")
+    }
+
+    useEffect(()=>{
+        async function callapi(transRef){
+            const response = await getpaymentInfo(transRef);
+            setResponse(response);
+        }
+        
+        if(slip){
+            setPickerRes(slip.pickerRes)
+            setSlip(slip.slipURL)
+            if(isSuccess){
+                setIsSuccess(isSuccess)
+            } else{
+                setIsSuccess(slip.status)
+            }
+
+            if(slip.status){
+                setTransRef("")
+            }
+        }
+        if(transRef){
+            callapi(transRef);
+        }
+        // console.log(transRef)
+    },[transRef,isSuccess])
+
+    // const PoppuSlipVerificationSuccessful = (
+    //     <View>
+
+    //     </View>
+    // )
+
     return(
-        
-        <View style={Styles.container}>
-            <View style={[{flex:1}]} />
-            <TouchableOpacity onPress={chooseFile}>
-                <Image style = {Styles.image_picker} source={{uri: pickerRes.uri}}></Image>
-            </TouchableOpacity>
-        
-       
-            <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3, backgroundColor: '#F6EFEF'}]}>
-                <Text style={Styles.textboxtop}>Group: (wait for data)</Text>
-                <Text style={Styles.textboxtop}>From: 'Debtor'</Text>
-                <Text style={Styles.textboxtop}>To: 'Creditor' </Text>
-                <Text style={Styles.textboxtop}> Amount: 'Price' </Text>
-                <TouchableOpacity 
-                    // key={e.routeName}
-                    style={Styles.btnslip}
-                    onPress={()=> alert('Upload Successfully.')}
-                >
-                    <Text style={Styles.text}> Confirm </Text>
+        <ScrollView>
+            <View style={Styles.container}>
+                {/* <View style={[{flex:1}]} /> */}
+                <TouchableOpacity onPress={chooseFile} style={[Styles.image_picker_sip_shadow,{backgroundColor:'white'}]}>
+                    {
+                        pickerRes.uri ? 
+                        <Image style = {Styles.image_picker_slip} source={{uri: pickerRes.uri}}></Image>
+                        :
+                        <View style={{ justifyContent:'center'}}>
+                            <Text style={{fontWeight:'bold',padding:100}}>select a slip</Text>
+                        </View>
+                    }
                 </TouchableOpacity>
-            </View>
-        </View> 
+                <View style={styles.centeredView}>
+                    <View style={[styles.modalView,{backgroundColor: 'white', marginTop:10, justifyContent:'center', alignItems:'center', paddingHorizontal:20}]}>
+                        {
+                            (slipURL ?
+                            (isSuccess ? 
+                            <View style={{flexDirection:'row', margin:10}}>
+                                <Text style={{fontSize:40,color:'#2E8B57',fontWeight:'bold'}}>Verified✓</Text>
+                            </View>
+                            :
+                            <View style={{flexDirection:'row', margin:10}}>
+                                <Text style={{fontSize:30,color:'red',fontWeight:'bold'}}>Verification Fail</Text>
+                                <Tooltip ModalComponent={Modal} popover={<Text>This might occur for the following reasons.{"\n\n"}  - The amount of price is not equal.{"\n"}  - The age of the slip is older than the time of the lastest expense creation.{"\n\n"}Suggestion: Please check your transaction or contact the creditor to change your debt status.</Text>} 
+                                    containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:220,width:250, left:140}}>
+                                    <Feather name="alert-circle"/>
+                                </Tooltip>
+                            </View>) : null )
+                        }
+                        <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Expense Information</Text>
+                        <Text>Group: {data.group.name}</Text>
+                        <Text>From: {data.from.name}</Text>
+                        <Text>To: {data.to.name} </Text>
+                        <Text> Amount: {amount} </Text>
+                        <Pressable 
+                            // key={e.routeName}
+                            style={isSuccess? [Styles.btnslip, {marginBottom:10, backgroundColor:'#2E8B57'}]:[Styles.btnslip, {marginBottom:10}]}
+                            onPress={ ()=> {
+                                handleButtonClick();
+                            }}
+                            disabled={isSuccess}
+                        >
+                            <Text style={Styles.text}>{isSuccess? "Verified":"Confirm" }</Text>
+                        </Pressable>
+                    </View>
+                </View>
+                <LoadingModal visible={isLoading} />
+            </View> 
+        </ScrollView>
     );
 };
 
+const styles = StyleSheet.create({
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 22,
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: 'white',
+      borderRadius: 20,
+      padding: 20,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    
+  });
+  

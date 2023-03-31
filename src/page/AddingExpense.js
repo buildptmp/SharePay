@@ -21,7 +21,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { Tooltip } from 'react-native-elements';
 import {addExpense, addDebtor, getMemberListByGid, editExpenseAfterView} from '../../database/DBConnection'
 import SwitchSelector from 'react-native-switch-selector';
-// import TooltipAddingExpense from '../components/TooltipAddingExpense';
+import LoadingModal from '../components/LoadingModal';
 
 export default function AddingExpense({ route, navigation }) {
     const { gid, gname, itemInfo, isUpdate} = route.params  
@@ -42,6 +42,8 @@ export default function AddingExpense({ route, navigation }) {
     
     const [modalVisible, setModalVisible] = useState(false);
     const [isaccept, setIsAccept] = useState(false);
+
+    const [isLoading, setIsLoading] = useState(false);
 
     async function seeMember(){
         const mList = await getMemberListByGid(gid);
@@ -64,6 +66,19 @@ export default function AddingExpense({ route, navigation }) {
             console.log("update ", itemInfo.eid);
         }
     },[itemInfo])
+
+    const handleButtonClick = (func) => {
+        setIsLoading(true);
+        if(func == "add"){
+            _addExpense(isaccept)
+        }
+        else if(func == "update"){
+            _updateExpense(isaccept)
+        }
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 3000);
+      };
 
     async function _addExpense(isaccepted){
         const methodName = (isSplitEqually ? "Split Equally" : "Split Unequally")
@@ -124,41 +139,25 @@ export default function AddingExpense({ route, navigation }) {
             <View style={Styles.centeredView}>
                 <View style={Styles.modalView}>
                     <Text style={{textAlign:'center'}}>A decimal number that has more than two decimal point will be rounded up.</Text>
-                    <Text>This would benefit to creditor.</Text>
                     <View style={{justifyContent:'center', margin:10}}>
-                        <View style={{flexDirection:'row', justifyContent:'space-evenly', width:'80%'}}>
+                        {/* <View style=s{{flexDirection:'row', justifyContent:'center', width:'80%'}}> */}
                         <TouchableOpacity 
                             style={Styles.btnpopup}
                             onPress={()=>{
-                                // console.log(isaccept);
-                                setIsAccept(true);
-                                setModalVisible(false);
-                                (isaddexpense ? _addExpense(true): _updateExpense(true))
-                            }} 
-                            
-                        >
-                            <Text style={Styles.text}>accept</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={Styles.btnpopup}
-                            onPress={()=>{
-                                setIsAccept(false);
-                                // console.log(isaccept);
+                                // setIsAccept(false);
                                 setModalVisible(false);
                             }} 
                         >
-                            <Text style={Styles.text}>decline</Text>
+                            <Text style={Styles.text}>Acknowledge</Text>
                         </TouchableOpacity>
-                        </View>    
+                        {/* </View>     */}
                     </View>
-                    <Text>Please select accept to continue.</Text>
+                    <Text>Please check the box to continue.</Text>
                 </View>
-
             </View>
         </Modal>
     )}
     
-
     const SetItemInfo = (
         <View>
             <Text style={Styles.textInputHeader}>Item Name</Text>
@@ -247,8 +246,8 @@ export default function AddingExpense({ route, navigation }) {
                 <View style={{flexDirection:'row'}}>
                     <Text style={Styles.textInputHeader}>Debtor  </Text> 
                     {
-                        !isSplitEqually && <Tooltip ModalComponent={Modal} popover={<Text>If you want some debtor to share the rest of the price, you can select them and let their price freedom. SharePay will set the debtors with the price in zero to share and split equally for the rest of the price.</Text>} 
-                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:130,width:250}}>
+                        !isSplitEqually && <Tooltip ModalComponent={Modal} popover={<Text>The debtors that are checked and leave a price in zero will be calculated equally in splitting method.</Text>} 
+                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:90,width:220}}>
                             <Feather name="alert-circle"/>
                         </Tooltip>
                     }
@@ -454,14 +453,14 @@ export default function AddingExpense({ route, navigation }) {
                     isUpdate ? 
                     <Pressable 
                         style={Styles.btnaddex}
-                        onPress= {()=>_updateExpense(isaccept)}
+                        onPress= {()=> handleButtonClick("update")}
                     >
-                        <Text style={Styles.text}>update Expense</Text>
+                        <Text style={Styles.text}>Update Expense</Text>
                     </Pressable> 
                     :
                     <Pressable 
                         style={Styles.btnaddex}
-                        onPress= {()=> _addExpense(isaccept)} 
+                        onPress= {()=> handleButtonClick("add")} 
                     >
                         <Text style={Styles.text}>Add Expense</Text>
                     </Pressable>
@@ -489,7 +488,9 @@ export default function AddingExpense({ route, navigation }) {
                 renderSectionHeader={() => <View style={{height:20, marginHorizontal:20, borderTopLeftRadius: 20, borderTopRightRadius: 20,backgroundColor:'#F88C8C'}} />}
                 ListFooterComponent={<ListFooter />}
                 stickySectionHeadersEnabled={true}
-            /></SafeAreaView>
+            />
+            <LoadingModal visible={isLoading} />
+            </SafeAreaView>
         </View>
     );
 };

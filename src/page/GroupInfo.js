@@ -20,6 +20,7 @@ import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember, isInGro
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
 import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function GroupInfo({ route, navigation }) {
     const { gid } = route.params
@@ -67,9 +68,15 @@ export default function GroupInfo({ route, navigation }) {
             alert("The system detect that you are not a member in the group. Your status is "+allowtostay.status+". \n\nPlease go back to the homepage and do pull to refresh.")
         }
     }
-    useEffect(() => {
-        isinGroup();        
-    },[]);
+    // useEffect(() => {
+    //     isinGroup();        
+    // },[]);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            isinGroup();
+        }, [])
+    )
 
     const handleRefresh = React.useCallback(() => {
         setRefreshing(true);
@@ -157,8 +164,6 @@ export default function GroupInfo({ route, navigation }) {
                 console.log(props.item.name))  
             }>
                 <View style={{
-                    // width: '100%',
-                    // height: 50,
                     paddingVertical:3,
                     backgroundColor: '#FFFFFF',
                     borderBottomWidth: 1,
@@ -173,7 +178,7 @@ export default function GroupInfo({ route, navigation }) {
                         </View>
                     </View>
                     <View style={{width: '40%',justifyContent:'center'}}>
-                        {props.title == "Expense item" ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.price}</Text>:null}
+                        <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.title == "Expense item"  ? `${props.item.price}` : (props.item.avgRating == undefined ? "":`${props.item.avgRating}`)}</Text>
                     </View>
                 </View>
             </TouchableOpacity>

@@ -88,7 +88,12 @@ export default function ItemInfo({ route,navigation }) {
                 
                 <TouchableOpacity 
                     style={Styles.btnitif}
-                    onPress={()=>{navigation.navigate('Group', {gid:gid, gname:gname})}}
+                    onPress={()=>{
+                        if(allowToEdit){
+                            navigation.goBack();
+                        } 
+                        navigation.goBack();
+                    }}
                     >
                     <Text style={Styles.text}> Done </Text>
                 </TouchableOpacity>

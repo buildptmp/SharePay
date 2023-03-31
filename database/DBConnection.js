@@ -12,8 +12,12 @@ import {
   query,
   where,
   deleteDoc,
-  Timestamp
+  Timestamp,
+  FieldValue,
+  arrayUnion,
+  arrayRemove
 } from "firebase/firestore"
+import { AirbnbRating } from 'react-native-elements';
 
 // const db = getFirestore(app);
 const db = initializeFirestore(app, {
@@ -85,14 +89,17 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
       // Debt //
       const index = item.debtor.findIndex((obj => obj.uid == uid));
       if(item.creditor.uid != uid && item.debtor[index].debtstatus == "owed") {
-
+        const slip = await getSlip(uid,gid,item.creditor.uid)
         const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
 
         if(index_c >=0){
+          if(data_creditorList[index_c].timestamp<item.timestamp) {
+            data_creditorList[index_c].timestamp = item.timestamp
+          } 
           data_creditorList[index_c].totolPrice += item.debtor[index].calculatedprice;
           data_creditorList[index_c].detail.push({
             eid: item.eid,
-            gid: gid,
+            // gid: gid,
             itemName: item.name,
             priceToPay: Number(item.debtor[index].calculatedprice),
             debtStatus: item.debtor[index].debtstatus
@@ -103,9 +110,12 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
             creditorid: item.creditor.uid,
             totolPrice: Number(item.debtor[index].calculatedprice),
             debtStatus: item.debtor[index].debtstatus,
+            timestamp: item.timestamp,
+            slip: slip,
+            gid:gid,
             detail: [{
               eid: item.eid,
-              gid: gid,
+              // gid: gid,
               itemName: item.name,
               priceToPay: Number(item.debtor[index].calculatedprice),
               debtStatus: item.debtor[index].debtstatus
@@ -118,13 +128,13 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
       else{
         for(let debtor of item.debtor){
           if(debtor.uid != uid && debtor.debtstatus == "owed"){
-
-            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid));
+            const slip = await getSlip(debtor.uid,gid,uid)
+            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid && obj.debtStatus == "owed"));
             if(index_d >= 0 ){
               data_debtorList[index_d].totolPrice += debtor.calculatedprice
               data_debtorList[index_d].detail.push({
                 eid: item.eid,
-                gid: gid,
+                // gid: gid,
                 itemName: item.name,
                 priceToPay: Number(debtor.calculatedprice),
                 debtStatus: debtor.debtstatus
@@ -135,9 +145,44 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
                 debtorid: debtor.uid,
                 totolPrice: Number(debtor.calculatedprice),
                 debtStatus: debtor.debtstatus,
+                timestamp: item.timestamp,
+                slip: slip,
+                gid: gid,
                 detail: [{
                   eid: item.eid,
-                  gid: gid,
+                  // gid: gid,
+                  itemName: item.name,
+                  priceToPay: Number(debtor.calculatedprice),
+                  debtStatus: debtor.debtstatus
+                }]
+              } 
+              // console.log("------",_data)
+              data_debtorList.push(_data);
+            }
+          } else if(debtor.uid != uid && debtor.debtstatus == "paid" && debtor.rating == undefined){
+            const slip = await getSlip(debtor.uid,gid,uid)
+            const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid && obj.debtStatus == "paid"));
+            if(index_d >= 0 ){
+              data_debtorList[index_d].totolPrice += Number(debtor.calculatedprice)
+              data_debtorList[index_d].detail.push({
+                eid: item.eid,
+                // gid: gid,
+                itemName: item.name,
+                priceToPay: Number(debtor.calculatedprice),
+                debtStatus: debtor.debtstatus
+              })
+            }else{
+              const _data ={
+                debtorName: debtor.name,
+                debtorid: debtor.uid,
+                totolPrice: Number(debtor.calculatedprice),
+                debtStatus: debtor.debtstatus,
+                timestamp: item.timestamp,
+                slip: slip,
+                gid: gid,
+                detail: [{
+                  eid: item.eid,
+                  // gid: gid,
                   itemName: item.name,
                   priceToPay: Number(debtor.calculatedprice),
                   debtStatus: debtor.debtstatus
@@ -170,6 +215,48 @@ export async function getPersonalDebtAndDebtorListAllGroup(uid){
   // console.log("debtorList: ", debtorList)
   // console.log("creditorList: ", creditorList)
   return {debtor:debtorList, debt:creditorList, havedata:havedata}
+}
+async function getPersonalDebt(uid){
+  
+  const groupList = await getGroupListByUid(uid);
+  
+  let creditorList = [];  
+  
+  let havedata = false;
+  for(let g of groupList){
+
+    const items = await getExpenseListByGroupMember(g.gid,uid);
+    let data_creditorList = [];   
+    let totolGroupDebt = 0;
+
+    if(items.length >0){
+      for(let item of items){
+        // Debt //
+        const index = item.debtor.findIndex((obj => obj.uid == uid));
+        if(item.creditor.uid != uid && item.debtor[index].debtstatus == "owed") {
+          const index_c = data_creditorList.findIndex((obj => obj.creditorid == item.creditor.uid))
+
+          if(index_c >=0){
+            if(data_creditorList[index_c].timestamp<item.timestamp) {
+              data_creditorList[index_c].timestamp = item.timestamp
+            } 
+          }else{
+            const _data = {
+              creditorid: item.creditor.uid,
+              timestamp: item.timestamp
+            };
+            data_creditorList.push(_data);
+          }
+          totolGroupDebt += Number(item.debtor[index].calculatedprice);
+        }
+      }
+    }
+    const data = {creditor:data_creditorList}
+
+    if(data.creditor.length>0) { creditorList.push({gname:g.name,gid:g.gid,totolGroupDebt:totolGroupDebt,data:data.creditor}); havedata = true }
+  }
+  // console.log("creditorList: ", creditorList)
+  return {debt:creditorList, havedata:havedata}
 }
 
 /* Group management*/
@@ -241,12 +328,21 @@ export async function getGroupByGid(gid){
       console.log(error)
   }
 }
-export async function checkAllowToleave(uid, gid){ //A-edit
+export async function checkAllowToleave(uid, gid){
 
   try {
     const data = await getPersonalDebtAndDebtorListbyGid(gid, uid);
-
-    return {creditor:(data.creditor.length == 0), debtor:(data.debtor.length == 0)}; // True if empty.
+    
+    let pass = true
+    if(data.debtor.length > 0){
+      for(debtor of data.debtor){
+        if(debtor.debtstatus=="owed"){
+          pass = false;
+          break;
+        }
+      }
+    }
+    return {creditor:(data.creditor.length == 0), debtor:(data.debtor.length == 0) || pass}; // True if empty.
 
   } catch (error){
     console.log(error);
@@ -325,12 +421,15 @@ export async function deleteGroup(gid){
 
 export async function addExpense(name, price, creditorid, method, gid,description=""){
   const creditorInfo = await getUserFromUid(creditorid)
+
   let _data = {
     name: name,
     price: price,
     creditor: creditorInfo, // an object
     method: method,
-    gid: gid
+    gid: gid,
+    timestamp: Date.now(),
+    // dateFormat: dateFormat
   }
   if(description){
     _data.description = description
@@ -430,7 +529,8 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
     let debtstatus = (creditorid === debtor.uid ? debtstatus_enum.owner : debtstatus_enum.owed);
     const debtorInfo = await getUserFromUid(debtor.uid)
     let _data = {
-      ...debtorInfo,
+      name:{...debtorInfo}.name,
+      uid:debtorInfo?.uid,
       calculatedprice: calculatedprice,
       debtstatus: debtstatus
     };
@@ -457,35 +557,53 @@ export async function getAllNoti(uid){
     const docsnap = await getDocs(q);
 
     docsnap.forEach(doc=>{
-      notiList.push({nid:doc.id, ...doc.data()});
+      const date = new Date({...doc.data()}.timestamp);
+      let dateFormat = (date.getHours()<10? '0'+date.getHours():date.getHours()) + ":" + (date.getMinutes()<10? '0'+date.getMinutes():date.getMinutes()) + ", "+ date.toDateString();
+      notiList.push({nid:doc.id, ...doc.data(), dateFormat:dateFormat});
     })
 
-    // notiList.sort(function(x, y){
-    //   return x.timestamp - y.timestamp;
-    // })
-  return notiList;
+    notiList.sort(function(x, y){
+      return y.timestamp - x.timestamp;
+    })
+
+    return notiList;
     
   } catch (error){
     console.log(error);
   }
 }
+export async function getGroupInv(fromuid,touid){
+  const notiRef = collection(db, 'Notification-records');
+  const q = query(notiRef,where("fromuid","==",fromuid),where("touid","==",touid), where("needreaction","==",true));
 
+  let notiList = [];
+  try {
+    const docsnap = await getDocs(q);
+
+    if(!docsnap.empty){
+      docsnap.forEach(doc=>{
+        notiList.push({nid:doc.id});
+      })
+      return notiList[0].nid;
+    }
+    return false
+  } catch (error){
+    console.log(error);
+  }
+}
 export async function sendGroupInv(from, to, needreaction, gid, gname){
   const notiType = await getDoc(doc(db,'Notification-props', 'groupinv')); 
   const notiRef = collection(db, 'Notification-records');
 
-  // const gname = gname;
   const uname = from.name;
-  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{uname}', uname).replace('{gname}', gname), header:'Group Invitation', group:{gid:gid,gname:gname}}
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{uname}', uname).replace('{gname}', gname), header:'Group Invitation'}
   // console.log(notification.message)
-  const date = new Date (Date.now())
-  let dateFormat = (date.getHours()<10? '0'+date.getHours():date.getHours()) + ":" + (date.getMinutes()<10? '0'+date.getMinutes():date.getMinutes()) + ", "+ date.toDateString();
-  // console.log(dateFormat)
 
   let _data = {
     fromuid: from.uid,
     touid: to.uid,
-    timestamp: dateFormat,
+    group: {gid:gid,gname:gname},
+    timestamp: Date.now(),
     read:false,
     needreaction: needreaction,
     notification: notification,
@@ -493,9 +611,22 @@ export async function sendGroupInv(from, to, needreaction, gid, gname){
   // const colRef = `${preText}UserGroup`;
   // const docID = `(${gid},${to.uid})`;
   // (notification.type=='groupinv'? _data.UserGroup=doc(db,colRef,docID) :null);
-  await addDoc(notiRef, _data).catch(error => {console.log(error)})
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
 }
-
+export async function delGroupInv(nid, gid, uid){ // Del noti and Del UserGroup
+  await deleteDoc(doc(db,'Notification-records',nid)).catch(error => {console.log(error)});
+  await deleteDoc(doc(db,preText+'UserGroup',`(${gid},${uid})`)).catch(error => {console.log(error)});
+}
+export async function setGroupInvResponse(nid, action){
+  const notiRef = doc(db, 'Notification-records', nid);
+  const date = new Date(Date.now())
+  let _data = {
+    update_timestamp: date,
+    action: action
+  }
+  await updateDoc(notiRef, _data).catch(error => {console.log(error)})
+}
 export async function setReadNeedReaction(nid,read, needreaction=""){
   const notiRef = doc(db, 'Notification-records',nid);
   let _data = {
@@ -506,4 +637,258 @@ export async function setReadNeedReaction(nid,read, needreaction=""){
     _data.needreaction=needreaction
   }
   await updateDoc(notiRef, _data).catch(error => {console.log(error)})
+}
+function formatDate(date) {
+  var d = new Date(date),
+  month = '' + (d.getMonth() + 1),
+  day = '' + d.getDate(),
+  year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('');
+}
+export function timecheck(t_create,t_slip){
+  time = new Date(t_create)
+  time_create = time.toLocaleTimeString('it-IT')
+  // console.log("time_create"+ time_create, "time_slip", t_slip)
+  if(time_create<t_slip){
+    return 1;
+  } else if(time_create==t_slip){
+    return 0;
+  } else {
+    return -1;
+  }
+}
+export function datecheck(d_create,d_slip){
+  date_create = formatDate(d_create) 
+  // console.log("date_create"+ date_create, "date_slip", d_slip)
+  if(date_create<d_slip){
+    return 1;
+  } else if(date_create==d_slip){
+    return 0;
+  } else{
+    return -1;
+  }
+}
+export async function debtReminder(/*from,*/ to, gid, gname, priceToPay){
+  const notiType = await getDoc(doc(db,'Notification-props', 'debtreminder'));
+  const notiRef = collection(db, 'Notification-records');
+
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{gname}', gname).replace('{priceToPay}', priceToPay), header:'Debt Reminder'}
+  let _data = {
+    // fromuid: from.uid,
+    touid: to.uid,
+    group: {gid:gid,gname:gname},
+    timestamp: Date.now(),
+    read:false,
+    needreaction: false,
+    notification: notification,
+  }
+
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
+}
+export async function sendPersonalDebtReminder(uid){
+  const debtList = await getPersonalDebt(uid);
+  if(debtList.havedata){
+    for(debt of debtList.debt){
+      await debtReminder({uid:uid},debt.gid,debt.gname,debt.totolGroupDebt)
+    }
+  }
+}
+export async function sendPaidDebtNoti(from, to, gid, gname,  expense){
+  const notiType = await getDoc(doc(db,'Notification-props', 'payment-paid'));
+  const notiRef = collection(db, 'Notification-records');
+
+  let message = {...notiType.data()}.message.replace('{uname}', from.name).replace('{gname}',gname);
+  let message_padding = "\n"+{...notiType.data()}.padding+"\n"
+  let n = 0;
+  for(e of expense){
+    n++;
+    message_padding += {...notiType.data()}.expenseList.replace('{n}', n).replace('{ename}', e.ename).replace('{priceToPay}', e.priceToPay)
+    message_padding += "\n"
+  }
+  let message_endding = {...notiType.data()}.endding.replace('{uname}', from.name)
+
+  const notification = {type:notiType.id, message:message, padding:message_padding, endding:message_endding, header:'Your debt is paid in full'}
+  let _data = {
+    fromuid: from.uid,
+    touid: to.uid,
+    group: {gid:gid,gname:gname},
+    timestamp: Date.now(),
+    read:false,
+    needreaction: false,
+    notification: notification,
+  }
+
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
+}
+export async function sendDebtClearNoti(touid, gid, gname){
+  const notiType = await getDoc(doc(db,'Notification-props', 'payment-clear'));
+  const notiRef = collection(db, 'Notification-records');
+
+  const notification = {type:notiType.id, message:{...notiType.data()}.message.replace('{gname}', gname), header:`Zero Debt in ${gname}`}
+  let _data = {
+    // fromuid: from.uid,
+    touid: touid,
+    group: {gid:gid,gname:gname},
+    timestamp: Date.now(),
+    read:false,
+    needreaction: false,
+    notification: notification,
+  }
+
+  const nid = await addDoc(notiRef, _data).then(doc=>{return doc.id}).catch(error => {console.log(error)})
+  return nid
+}
+
+/* Slip verification */ 
+export async function uploadSlipDebt(creditorid,uid, gid, slipURL, verificationStatus, pickerRes){
+  const slip = await getSlip(uid,gid,creditorid);
+  
+  pickerRes.uri = slipURL
+
+  if(!slip){ // add slip
+    const _data = {
+      gid: gid,
+      creditorid: creditorid,
+      uid:uid,
+      slipURL:slipURL,
+      status: verificationStatus,
+      pickerRes:pickerRes
+    }
+    const colRef = collection(db,preText+"SlipDebt")
+    await addDoc(colRef,_data)
+  } else { // update slip
+    const docRef = doc(db,preText+"SlipDebt",slip.sid)
+    await updateDoc(docRef,{slipURL:slipURL,status: verificationStatus,pickerRes:pickerRes})
+  }
+}
+export async function getSlip(uid, gid, creditorid){
+  const colRef = collection(db,preText+"SlipDebt")
+  const q = query(colRef,where("gid","==",gid),where("creditorid","==",creditorid),where("uid","==",uid))
+
+  try {
+    const slip = [];
+    const docsnap = await getDocs(q);
+
+    if(!docsnap.empty){
+      docsnap.forEach(doc=>{
+        slip.push({sid:doc.id,slipURL:{...doc.data()}.slipURL,status:{...doc.data()}.status, pickerRes:{...doc.data()}.pickerRes})
+      })
+      if(slip.length >1) console.log(slip)
+
+      return slip[0];
+
+    } else {
+      return false
+    }
+
+  } catch (error){
+    console.log(error);
+  }
+}
+export async function updateDebtStatus(docid, debtorid, calculatedprice, name, debtstatusChangeTo){
+  const docRef = doc(db,'Test-Items',docid)
+  // console.log(debtorid, calculatedprice, name);
+  await updateDoc(docRef,{
+    debtor: arrayUnion({
+      uid: debtorid,
+      debtstatus: (debtstatusChangeTo == "paid" ? "paid":"owed"),
+      name:name,
+      calculatedprice: calculatedprice
+    })
+  })
+  await updateDoc(docRef,{
+    debtor: arrayRemove({
+      uid: debtorid,
+      debtstatus: (debtstatusChangeTo == "paid" ? "owed":"paid"),
+      name:name,
+      calculatedprice: calculatedprice
+    })
+  })
+}
+
+/* Rating */
+export async function updateDebtRating(docid, debtorid, calculatedprice, name, rating){
+  const docRef = doc(db,'Test-Items',docid)
+  // console.log(debtorid, calculatedprice, name);
+  await updateDoc(docRef,{
+    debtor: arrayUnion({
+      uid: debtorid,
+      debtstatus: "paid",
+      name:name,
+      calculatedprice: calculatedprice,
+      rating: rating
+    })
+  })
+  await updateDoc(docRef,{
+    debtor: arrayRemove({
+      uid: debtorid,
+      debtstatus: "paid",
+      name:name,
+      calculatedprice: calculatedprice
+    })
+  })
+}
+export async function updateRating(uid, rating){
+  const docRef = doc(db, preText+'Users', uid)
+  const UserRef = await getDoc(doc(db,preText+'Users',uid))
+
+  const ratingAll = rating + ({...UserRef.data()}.ratingAll == undefined ? 0: {...UserRef.data()}.ratingAll);
+  const times = 1 + ({...UserRef.data()}.times == undefined ? 0:{...UserRef.data()}.times);
+  const avgRating = Math.round(ratingAll/times*100)/100
+
+  const data = {
+    ratingAll: ratingAll,
+    times: times,
+    avgRating: avgRating
+  };
+
+  try{
+    await updateDoc(docRef, data)
+  } catch(error) {
+    console.error('Error updating item rating:', error);
+    throw new Error('Error updating item rating');
+  }
+};
+
+export async function calculateAvgRating (uid) {
+  // const ratingCollectionRef = collection(db, preText+'Users');
+  // const ratingDocsSnapshot = await getDocs(ratingCollectionRef);
+  const UserRef = await getDoc(doc(db,preText+'Users',uid))
+
+  const totalRating = {...UserRef.data()}.ratingAll;
+  const times = {...UserRef.data()}.times;
+
+  const avgRating = Math.round(totalRating/times*100)/100
+
+  return avgRating;
+  // let totalRating = 0;
+  // let numRatings = ratingDocsSnapshot.size;
+
+  // ratingDocsSnapshot.forEach((doc) => {
+  //   totalRating += doc.data().rating;
+  // });
+
+  // return totalRating/numRatings;
+}
+
+export async function getRatingByUid(uid){
+  const docRef = doc(db, 'Test-Users', uid);
+  const docSnap = await getDoc(docRef);
+
+  docSnap.data();
+
+  try {
+    const docSnap = await getDoc(docRef);
+    console.log(docSnap.data());
+    } catch(error) {
+        console.log(error)
+    }
 }

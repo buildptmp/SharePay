@@ -216,6 +216,12 @@ export const Styles = StyleSheet.create({
         marginHorizontal:'20%'
     },
 
+    btnitif_v2: {
+        backgroundColor: '#F88C8C',
+        padding: 10,
+        borderRadius: 20,
+    },
+
     btngif: {
         backgroundColor: '#F88C8C',
         // marginBottom: 10,
@@ -228,7 +234,9 @@ export const Styles = StyleSheet.create({
         backgroundColor: '#F88C8C',
         padding: 10,
         borderRadius: 20,
-        width: '25%',
+        width:110,
+        marginLeft:10,
+        right:10
     }, 
 
     btnslip: {
@@ -236,6 +244,7 @@ export const Styles = StyleSheet.create({
         marginTop: 20,
         padding: 10,
         borderRadius: 20,
+        width:100
     },
 
     btndetail: {
@@ -274,8 +283,9 @@ export const Styles = StyleSheet.create({
         //textAlign: 'left',
         textAlignVertical: 'center',
         fontSize: 17,
-        width: '30%',
+        width: '25%',
         fontWeight: 'bold',
+        // backgroundColor:"pink"
     },
 
     debttext2: {
@@ -284,6 +294,8 @@ export const Styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: 'bold',
         width: '20%',
+        // backgroundColor:"lightblue",
+        textAlign:'center'
     },
 
     debttext3: {
@@ -292,6 +304,9 @@ export const Styles = StyleSheet.create({
         fontSize: 17,
         alignItems: 'flex-end',
         fontWeight: 'bold',
+        width: '25%',
+        textAlign:'right',
+        marginRight:10
     },
 
     containerLogin: {
@@ -348,6 +363,20 @@ export const Styles = StyleSheet.create({
         paddingRight: 10,
         paddingBottom: 10,
         fontSize: 22,
+        fontWeight: 'bold',
+    },
+
+    sectionHeaderDebtDebtorList: {
+        fontSize: 22,
+        fontWeight: 'bold',
+    },
+
+    sectionHeaderdebtdetail: {
+        paddingTop: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 10,
+        fontSize: 16,
         fontWeight: 'bold',
     },
 
@@ -427,8 +456,20 @@ export const Styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: '#fabbbb',
         marginBottom: 10,
-        },
+    },
+    
+    dropdownBtnStyle2: {
+        width: '25%',
+        height: 30,
+        backgroundColor: '#FFF',
+        borderRadius: 15,
+        borderWidth: 2,
+        borderColor: '#fabbbb',
+        //marginBottom: 5,
+    },
+
     dropdownBtnTxtStyle: {color: '#444', textAlign: 'left'},
+    dropdownBtnTxtStyle2: {color: '#444', textAlignVertical: 'center', paddingBottom: 5},
     dropdownDropdownStyle: {backgroundColor: '#EFEFEF', borderRadius:20},
     dropdownRowStyle: {backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5'},
     dropdownRowTxtStyle: {color: '#444', textAlign: 'left'},
@@ -438,6 +479,25 @@ export const Styles = StyleSheet.create({
         width: 200, 
         height: 200, 
         borderRadius: 100 
+    },
+
+    image_picker_slip: {
+        width: 350,
+        // width,
+        height: 500,
+        // backgroundColor: "white",
+        resizeMode: 'contain'
+    },
+
+    image_picker_sip_shadow: {
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
     },
 
     Iteminfo: {
@@ -452,7 +512,7 @@ export const Styles = StyleSheet.create({
 
     box: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        // justifyContent: 'space-between',
         borderBottomWidth:1,
         borderTopWidth:1,
         borderColor: '#E3E3E3',
