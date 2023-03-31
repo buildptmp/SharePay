@@ -126,7 +126,7 @@ import { Button,
             }
         }
         else{
-            alert('Can not find an account with phone number '+ PhoneNum+".")
+            alert('Cannot find an account with phone number '+ PhoneNum+".")
         }
     }
 
@@ -142,7 +142,7 @@ import { Button,
             setNid(nid);
         }
         else{
-            alert('Can not find an account with phone number '+ PhoneNum+".")
+            alert('Cannot find an account with phone number '+ PhoneNum+".")
         }
     }
 
@@ -158,7 +158,7 @@ import { Button,
         }
         else{
             
-            alert('Can not find an account with phone number '+ PhoneNum+"."+nid_GroupInv)
+            alert('Cannot find an account with phone number '+ PhoneNum+"."+nid_GroupInv)
         }
     }
 
