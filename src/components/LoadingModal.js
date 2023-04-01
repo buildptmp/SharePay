@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import { View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 
 const LoadingModal = ({ visible }) => {
-  const [modalVisible, setVisible] = useState(visible)
+  let modalVisible = visible
   return(
     <Modal
       animationType="fade"
       transparent={true}
       visible={modalVisible}
-      onRequestClose={() => {setVisible(false)}}>
+      onRequestClose={() => {modalVisible = false;}}>
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>

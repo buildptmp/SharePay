@@ -196,11 +196,11 @@ export default function AddingSlip({ navigation, route }) {
                         <Pressable 
                             // key={e.routeName}
                             style={isSuccess? [Styles.btnslip, {marginBottom:10, backgroundColor:'#2E8B57'}]:[Styles.btnslip, {marginBottom:10}]}
-                            onPress={async()=>{
-                                console.log(amount,timestamp, data, slip, status)
-                                await checkSlip();
+                            onPress={handleButtonClick
                                 // console.log(amount,timestamp, data, slip, status)
-                            }}
+                                // await checkSlip();
+                                // console.log(amount,timestamp, data, slip, status)
+                            }
                             disabled={isSuccess}
                         >
                             <Text style={Styles.text}>{isSuccess? "Verified":"Confirm" }</Text>

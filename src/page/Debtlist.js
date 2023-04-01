@@ -37,7 +37,7 @@ export default function DebtView({page, navigation}){
         setTimeout(async() => {
             await _showDebtAndDebtorList(uid)
             setRefreshing(false);
-        }, 2000);
+        }, 1000);
     }, []);
     
     async function _showDebtAndDebtorList(uid){
