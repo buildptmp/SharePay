@@ -24,7 +24,7 @@ export default function ItemInfo({ route,navigation }) {
     async function showItemInfo(){
         const item = await getExpenseInfo(eid);
         setItemInfo(item);
-        console.log("item info ",item.eid)
+        // console.log("item info ",item.eid)
     }
 
     useEffect(()=>{

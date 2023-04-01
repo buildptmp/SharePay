@@ -663,13 +663,14 @@ export function timecheck(t_create,t_slip){
     return -1;
   }
 }
-export function datecheck(d_create,d_slip){
-  date_create = formatDate(d_create) 
+export function datetimecheck(dt_create,d_slip,t_slip){
+  date_create = formatDate(dt_create) 
   // console.log("date_create"+ date_create, "date_slip", d_slip)
   if(date_create<d_slip){
     return 1;
   } else if(date_create==d_slip){
-    return 0;
+    const check = timecheck(dt_create,t_slip)
+    return check;
   } else{
     return -1;
   }
