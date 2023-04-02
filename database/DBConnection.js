@@ -23,7 +23,8 @@ import { AirbnbRating } from 'react-native-elements';
 const db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
 });
-const preText = "Test-";
+// const preText = "Test-";
+const preText = "Tester-";
 /* User management*/
 
 export function addUser(uid, phoneNum) {
@@ -797,7 +798,7 @@ export async function getSlip(uid, gid, creditorid){
   }
 }
 export async function updateDebtStatus(docid, debtorid, calculatedprice, name, debtstatusChangeTo){
-  const docRef = doc(db,'Test-Items',docid)
+  const docRef = doc(db,preText+'Items',docid)
   // console.log(debtorid, calculatedprice, name);
   await updateDoc(docRef,{
     debtor: arrayUnion({
@@ -819,7 +820,7 @@ export async function updateDebtStatus(docid, debtorid, calculatedprice, name, d
 
 /* Rating */
 export async function updateDebtRating(docid, debtorid, calculatedprice, name, rating){
-  const docRef = doc(db,'Test-Items',docid)
+  const docRef = doc(db,preText+'Items',docid)
   // console.log(debtorid, calculatedprice, name);
   await updateDoc(docRef,{
     debtor: arrayUnion({
@@ -883,7 +884,7 @@ export async function calculateAvgRating (uid) {
 }
 
 export async function getRatingByUid(uid){
-  const docRef = doc(db, 'Test-Users', uid);
+  const docRef = doc(db, preText+'Users', uid);
   const docSnap = await getDoc(docRef);
 
   docSnap.data();
