@@ -42,9 +42,10 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
     }, []);
     
     RenderItem = (props) => {
-        const hasread = props.read;
-        const needreaction = props.reaction;
+        const [hasread, setHasread] = useState(props.read);
+        const [needreaction, setNeedreaction] = useState(props.reaction);
         const record = props.item.notification;
+        const group = props.item.group;
         const time = props.item.dateFormat;
         const GroupInvResponse = props.item.action;
         const [invstatus, setinvStatus] = useState("");
@@ -53,7 +54,9 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
             const action = isaccept? 'accepted': 'declined'
             await setReadNeedReaction( props.item.nid ,true, false);
             await addEditGroupMember(groupgid,touid,action);
-            await setGroupInvResponse(props.item.nid,action)
+            await setGroupInvResponse(props.item.nid,action);
+            setNeedreaction(false);
+            setHasread(hasread);
             setinvStatus(action);
         }
 
@@ -93,13 +96,13 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
                 borderColor: '#48494B',
                 }}>
                 <View style={{flexDirection:'row', marginBottom:5}}>
-                    <View style={{width: '67%',flexDirection:'row'}}>
+                    <View style={{width: '67%',flexDirection:'row', flexWrap:'wrap'}}>
                         <Text style={{fontWeight:'bold', fontSize:20, marginRight:6}}>{record.header}</Text>
                         {invstatus ? <Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( {invstatus} )</Text>:null}
                         {hasread || invstatus? null:<Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( new )</Text>}
                     </View>
-                    
-                    <View style={{width: '35%',justifyContent:'center'}}>
+                    {/* <View style={{width:'7%'}} /> */}
+                    <View style={{width: '35%',marginTop:7}}>
                         <Text style={{fontSize:12}}>{time}</Text>
                     </View>
                 </View>
@@ -117,13 +120,13 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
                     <View style={{padding:5, paddingTop:10, flexDirection:'row', justifyContent:'space-around'}}>
                         <Pressable 
                             style={Styles.btnpopup}
-                            onPress= {()=> groupinvResponse(true,props.item.touid,record.group.gid)} 
+                            onPress= {()=> groupinvResponse(true,props.item.touid,group.gid)} 
                         >
                             <Text style={Styles.text}>accept</Text>
                         </Pressable>
                         <Pressable 
                             style={Styles.btnpopup}
-                            onPress= {()=> groupinvResponse(false,props.item.touid,record.group.gid)}
+                            onPress= {()=> groupinvResponse(false,props.item.touid,group.gid)}
                         >
                             <Text style={Styles.text}>decline</Text>
                         </Pressable>

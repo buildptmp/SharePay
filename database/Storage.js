@@ -39,9 +39,11 @@ export async function uploadGroupImg(fileName, file, type){
 }
 
 export async function uploadSlip(fileName, file, type, oldSlipURL=""){
+    if(oldSlipURL == file) return false;
     if(oldSlipURL){
         storage().refFromURL(oldSlipURL).delete();
     }
+
     const reference = storage().ref("/slip/"+fileName);
     // uploads file
     const task = reference.putFile(file);
@@ -76,10 +78,10 @@ export async function imagePicker(){
         } else if (response.customButton) {
             console.log('User tapped custom button: ', response.customButton);
         } else {
-            const res = response.assets[0]
-            console.log( "Response = ",res.assets[0])
-            return  res.assets[0]
+            // const res = response.assets[0]
+            // console.log( "Response picker = ",res)
         }
+        console.log( "Response = ",response)
         return response
     });
     return response

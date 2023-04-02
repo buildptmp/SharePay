@@ -25,7 +25,7 @@ export default function UserSelect({ navigation }) {
                 const time = new Date(Date.now());
                 if(time.toLocaleString().split(", ")[1] == "7:00:00 AM"){
                     
-                // if(time.toLocaleString().split(", ")[1] == "3:55:40 PM"){
+                // if(time.toLocaleString().split(", ")[1] == "5:29:50 PM"){
                     if(sendOneTime){
                         sendOneTime = false
                         await sendPersonalDebtReminder(user.uid)

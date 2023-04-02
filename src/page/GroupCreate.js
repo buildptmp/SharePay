@@ -23,8 +23,9 @@ export default function GroupCreate({ navigation }) {
     
     async function chooseFile() {
         const response = await imagePicker()
-        if (!response.didCancel){
-            setPickerRes(response)
+        if (!response.didCancel && !response.error){
+            // console.log("Adding Slip",response)
+            setPickerRes(response.assets[0])
         }
     };
     

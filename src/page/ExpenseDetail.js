@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { TextInput, TouchableOpacity, Text, View, Image, SafeAreaView, SectionList, TouchableWithoutFeedback } from "react-native";
 import { Styles } from "../Styles"
 import { updateDebtStatus, checkAllowToleave, sendDebtClearNoti } from "../../database/DBConnection";
@@ -39,22 +39,24 @@ export default function ExpenseDetail({ page, navigation, route}) {
         setTimeout(() => {
           setIsLoading(false);
         }, 2000);
-        navigation.goBack();
+        // navigation.goBack();
     };
 
     async function _saveEditDebtStatus(){
         if(editDebtStatusList.length>0){
-            for(item of editDebtStatusList){
+            let changeTo = ""
+            for(let item of editDebtStatusList){
                 await updateDebtStatus(item.eid,DebtOrDebtorId,item.priceToPay,DebtOrDebtorName,item.debtstatus)//Debtor
+                changeTo = item.debtstatus;
             }
-
-            for(uid of [DebtOrDebtorId,currUser.uid]){
-                const check = await checkAllowToleave(uid,group.gid)
-                
-                if(check.creditor && check.debtor){
-                    await sendDebtClearNoti(uid,group.gid,group.name)
-                    if(uid==currUser.uid){
-                        global.NotiSignal = true
+            if(changeTo == "paid"){
+                for(let uid of [DebtOrDebtorId,currUser.uid]){
+                    const check = await checkAllowToleave(uid,group.gid)
+                    if(check.creditor && check.debtor){
+                        await sendDebtClearNoti(uid,group.gid,group.name)
+                        if(uid==currUser.uid){
+                            global.NotiSignal = true
+                        }
                     }
                 }
             }
@@ -83,8 +85,8 @@ export default function ExpenseDetail({ page, navigation, route}) {
             <Text style={Styles.sectionHeaderDebtDebtorList}>Group: {group.name}</Text>
         </View>
     )
-
-    RenderItem = ({item}) =>{
+    
+    const RenderItem = ({item}) =>{
         const ref = useRef("")
         const [status, setStatus] = useState(item.debtStatus)
         const debtorStatus = ['owed','paid']
@@ -106,9 +108,10 @@ export default function ExpenseDetail({ page, navigation, route}) {
                             setStatus(selectedItem)
                             crudOfEditDebtStatus(item.eid,item.priceToPay,selectedItem, item.debtStatus)
                         }}
-                        buttonTextAfterSelection={(selectedItem) => {
-                            return selectedItem
-                        }}
+                        // buttonTextAfterSelection={(selectedItem) => {
+                        //     setStatus(selectedItem)
+                        //     return selectedItem
+                        // }}
                         rowTextForSelection={(item) => {
                             return item
                         }}
@@ -134,6 +137,10 @@ export default function ExpenseDetail({ page, navigation, route}) {
             </TouchableWithoutFeedback>
         )
     }
+    
+    const memoizedRenderItem = useMemo(() =>{
+        return RenderItem;
+    },[RenderItem, editDebtStatusList])
 
     return(
         <SafeAreaView style={Styles.list_container}>
@@ -142,9 +149,10 @@ export default function ExpenseDetail({ page, navigation, route}) {
                 sections={[
                     {title: DebtOrDebtor+": "+DebtOrDebtorName , data: detail},
                 ]}
-                renderItem={({item}) => 
-                    <RenderItem item={item} />
-                }
+                // renderItem={({item}) => 
+                //     <RenderItem item={item} />
+                // }
+                renderItem={memoizedRenderItem}
                 keyExtractor={(item, index) => item + index}
                 renderSectionHeader={({section}) => (
                     <View style={[Styles.box,{justifyContent:'space-between'}]}>
