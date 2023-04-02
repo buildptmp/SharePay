@@ -128,6 +128,7 @@ export async function getPersonalDebtAndDebtorListbyGid(gid, uid){
       // Debtor //
       else{
         for(let debtor of item.debtor){
+          // console.log("debtor",debtor)
           if(debtor.uid != uid && debtor.debtstatus == "owed"){
             const slip = await getSlip(debtor.uid,gid,uid)
             const index_d = data_debtorList.findIndex((obj => obj.debtorid == debtor.uid && obj.debtStatus == "owed"));
@@ -421,12 +422,11 @@ export async function deleteGroup(gid){
 /* Expense management*/ 
 
 export async function addExpense(name, price, creditorid, method, gid,description=""){
-  const creditorInfo = await getUserFromUid(creditorid)
 
   let _data = {
     name: name,
     price: price,
-    creditor: creditorInfo, // an object
+    creditorid:creditorid,
     method: method,
     gid: gid,
     timestamp: Date.now(),
@@ -454,8 +454,24 @@ export async function getExpenseListByGid(gid){
     docsnap.forEach( doc => {
       expenseList.push({eid:doc.id, ...doc.data()})
     })
-    // console.log(expenseList)
-    return expenseList
+
+    let newEList = [];
+    for(let e of expenseList){
+      let etemp = e;
+
+      const creditor = await getUserFromUid(e.creditorid);
+      let debtorList = [];
+      for(let debtorObj of e.debtor){
+        const debtor = await getUserFromUid(debtorObj.uid)
+        debtorList.push({...debtor, ...debtorObj})
+      }
+      etemp.creditor = creditor
+      etemp.debtor = debtorList
+      newEList.push(etemp)
+    }
+
+    // console.log(newEList)
+    return newEList
   } catch (error){
     console.log(error);
   }
@@ -468,13 +484,29 @@ export async function getExpenseListByGroupMember(gid,uid){
     const docsnap = await getDocs(q);
     let expenseList = [];
     docsnap.forEach( doc => {
-      const cred = {...doc.data()}.creditor;
-      const debt = {...doc.data()}.debtor;
-      const index = debt.findIndex((obj => obj.uid == uid))
-      if(cred.uid == uid || index >= 0) expenseList.push({eid:doc.id, ...doc.data()})
+      const creditorid = {...doc.data()}.creditorid;
+      const debtor = {...doc.data()}.debtor;
+      const index = debtor.findIndex((obj => obj.uid == uid))
+      if(creditorid == uid || index >= 0) expenseList.push({eid:doc.id, ...doc.data()})
     })
-    // console.log(expenseList)
-    return expenseList
+    let newEList = [];
+    for(let e of expenseList){
+      let etemp = e;
+      
+      const creditor = await getUserFromUid(e.creditorid);
+      let debtorList = [];
+      for(let debtorObj of e.debtor){
+        const debtor = await getUserFromUid(debtorObj.uid)
+        debtorList.push({...debtor, ...debtorObj})
+      }
+      etemp.creditor = creditor
+      etemp.debtor = debtorList
+      // console.log(etemp)
+      newEList.push(etemp)
+    }
+
+    // console.log(newEList)
+    return newEList
   } catch (error){
     console.log(error);
   }
@@ -485,15 +517,26 @@ export async function getExpenseInfo(eid){
     eid: itemDoc.id,
     ...itemDoc.data()
   };
+
+  const creditor = await getUserFromUid(itemInfo.creditorid);
+  let debtorList = [];
+  for(let debtorObj of itemInfo.debtor){
+    const debtor = await getUserFromUid(debtorObj.uid)
+    debtorList.push({...debtor, ...debtorObj})
+  }
+  itemInfo.creditor = creditor
+  itemInfo.debtor = debtorList
+  
   // console.log('iteminfo: ', itemInfo)
   return itemInfo
 }
-export async function editExpenseAfterView(eid, name, price, creditorid, debtorList, gid, description="" ){
-  const creditorInfo = await getUserFromUid(creditorid)
+export async function editExpenseAfterView(eid, name, price, creditorid, method, description="" ){
   let _data = {
     name: name,
     price: price,
-    creditor: creditorInfo, // an object
+    creditorid:creditorid,
+    method: method,
+    timestamp: Date.now(),
   }
   if(description){
     _data.description = description
@@ -530,9 +573,7 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
     let debtstatus = (creditorid === debtor.uid ? debtstatus_enum.owner : debtstatus_enum.owed);
     const debtorInfo = await getUserFromUid(debtor.uid)
     let _data = {
-      name:{...debtorInfo}.name,
       uid:debtorInfo?.uid,
-      image:debtorInfo.image,
       calculatedprice: calculatedprice,
       debtstatus: debtstatus
     };
@@ -804,7 +845,6 @@ export async function updateDebtStatus(docid, debtorid, calculatedprice, name, d
     debtor: arrayUnion({
       uid: debtorid,
       debtstatus: (debtstatusChangeTo == "paid" ? "paid":"owed"),
-      name:name,
       calculatedprice: calculatedprice
     })
   })
@@ -812,7 +852,6 @@ export async function updateDebtStatus(docid, debtorid, calculatedprice, name, d
     debtor: arrayRemove({
       uid: debtorid,
       debtstatus: (debtstatusChangeTo == "paid" ? "owed":"paid"),
-      name:name,
       calculatedprice: calculatedprice
     })
   })
@@ -826,7 +865,6 @@ export async function updateDebtRating(docid, debtorid, calculatedprice, name, r
     debtor: arrayUnion({
       uid: debtorid,
       debtstatus: "paid",
-      name:name,
       calculatedprice: calculatedprice,
       rating: rating
     })
@@ -835,7 +873,6 @@ export async function updateDebtRating(docid, debtorid, calculatedprice, name, r
     debtor: arrayRemove({
       uid: debtorid,
       debtstatus: "paid",
-      name:name,
       calculatedprice: calculatedprice
     })
   })

@@ -109,7 +109,7 @@ export default function AddingExpense({ route, navigation }) {
             if(isaccepted){
                 const countSplitEquallyMember = await _countSplitEquallyMember(Debtor);
                 if(total.percent == 100 || countSplitEquallyMember>=1){
-                    await editExpenseAfterView(Itemid, ItemName,ItemPrice,Creditor.uid,Debtor,gid);
+                    await editExpenseAfterView(Itemid, ItemName,ItemPrice,Creditor.uid,methodName);
                     await addDebtor(Debtor,Itemid,gid,Creditor.uid,ItemPrice, countSplitEquallyMember)
 
                     alert("Successfully update.") 
