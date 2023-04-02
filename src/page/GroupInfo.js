@@ -221,32 +221,32 @@ export default function GroupInfo({ route, navigation }) {
                         <AntDesign 
                             name='edit'
                             size={18}
-                            style={{alignItems:'center'}}
+                            style={{alignItems:'center', color:'grey'}}
                             onPress={chooseFile}
                         />
                     </View>
                     <View style={{flexDirection:'column',marginLeft:10}}>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <TextInput ref={textInputRefname} onChangeText={(text) => setgName(text)} style={{marginLeft:20, fontWeight:'bold', fontSize:25, borderBottomColor:'black', borderBottomWidth:1}}>{gname}</TextInput>
+                            <TextInput ref={textInputRefname} onChangeText={(text) => setgName(text)} style={{marginLeft:20, fontWeight:'bold', fontSize:25, borderBottomColor:'black', borderBottomWidth:1, color:'black'}} placeholder={`${gname}`} placeholderTextColor='grey'>{gname}</TextInput>
                             {/* <TouchableOpacity onPress={editDesc}>
                                 <Text style={{marginTop:8,marginLeft:5}}>edit</Text>
                             </TouchableOpacity> */}
                             <AntDesign 
                                 name='edit'
                                 size={18}
-                                style={{marginTop:8,marginLeft:5}}
+                                style={{marginTop:8,marginLeft:5, color:'grey'}}
                                 onPress={editName}
                             />
                         </View>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <TextInput ref={textInputRefdesc} onChangeText={(text) => setgDesc(text)} style={{marginLeft:20, fontSize:16, color:'#555454'}}>{gdesc}</TextInput>
+                            <TextInput ref={textInputRefdesc} onChangeText={(text) => setgDesc(text)} style={{marginLeft:20, fontSize:16, color:'#555454'}} placeholder={gdesc?`${gdesc}`:"edit description"} placeholderTextColor='grey'>{gdesc}</TextInput>
                             {/* <TouchableOpacity onPress={editDesc}>
                                 <Text style={{marginTop:8,marginLeft:5}}>edit</Text>
                             </TouchableOpacity> */}
                             <AntDesign 
                                 name='edit'
                                 size={18}
-                                style={{marginTop:8,marginLeft:5}}
+                                style={{marginTop:8,marginLeft:5, color:'grey'}}
                                 onPress={editDesc}
                             />
                         </View>

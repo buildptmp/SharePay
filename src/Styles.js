@@ -82,6 +82,7 @@ export const Styles = StyleSheet.create({
         borderRadius: 15,
         borderColor: '#B6B6B6',
         backgroundColor: '#FFFFFF',
+        color:'black'
 
     },
     inputgroup: {
@@ -92,6 +93,7 @@ export const Styles = StyleSheet.create({
         borderRadius: 15,
         borderColor: '#B6B6B6',
         backgroundColor: '#FFFFFF',
+        color:'grey'
     },
 
     descinput: {
@@ -112,6 +114,7 @@ export const Styles = StyleSheet.create({
         borderRadius: 15,
         borderColor: '#B6B6B6',
         backgroundColor: '#FFFFFF',
+        color:'black'
 
     },
 
@@ -123,6 +126,7 @@ export const Styles = StyleSheet.create({
         borderRadius: 15,
         borderColor: '#B6B6B6',
         backgroundColor: '#FFFFFF',
+        color:'black'
 
     },
 
@@ -236,7 +240,8 @@ export const Styles = StyleSheet.create({
         borderRadius: 20,
         width:110,
         marginLeft:10,
-        right:10
+        right:15,
+        // marginRight: 10
     }, 
 
     btnslip: {
@@ -285,6 +290,7 @@ export const Styles = StyleSheet.create({
         fontSize: 17,
         width: '25%',
         fontWeight: 'bold',
+        color:'black',
         // backgroundColor:"pink"
     },
 
@@ -294,6 +300,7 @@ export const Styles = StyleSheet.create({
         fontSize: 17,
         fontWeight: 'bold',
         width: '20%',
+        color:'black',
         // backgroundColor:"lightblue",
         textAlign:'center'
     },
@@ -306,7 +313,8 @@ export const Styles = StyleSheet.create({
         fontWeight: 'bold',
         width: '25%',
         textAlign:'right',
-        marginRight:10
+        marginRight:10,
+        color: 'black'
     },
 
     containerLogin: {
@@ -364,11 +372,13 @@ export const Styles = StyleSheet.create({
         paddingBottom: 10,
         fontSize: 22,
         fontWeight: 'bold',
+        color:'black'
     },
 
     sectionHeaderDebtDebtorList: {
         fontSize: 22,
         fontWeight: 'bold',
+        color:'white'
     },
 
     sectionHeaderdebtdetail: {
@@ -386,6 +396,7 @@ export const Styles = StyleSheet.create({
         paddingRight: 10,
         paddingBottom: 10,
         fontSize: 20,
+        color:'black'
     },
 
     sectionHeaderwithsub: {
@@ -395,6 +406,7 @@ export const Styles = StyleSheet.create({
         paddingBottom: 5,
         fontSize: 20,
         fontWeight: 'bold',
+        color:'black'
     },
     textInputHeader: {
         paddingTop: 2,
@@ -403,15 +415,18 @@ export const Styles = StyleSheet.create({
         paddingBottom: 5,
         fontSize: 16,
         fontWeight: 'bold',
+        color:'black'
     },
     item: {
         padding: 10,
         fontSize: 18,
         height: 44,
+        color: 'black'
     },
     itemDesc: {
         padding: 10,
         fontSize: 12,
+        color:'grey'
         // height: 44,
     },
 
@@ -425,6 +440,7 @@ export const Styles = StyleSheet.create({
         marginBottom: 10,
         paddingLeft:10,
         paddingRight:10,
+        color:'black'
     },
 
     itemInputCheckboxContainer: {

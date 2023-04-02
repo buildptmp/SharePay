@@ -58,8 +58,8 @@ const textInputRefbio = useRef(null);
         <SafeAreaView style={styles.container}>
             <View style={styles.imgContainer}>
                 <Image style={Styles.image_picker} source={{uri:pickerRes.uri}}/>
-                <TextInput ref={textInputRefname} style={Styles.sectionHeader} onChangeText={(text) => setDisplayName(text)}>{displayName}</TextInput>
-                <TextInput ref={textInputRefbio} style={Styles.bio} onChangeText={(text) => setBio(text)}>{bio}</TextInput>
+                <TextInput ref={textInputRefname} style={Styles.sectionHeader} onChangeText={(text) => setDisplayName(text)} placeholder={`${displayName}`} placeholderTextColor='grey'>{displayName}</TextInput>
+                <TextInput ref={textInputRefbio} style={Styles.bio} onChangeText={(text) => setBio(text)} placeholder={`${bio}`} placeholderTextColor='grey'>{bio}</TextInput>
                 <Text style={Styles.sectionHeader}>{phoneNum}</Text>
                 <View style={{width: '80%',margin: 2}} >
                     <TouchableOpacity onPress={chooseFile} style = {Styles.btnprofileinfo}>

@@ -76,8 +76,8 @@ import { Button,
             <View style={Styles.centeredView}>
                 <View style={Styles.modalView}>
                     <View>
-                        <Text style={{textAlign:'center'}}>The invitation has been declined by {member.name}.</Text>
-                        <Text style={{textAlign:'center'}}>Would you like to send it again?</Text>
+                        <Text style={{textAlign:'center', color:'black'}}>The invitation has been declined by {member.name}.</Text>
+                        <Text style={{textAlign:'center', color:'black'}}>Would you like to send it again?</Text>
                         <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', paddingHorizontal:30}}>
                             <TouchableOpacity 
                                 style={Styles.btnpopup}
@@ -116,7 +116,7 @@ import { Button,
                 <View style={Styles.modalView}>
                     <View>
                         {/* <Text style={{textAlign:'center'}}>The invitation has been declined by {member.name}.</Text> */}
-                        <Text style={{textAlign:'center'}}>Please confirm to delect the invitation.</Text>
+                        <Text style={{textAlign:'center', color:'black'}}>Please confirm to delect the invitation.</Text>
                         <View style={{flexDirection:'row', marginTop:10, justifyContent:'space-between', paddingHorizontal:30}}>
                             <TouchableOpacity 
                                 style={Styles.btnpopup}
@@ -205,12 +205,13 @@ import { Button,
             <View style={{marginHorizontal:30}}>
                 {ResendgroupInvPopup}
                 {ConfirmTodeletePopup}
-                <Text style={[{fontWeight:'bold', marginLeft:10}]}> Phone Number </Text>
+                <Text style={[{fontWeight:'bold', marginLeft:10, color:'black'}]}> Phone Number </Text>
                 <View style={{flexDirection: 'row', width: '80%', marginLeft:10}}>
                 <TextInput
                     style={Styles.inputAddmem}
                     value={PhoneNum}
                     placeholder={"Insert Phone Number"}
+                    placeholderTextColor='grey'
                     onChangeText={(text) => setPhoneNum(text)}
                     autoCapitalize={"none"}
                 />
@@ -296,6 +297,7 @@ import { Button,
                     style={Styles.inputAddmem}
                     value={PhoneNum}
                     placeholder={"Insert Phone Number"}
+                    placeholderTextColor='grey'
                     onChangeText={(text) => setPhoneNum(text)}
                     autoCapitalize={"none"}
                 />

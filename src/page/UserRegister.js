@@ -47,8 +47,8 @@ export default function UserRegister({ navigation }) {
 
         <View style={Styles.containerRegis}>
 
-            <Text>Phone Number</Text>
-            <View style={[{ flex: 1, flexDirection: 'row' }]}>
+            <Text style={{color:'black'}}>Phone Number</Text>
+            <View style={{flexDirection: 'row' , marginBottom:20}}>
                 <SelectDropdown
                     defaultValue={countryCode}
                     data={countriesCode}
@@ -67,10 +67,11 @@ export default function UserRegister({ navigation }) {
                     style={Styles.input}
                     value={phoneNum}
                     placeholder={"Insert Phone Number"}
+                    placeholderTextColor='grey'
                     onChangeText={(text) => setPhoneNum(text)}
                 />
             </View>
-            <View style={[{ width: '100%', paddingHorizontal: 100, flex: 3 }]}>
+            <View style={{ marginBottom:40}}>
                 <TouchableOpacity
                     style={Styles.btn}
                     onPress={_signInWithPhoneNumber}
@@ -81,7 +82,8 @@ export default function UserRegister({ navigation }) {
             <TextInput
                 style={Styles.input}
                 value={code}
-                placeholder={"Sent OTP"}
+                placeholder={"Enter OTP"}
+                placeholderTextColor='grey'
                 onChangeText={(text) => setCode(text)}
             />
             <TouchableOpacity

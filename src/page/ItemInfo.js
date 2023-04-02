@@ -33,14 +33,16 @@ export default function ItemInfo({ route,navigation }) {
 
     ListHeader = (props) => {
         return(
-            <View style={{}}>
+            <View style={{justifyContent:'space-between', backgroundColor:'#F88C8C'}}>
                 <View style={{paddingTop:10}}>
                     <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                        <Text style={Styles.sectionHeaderwithsub}>Name {itemInfo.name} </Text> 
-                        <Text style={Styles.sectionHeaderwithsub}>Group {gname} </Text>
+                        <Text style={[Styles.sectionHeaderwithsub,{color:'white'}]}>Name {itemInfo.name} </Text> 
+                        <Text style={[Styles.sectionHeaderwithsub,{color:'white'}]}>Group {gname} </Text>
                     </View>
-                    <Text style={Styles.sectionHeaderwithsub}>Price {itemInfo.price} </Text>
-                    <Text style={Styles.sectionHeaderwithsub}>Method {itemInfo.method} </Text>
+                    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                        <Text style={[Styles.sectionHeaderwithsub,{color:'white'}]}>Price {itemInfo.price} </Text>
+                        <Text style={[Styles.sectionHeaderwithsub,{color:'white'}]}>Method {itemInfo.method} </Text>
+                    </View>
                 </View>
             </View>
         )
@@ -53,19 +55,19 @@ export default function ItemInfo({ route,navigation }) {
         </View>)
     };
 
-    RenderItem = (props) => {
+    RenderItem = ({item, title}) => {
         return (
             <TouchableOpacity style ={{flex: 1}} onPress={() => {}}>
                 <View style={Styles.Iteminfo}>
                     <View style={{width: '50%',flexDirection: 'row',}}>
-                        <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:props.item.image}}/>  
-                        <Text style={Styles.item}>{props.item.name}</Text> 
+                        <Image style={{borderRadius: 50, height:35, width:35,margin:5 }} source={{uri:item.image}}/>  
+                        <Text style={Styles.item}>{item.name}</Text> 
                     </View>
                     <View style={{width: '20%'}}>
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'center'}]}>{props.item.debtstatus}</Text>:null}
+                        {title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'center'}]}>{item.debtstatus}</Text>:null}
                     </View>
                     <View style={{width: '30%'}}>
-                        {props.title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.item.calculatedprice}</Text>:null}
+                        {title != 'Creditor' ? <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{item.calculatedprice}</Text>:null}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -109,8 +111,8 @@ export default function ItemInfo({ route,navigation }) {
                     {title: 'Creditor', data: [itemInfo.creditor]},
                     {title: 'Debtor', data: itemInfo.debtor},
                 ]}
-                renderItem={({item}) => (
-                    <RenderItem item={item}/>
+                renderItem={({item, title}) => (
+                    <RenderItem item={item} title={title}/>
                 )}
                 keyExtractor={(item, index) => item + index}
                 ListHeaderComponent={({item}) => <ListHeader item={item}/>}

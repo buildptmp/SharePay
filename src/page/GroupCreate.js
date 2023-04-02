@@ -51,19 +51,21 @@ export default function GroupCreate({ navigation }) {
             </TouchableOpacity>
             
             <View style={[{ width: '100%', paddingHorizontal: 100, backgroundColor: '#F6EFEF'}]}>
-                <Text style={Styles.textboxtop}>Group Name</Text>
+                <Text style={Styles.textInputHeader}>Group Name</Text>
                 <TextInput
                     style={Styles.inputgroup}
                     value={GroupName}
                     placeholder={"Insert Group Name"}
+                    placeholderTextColor='grey'
                     onChangeText={(text) => setGroupName(text)}
                     autoCapitalize={"none"}
                 />
-                <Text style={Styles.textboxtop}>Group Description</Text>
+                <Text style={Styles.textInputHeader}>Group Description</Text>
                 <TextInput
                     style={Styles.descinput}
                     value={GroupDesc}
                     placeholder={"(Optional)"}
+                    placeholderTextColor='grey'
                     onChangeText={(text) => setGroupDesc(text)}
                     autoCapitalize={"none"}
                 />

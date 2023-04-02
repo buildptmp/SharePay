@@ -124,7 +124,7 @@ export default function ExpenseDetail({ page, navigation, route}) {
                         <AntDesign 
                             name='edit'
                             size={18}
-                            style={{alignItems:'center', marginTop:5}}
+                            style={{alignItems:'center', marginTop:5, color:'grey'}}
                             onPress={()=>{
                                 editStatus = false
                                 ref.current.openDropdown()

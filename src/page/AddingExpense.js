@@ -77,7 +77,7 @@ export default function AddingExpense({ route, navigation }) {
         }
         setTimeout(() => {
           setIsLoading(false);
-        }, 3000);
+        }, 1000);
       };
 
     async function _addExpense(isaccepted){
@@ -138,7 +138,7 @@ export default function AddingExpense({ route, navigation }) {
         >
             <View style={Styles.centeredView}>
                 <View style={Styles.modalView}>
-                    <Text style={{textAlign:'center'}}>A decimal number that has more than two decimal point will be rounded up.</Text>
+                    <Text style={{textAlign:'center', color:'black'}}>A decimal number that has more than two decimal point will be rounded up.</Text>
                     <View style={{justifyContent:'center', margin:10}}>
                         {/* <View style=s{{flexDirection:'row', justifyContent:'center', width:'80%'}}> */}
                         <TouchableOpacity 
@@ -152,7 +152,7 @@ export default function AddingExpense({ route, navigation }) {
                         </TouchableOpacity>
                         {/* </View>     */}
                     </View>
-                    <Text>Please check the box to continue.</Text>
+                    <Text style={{color:'black'}}>Please check the box to continue.</Text>
                 </View>
             </View>
         </Modal>
@@ -164,7 +164,9 @@ export default function AddingExpense({ route, navigation }) {
             <View style={Styles.itemInput}>
                 <TextInput
                 value={ItemName}
+                style={{color:'black'}}
                 placeholder={"Insert item"}
+                placeholderTextColor='grey'
                 onChangeText={(text) => setItemName(text)}
                 autoCapitalize={"none"}
                 />
@@ -174,8 +176,10 @@ export default function AddingExpense({ route, navigation }) {
             <View style={Styles.itemInput}>
                 <TextInput
                 value={ItemPrice}
+                style={{color:'black'}}
                 keyboardType={'number-pad'}
                 placeholder={"Insert Price"}
+                placeholderTextColor='grey'
                 onChangeText={(text) => setItemPrice(text)}
                 onEndEditing={()=> {
                     const roundedValue = roundup2decimalpoint(ItemPrice)
@@ -234,7 +238,7 @@ export default function AddingExpense({ route, navigation }) {
                     testID="gender-switch-selector"
                     accessibilityLabel="gender-switch-selector"
                 /> 
-                <Text style={{ marginLeft:10}}>Remove all debtors to change the splitting method.</Text>
+                <Text style={{ marginLeft:10, color:'grey'}}>Remove all debtors to change the splitting method.</Text>
             </View>  
         </View>
     )
@@ -246,14 +250,14 @@ export default function AddingExpense({ route, navigation }) {
                 <View style={{flexDirection:'row'}}>
                     <Text style={Styles.textInputHeader}>Debtor  </Text> 
                     {
-                        !isSplitEqually && <Tooltip ModalComponent={Modal} popover={<Text>The debtors that are checked and leave a price in zero will be calculated equally in splitting method.</Text>} 
-                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:90,width:220}}>
-                            <Feather name="alert-circle"/>
+                        !isSplitEqually && <Tooltip ModalComponent={Modal} popover={<Text style={{color:'grey', fontSize:10}}>The debtors that are checked and leave a price in zero will be calculated equally in splitting method.</Text>} 
+                            containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:70,width:200}}>
+                            <Feather name="alert-circle" style={{color:'black'}}/>
                         </Tooltip>
                     }
                     
                 </View>
-                <Text style={{paddingLeft: 10, paddingBottom: 2}}>Select the member who share this expense</Text>
+                <Text style={{paddingLeft: 10, paddingBottom: 2, color:'grey'}}>Select the member who share this expense</Text>
             </View>
         </View>
     )
@@ -381,19 +385,20 @@ export default function AddingExpense({ route, navigation }) {
                     alignContent:'center'
                     }}>
                     <View style={{flexDirection: 'row', marginLeft:5}}>
-                        <Fontisto name={(checker ? 'checkbox-active':'checkbox-passive')} size={35} style={{margin:6.5, width:40}}></Fontisto>
+                        <Fontisto name={(checker ? 'checkbox-active':'checkbox-passive')} size={35} style={{margin:6.5, width:40, color:'black'}}></Fontisto>
                         <Image style={{borderRadius: 50, height:35, width:35,margin:6.5 }} source={{uri:item.image}}/>
                         <Text style={Styles.item}>{item.name}</Text>
                     </View>
                     <View style={[Styles.itemInputCheckboxContainer, {marginRight:10,alignSelf:'center', flexDirection:'row', justifyContent:'flex-end'}]}>
                         <TouchableOpacity disabled={isSplitEqually || ItemPrice<=0} style={[Styles.itemInputCheckboxBorder,{flexDirection:'row', marginRight:5, paddingRight:10, paddingLeft:10, width:'57%', justifyContent:'flex-end'}]} onPress={handlePriceInputPress}>
                             <TextInput
-                                style={{paddingBottom:9, alignContent:'flex-end'}}
+                                style={{paddingBottom:9, alignContent:'flex-end', color:'black'}}
                                 value={price}
                                 ref={priceInputRef}
                                 editable={!isSplitEqually && ItemPrice>0}
                                 keyboardType={'numeric'}
                                 placeholder={String(setprice)}
+                                placeholderTextColor='grey'
                                 onChangeText={(text) => {setCheckboxPrice(text)}}
                                 onEndEditing={(e)=> {
                                     const roundedValue = roundup2decimalpoint(price); 
@@ -405,17 +410,18 @@ export default function AddingExpense({ route, navigation }) {
                                     setPercentage("");
                                 }}
                             />
-                            <Text style={{alignSelf:'center', marginBottom:2,}}>THB</Text>
+                            <Text style={{alignSelf:'center', marginBottom:2,color:'black'}}>THB</Text>
                         </TouchableOpacity>
                         <TouchableOpacity disabled={isSplitEqually || ItemPrice<=0} style={[Styles.itemInputCheckboxBorder,{flexDirection:'row',paddingRight:10, paddingLeft:10, width:'37%', justifyContent:'flex-end'}]} onPress={handlePercentageInputPress}>
                             <TextInput
-                                style={{paddingBottom:9, alignContent:'flex-end'}}
+                                style={{paddingBottom:9, alignContent:'flex-end', color:'black'}}
                                 value={percentage}
                                 ref={percentageInputRef}
                                 maxLength={3}
                                 editable={!isSplitEqually && ItemPrice>0}
                                 keyboardType={'numeric'}
                                 placeholder={String(setpercent)}
+                                placeholderTextColor='grey'
                                 onChangeText={(text) => {
                                     setPercentage(text)
                                 //     console.log("percentage",percentage)
@@ -430,7 +436,7 @@ export default function AddingExpense({ route, navigation }) {
                                     setCheckboxPrice("")
                                 }}
                             />
-                            <Text style={{alignSelf:'center', marginBottom:2}}>%</Text>
+                            <Text style={{alignSelf:'center', marginBottom:2, color:'black'}}>%</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -445,8 +451,8 @@ export default function AddingExpense({ route, navigation }) {
                 <TouchableOpacity style={{flexDirection:'row', margin:10,}} onPress={()=>{
                         setIsAccept(!isaccept)
                     }}>
-                    <Fontisto name={(isaccept ? 'checkbox-active':'checkbox-passive')} size={16} style={{margin:2, marginLeft:10, marginRight:5}}></Fontisto>
-                    <Text>Accept the rounded up two decimal point.</Text>
+                    <Fontisto name={(isaccept ? 'checkbox-active':'checkbox-passive')} size={16} style={{margin:2, marginLeft:10, marginRight:5, color:'black'}}></Fontisto>
+                    <Text style={{color:'black'}}>Accept the rounded up two decimal point.</Text>
                 </TouchableOpacity>    
                     
                 {

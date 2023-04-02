@@ -130,7 +130,7 @@ function DebtList({data, page}) {
             {data.map((e, index) => {
                 return (
                     <React.Fragment key={index}>
-                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,fontSize:18, marginBottom:5,}} key={e+index}>{e.title}</Text>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10,fontSize:18, marginBottom:5,color:'black'}} key={e+index}>{e.title}</Text>
                         { e.data && e.data.map((r,index) => {
                             return (
                                 <TouchableOpacity style={Styles.box} key={r+index} onPress={()=>{navigation.navigate('Detail',{detail: r.detail, DebtOrDebtor: "Creditor", group:{gid:r.gid,name:e.title}, DebtOrDebtorName:r.creditorName})}}>
@@ -181,7 +181,7 @@ function DebtorList({data}) {
             {data.map((e, index) => {
                 return (
                     <React.Fragment key={index}>
-                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,}} key={e+index}>{e.title}</Text>
+                        <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,color:'black'}} key={e+index}>{e.title}</Text>
                         { e.data && e.data.map((t,index) => {
                             return(
                                 <ListComponent e={e} t={t} index={index} key={t+index}/>
@@ -243,13 +243,13 @@ function ListComponent({e,t,index}) {
                 </TouchableOpacity>
                 { (t.debtStatus === 'paid') &&
                     <View style={{flexDirection:'row'}}>
-                    <Text style={{textAlign:'left',margin:10, width:'23%'}}>Please rate the debtor </Text>
+                    <Text style={{textAlign:'left',margin:10, width:'21%', color:'grey'}}>Please rate the debtor </Text>
                     
                     <AirbnbRating
                         ratingContainerStyle={{backgroundColor:'white', paddingBottom:10,}}
                         reviews={['Very Bad','Bad','Good','Very Good','Excellent']}
                         count={5}
-                        defaultRating={1}
+                        defaultRating={5}
                         size={25}
                         reviewSize={14}
                         reviewColor='#F88C8C'

@@ -81,7 +81,7 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
                         :
                         <>
                             <Text style={{fontSize:16, color:'grey'}}>{props.endding}</Text>
-                            <Text style={{fontWeight:'bold'}}>Click for more information</Text>
+                            <Text style={{fontWeight:'bold', color:'grey'}}>Click for more information</Text>
                         </>
                     }
                 </Pressable>
@@ -96,14 +96,14 @@ import { getAllNoti, setReadNeedReaction, addEditGroupMember, setGroupInvRespons
                 borderColor: '#48494B',
                 }}>
                 <View style={{flexDirection:'row', marginBottom:5}}>
-                    <View style={{width: '67%',flexDirection:'row', flexWrap:'wrap'}}>
-                        <Text style={{fontWeight:'bold', fontSize:20, marginRight:6}}>{record.header}</Text>
+                    <View style={{width: '65%',flexDirection:'row', flexWrap:'wrap'}}>
+                        <Text style={{fontWeight:'bold', fontSize:20, marginRight:6, color:'black'}}>{record.header}</Text>
                         {invstatus ? <Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( {invstatus} )</Text>:null}
                         {hasread || invstatus? null:<Text style={{fontSize:16, color:'#F88C8C', fontWeight:'bold'}}>( new )</Text>}
                     </View>
                     {/* <View style={{width:'7%'}} /> */}
-                    <View style={{width: '35%',marginTop:7}}>
-                        <Text style={{fontSize:12}}>{time}</Text>
+                    <View style={{width: '38%',marginTop:7}}>
+                        <Text style={{fontSize:12, color:'black', textAlign:'right', marginRight:10}}>{time}</Text>
                     </View>
                 </View>
 

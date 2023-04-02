@@ -531,6 +531,7 @@ export async function addDebtor(debtors, itemid, gid, creditorid, price, countSp
     let _data = {
       name:{...debtorInfo}.name,
       uid:debtorInfo?.uid,
+      image:debtorInfo.image,
       calculatedprice: calculatedprice,
       debtstatus: debtstatus
     };

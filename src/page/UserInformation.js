@@ -44,12 +44,14 @@ export default function UserInformation({ navigation }) {
                 style={Styles.input}
                 value={name}
                 placeholder={"Display Name"}
+                placeholderTextColor='grey'
                 onChangeText={(text) => setName(text)}
             /> 
             <TextInput 
                 style={Styles.input}
                 value={bio}
                 placeholder={"Your bio is optional."}
+                placeholderTextColor='grey'
                 onChangeText={(text) => setBio(text)}
             /> 
             <TouchableOpacity

@@ -155,15 +155,16 @@ export default function AddingSlip({ navigation, route }) {
                         <Image style = {Styles.image_picker_slip} source={{uri: pickerRes.uri}}></Image>
                         :
                         <View style={{ justifyContent:'center'}}>
-                            <Text style={{fontWeight:'bold',padding:100}}>select a slip</Text>
+                            <Text style={{fontWeight:'bold',padding:100, color:'grey'}}>select a slip</Text>
                         </View>
                     }
                 </TouchableOpacity>
                 <View style={{borderBottomWidth: 1}}>
                     <TextInput
-                    // style={{}}
+                    style={{color:'black'}}
                     value={transRef}
                     placeholder={"Insert a transaction reference"}
+                    placeholderTextColor='grey'
                     onChangeText={(text) => setTransRef(text)}
                     autoCapitalize={"none"}
                     />
@@ -179,9 +180,9 @@ export default function AddingSlip({ navigation, route }) {
                             :<>
                             <View style={{flexDirection:'row', margin:10}}>
                                 <Text style={{fontSize:30,color:'red',fontWeight:'bold'}}>Verification Fail</Text>
-                                <Tooltip ModalComponent={Modal} popover={<Text>This might occur for the following reasons.{"\n\n"}  - The amount of price is not equal.{"\n"}  - The age of the slip is older than the time of the lastest expense creation.{"\n\n"}Suggestion: Please check your transaction or contact the creditor to change your debt status.</Text>} 
-                                    containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:220,width:250, left:140}}>
-                                    <Feather name="alert-circle"/>
+                                <Tooltip ModalComponent={Modal} popover={<Text style={{color:'grey', fontSize:10}}>This might occur for the following reasons.{"\n\n"}  - The amount of price is not equal.{"\n"}  - The age of the slip is older than the time of the lastest expense creation.{"\n\n"}Suggestion: Please check your transaction or contact the creditor to change your debt status.</Text>} 
+                                    containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:150,width:200}}>
+                                    <Feather name="alert-circle" style={{color:'grey'}}/>
                                 </Tooltip>
                             </View>
                             <Text style={{fontSize:10,color:'red'}}>Please add a slip again and click confirm</Text></>
@@ -189,10 +190,10 @@ export default function AddingSlip({ navigation, route }) {
                         }
                         
                         <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Expense Information</Text>
-                        <Text>Group: {data.group.name}</Text>
-                        <Text>From: {data.from.name}</Text>
-                        <Text>To: {data.to.name} </Text>
-                        <Text> Amount: {amount} </Text>
+                        <Text style={{color:'grey'}}>Group: {data.group.name}</Text>
+                        <Text style={{color:'grey'}}>From: {data.from.name}</Text>
+                        <Text style={{color:'grey'}}>To: {data.to.name} </Text>
+                        <Text style={{color:'grey'}}> Amount: {amount} </Text>
                         <Pressable 
                             // key={e.routeName}
                             style={isSuccess? [Styles.btnslip, {marginBottom:10, backgroundColor:'#2E8B57'}]:[Styles.btnslip, {marginBottom:10}]}
