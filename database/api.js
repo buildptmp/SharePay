@@ -37,7 +37,8 @@ export async function getpaymentInfo(transRef=""){
     access_key = await get_access_key();
     // console.log("access_key",typeof access_key,access_key)
 
-    const response = await fetch( url, {
+    try{
+      const response = await fetch( url, {
         method: 'GET',
         cache: 'no-cache',
         headers:{
@@ -45,16 +46,24 @@ export async function getpaymentInfo(transRef=""){
             "requestUID": uuid.v4(),
             "resourceOwnerId": "AIzaSyCpVQDO3EnKaxSfhU5KtYwBpLrw6DgpaZs"
         }
-    }).then((response) => response.json())
-    .then((data) => {
-      // console.log("Success:", data);
-      return data
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      return error
-    });
-    console.log("API Response  ",{"amount":response.data.amount,"date":response.data.transDate,"time":response.data.transTime, status:response.status.description});
+      }).then((response) => response.json())
+      .then((data) => {
+        // console.log("Success:", data);
+        return data
+      })
+      // .catch((error) => {
+      //   console.error("Error:", error.message);
+      //   return error
+      // });
+    
+      return {"amount":response.data.amount,"date":response.data.transDate,"time":response.data.transTime, status:response.status.description};
+    
+    } catch{ err =>{
+      console.log("Error:", err.message)
+      return {status:"error"}
+    }}
+    
+    // console.log("API Response  ",{"amount":response.data.amount,"date":response.data.transDate,"time":response.data.transTime, status:response.status.description});
 
-    return {"amount":response.data.amount,"date":response.data.transDate,"time":response.data.transTime, status:response.status.description};
+    
 }

@@ -9,7 +9,9 @@ import { View,
     SafeAreaView, 
     RefreshControl, 
     Pressable,
-    ScrollView
+    ScrollView,
+    Modal,
+    ActivityIndicator
 } from 'react-native';
 import { Styles } from "../Styles"
 import auth from '@react-native-firebase/auth'
@@ -18,7 +20,7 @@ import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/n
 import { AirbnbRating } from 'react-native-ratings'
 import SelectDropdown from 'react-native-select-dropdown'
 import { async } from "@firebase/util";
-
+import LoadingModal from "../components/LoadingModal";
 
 export default function DebtView({page, navigation}){
     const [debtorList, setDebtorList] = useState([]);
@@ -27,6 +29,7 @@ export default function DebtView({page, navigation}){
     const [isDebtorAcitve, setDebtorAcitve] = useState(false);
     const [isLoading, setLoading] = useState(null);
     const [refreshing, setRefreshing] = useState(false);
+    const [LoadingModalVisible, setVisible] = useState(false);
 
     const handleRefresh = React.useCallback(() => {
         const uid = auth().currentUser.uid
@@ -34,10 +37,11 @@ export default function DebtView({page, navigation}){
         setTimeout(async() => {
             await _showDebtAndDebtorList(uid)
             setRefreshing(false);
-        }, 2000);
+        }, 1000);
     }, []);
     
     async function _showDebtAndDebtorList(uid){
+        setVisible(true);
         const listof = await getPersonalDebtAndDebtorListAllGroup(uid);
 
         if(listof.havedata){
@@ -47,7 +51,7 @@ export default function DebtView({page, navigation}){
         } else {
             setLoading(true);
         }
-        
+        setVisible(false);
         //console.log('Debtor: ', listof.debtor[0].data)
         //console.log('Debt: ', listof.debt[0].data)
     }
@@ -60,10 +64,18 @@ export default function DebtView({page, navigation}){
 
     useFocusEffect(
         React.useCallback(() => {
-            const uid = auth().currentUser.uid;
+        const uid = auth().currentUser.uid;
         if (!uid) return;
         _showDebtAndDebtorList(uid);
-        },[auth().currentUser.toString, isDebtAcitve, isDebtorAcitve])
+        },[auth().currentUser.toString])
+    )
+
+    const LoadingPopup = ({visible})=>(
+        <Modal visible={visible} transparent={true}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size='large' color='#0000ff' />
+            </View>
+        </Modal>
     )
 
     return(
@@ -94,6 +106,7 @@ export default function DebtView({page, navigation}){
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
                 }>
+                    <LoadingPopup visible={LoadingModalVisible} />
                 {
                     (isDebtAcitve && !isLoading) && <DebtList data={debtList} />
                 }

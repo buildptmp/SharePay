@@ -15,7 +15,7 @@ import { Button,
     Pressable,
  } from "react-native";
 import { get_access_key, getpaymentInfo } from "../../database/api";
-import { timecheck, datecheck, uploadSlipDebt, getSlip, updateDebtStatus, sendPaidDebtNoti,sendDebtClearNoti, checkAllowToleave} from '../../database/DBConnection';
+import { datetimecheck, uploadSlipDebt, getSlip, updateDebtStatus, sendPaidDebtNoti,sendDebtClearNoti, checkAllowToleave} from '../../database/DBConnection';
 import { imagePicker, uploadSlip } from '../../database/Storage'
 import Feather from 'react-native-vector-icons/Feather';
 import auth from '@react-native-firebase/auth';
@@ -24,12 +24,11 @@ import LoadingModal from '../components/LoadingModal';
 
 export default function AddingSlip({ navigation, route }) {
     const {amount,timestamp, data, slip, status} = route.params;
-    const [GroupName, setGroupName] = useState(null);
-    const [GroupDesc, setGroupDesc] = useState(null);
     const [pickerRes, setPickerRes] = useState({uri:""});
-    const [transRef, setTransRef] = useState("2023032937wGEyNrQmdwKsq");
+    const [transRef, setTransRef] = useState("202304011aanwkXJlMkPZAF");
     // "2023032937wGEyNrQmdwKsq" 500
     // "202303143qO8X3qczVArfqJ" 1000
+    // "202304011aanwkXJlMkPZAF" 250
     const [apiRespose, setResponse] = useState("");
     const [slipURL, setSlip] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
@@ -39,7 +38,8 @@ export default function AddingSlip({ navigation, route }) {
     async function chooseFile() {
         const response = await imagePicker()
         if (!response.didCancel && !response.error){
-            setPickerRes(response)
+            // console.log("Adding Slip",response)
+            setPickerRes(response.assets[0])
         }
     };
 
@@ -50,23 +50,24 @@ export default function AddingSlip({ navigation, route }) {
 
         setTimeout(() => {
           setIsLoading(false);
-        }, 2000);
-      };
+        }, 3000);
+    };
 
     async function sendNoti(){
         let expenses = [];
         for(let item of data.detail){
-            await updateDebtStatus(item.eid,data.from.uid,item.priceToPay, data.from.name); // to be paid
+            console.log(item.eid,data.from.uid,item.priceToPay, data.from.name)
+            await updateDebtStatus(item.eid,data.from.uid,item.priceToPay, data.from.name, "paid"); // to be paid
             expenses.push({eid:item.eid,ename:item.itemName,priceToPay:item.priceToPay})
         }
         await sendPaidDebtNoti(data.from,data.to,data.group.gid,data.group.name,expenses)
 
         // check the debt is clear?
-        for(uid of [data.from.uid,data.to.uid]){
+        for(let uid of [data.from.uid,data.to.uid]){
             const check = await checkAllowToleave(uid,data.group.gid)
             if(check.creditor && check.debtor){
                 await sendDebtClearNoti(uid,data.group.gid,data.group.name)
-                if(uid==data.to.uid){
+                if(uid==data.from.uid){
                     global.NotiSignal = true
                 }
             }
@@ -75,13 +76,14 @@ export default function AddingSlip({ navigation, route }) {
 
     async function checkSlip(){
         if(pickerRes.fileName != undefined){
-            if(apiRespose && apiRespose.status == 'Success'){
+            const apiResponse = await callapi(transRef);
+            if(apiResponse && apiResponse.status == 'Success'){
                 
-                const t_check = timecheck(timestamp, apiRespose.time)
-                const d_check = datecheck(timestamp, apiRespose.date)
+                // const t_check = timecheck(timestamp, apiResponse.time)
+                const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
                 // console.log(t_check, d_check)
-                if(t_check>=0 && d_check>=0){
-                    if(apiRespose.amount == amount){
+                if(dt_check>=0){
+                    if(apiResponse.amount == amount){
                         await sendNoti();
                         await _saveSlip(true)
                         setIsSuccess(true)
@@ -104,20 +106,23 @@ export default function AddingSlip({ navigation, route }) {
     }
 
     async function _saveSlip(verificationStatus){
-        const photoURL = await uploadSlip(pickerRes.fileName,pickerRes.uri,pickerRes.type, slip.slipURL)
+        // console.log(pickerRes.fileName,pickerRes.uri,pickerRes.type, slipURL)
+        const photoURL = await uploadSlip(pickerRes.fileName,pickerRes.uri,pickerRes.type, slipURL)
         if(photoURL) {
             await uploadSlipDebt(data.to.uid,data.from.uid,data.group.gid,photoURL,verificationStatus,pickerRes);
             // alert("upload a slip successfully")
             setSlip(photoURL)
-        } else console.log("upload error")
+        } else console.log("upload the same slip")
+    }
+
+    async function callapi(transactionRef){
+        const response = await getpaymentInfo(transactionRef);
+        setResponse(response);
+        return response
     }
 
     useEffect(()=>{
-        async function callapi(transRef){
-            const response = await getpaymentInfo(transRef);
-            setResponse(response);
-        }
-        
+        // console.log({amount,timestamp, data, slip, status})
         if(slip){
             setPickerRes(slip.pickerRes)
             setSlip(slip.slipURL)
@@ -131,11 +136,8 @@ export default function AddingSlip({ navigation, route }) {
                 setTransRef("")
             }
         }
-        if(transRef){
-            callapi(transRef);
-        }
         // console.log(transRef)
-    },[transRef,isSuccess])
+    },[isSuccess])
 
     // const PoppuSlipVerificationSuccessful = (
     //     <View>
@@ -157,6 +159,15 @@ export default function AddingSlip({ navigation, route }) {
                         </View>
                     }
                 </TouchableOpacity>
+                <View style={{borderBottomWidth: 1}}>
+                    <TextInput
+                    // style={{}}
+                    value={transRef}
+                    placeholder={"Insert a transaction reference"}
+                    onChangeText={(text) => setTransRef(text)}
+                    autoCapitalize={"none"}
+                    />
+                </View>
                 <View style={styles.centeredView}>
                     <View style={[styles.modalView,{backgroundColor: 'white', marginTop:10, justifyContent:'center', alignItems:'center', paddingHorizontal:20}]}>
                         {
@@ -165,15 +176,18 @@ export default function AddingSlip({ navigation, route }) {
                             <View style={{flexDirection:'row', margin:10}}>
                                 <Text style={{fontSize:40,color:'#2E8B57',fontWeight:'bold'}}>Verified✓</Text>
                             </View>
-                            :
+                            :<>
                             <View style={{flexDirection:'row', margin:10}}>
                                 <Text style={{fontSize:30,color:'red',fontWeight:'bold'}}>Verification Fail</Text>
                                 <Tooltip ModalComponent={Modal} popover={<Text>This might occur for the following reasons.{"\n\n"}  - The amount of price is not equal.{"\n"}  - The age of the slip is older than the time of the lastest expense creation.{"\n\n"}Suggestion: Please check your transaction or contact the creditor to change your debt status.</Text>} 
                                     containerStyle={{borderColor:"#F88C8C", borderWidth:1.5, backgroundColor:'#F6EFEF', margin:5, height:220,width:250, left:140}}>
                                     <Feather name="alert-circle"/>
                                 </Tooltip>
-                            </View>) : null )
+                            </View>
+                            <Text style={{fontSize:10,color:'red'}}>Please add a slip again and click confirm</Text></>
+                            ) : null )
                         }
+                        
                         <Text style={{fontSize:18,color:'black',fontWeight:'bold'}}>Expense Information</Text>
                         <Text>Group: {data.group.name}</Text>
                         <Text>From: {data.from.name}</Text>
@@ -182,12 +196,16 @@ export default function AddingSlip({ navigation, route }) {
                         <Pressable 
                             // key={e.routeName}
                             style={isSuccess? [Styles.btnslip, {marginBottom:10, backgroundColor:'#2E8B57'}]:[Styles.btnslip, {marginBottom:10}]}
-                            onPress={ ()=> {
-                                handleButtonClick();
-                            }}
+                            onPress={handleButtonClick
+                                // console.log(amount,timestamp, data, slip, status)
+                                // await checkSlip();
+                                // console.log(amount,timestamp, data, slip, status)
+                            }
                             disabled={isSuccess}
                         >
                             <Text style={Styles.text}>{isSuccess? "Verified":"Confirm" }</Text>
+                            
+                            {/* <Text style={Styles.text}>{isSuccess? "Verified":"" }</Text> */}
                         </Pressable>
                     </View>
                 </View>

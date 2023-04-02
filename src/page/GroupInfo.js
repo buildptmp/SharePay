@@ -16,7 +16,7 @@ import { Button,
 import auth from '@react-native-firebase/auth';
 import FontAwesome from 'react-native-vector-icons/FontAwesome'; 
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
-import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember, isInGroup } from '../../database/DBConnection'
+import { getGroupByGid, getMemberListByGid, getExpenseListByGroupMember, isInGroup, getExpenseListByGid } from '../../database/DBConnection'
 import { uploadGroupImg, imagePicker } from '../../database/Storage'
 import { editGroup, checkAllowToleave, addEditGroupMember, deleteGroup } from '../../database/DBConnection';
 import { async } from '@firebase/util';
@@ -51,7 +51,7 @@ export default function GroupInfo({ route, navigation }) {
         })
     };
     async function _showExpenseList(){
-        await getExpenseListByGroupMember(gid,uid).then(eList =>{
+        await getExpenseListByGid(gid).then(eList =>{
             setExpenseList(eList);
             //console.log(eList)
         })  
@@ -98,8 +98,9 @@ export default function GroupInfo({ route, navigation }) {
     }
     async function chooseFile() {
         const response = await imagePicker()
-        if (!response.didCancel){
-            setPickerRes(response)
+        if (!response.didCancel && !response.error){
+            // console.log("Adding Slip",response)
+            setPickerRes(response.assets[0])
         }
     };
     editName = () => {
@@ -178,7 +179,7 @@ export default function GroupInfo({ route, navigation }) {
                         </View>
                     </View>
                     <View style={{width: '40%',justifyContent:'center'}}>
-                        <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.title == "Expense item"  ? `${props.item.price}` : (props.item.avgRating == undefined ? "":`${props.item.avgRating}`)}</Text>
+                        <Text style={[Styles.item,{alignSelf:'flex-end', paddingRight:30}]}>{props.title == "Expense item"  ? `${props.item.price}` : (props.item.avgRating == undefined ? "":`rating: ${props.item.avgRating}/5`)}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
