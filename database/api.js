@@ -48,7 +48,7 @@ export async function getpaymentInfo(transRef=""){
         }
       }).then((response) => response.json())
       .then((data) => {
-        // console.log("Success:", data);
+        console.log("Success:", data);
         return data
       })
       // .catch((error) => {

@@ -82,7 +82,7 @@ export default function AddingSlip({ navigation, route }) {
                 // const t_check = timecheck(timestamp, apiResponse.time)
                 const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
                 // console.log("dt_check",dt_check)
-                if(dt_check>=0){
+                // if(dt_check>=0){
                     if(apiResponse.amount == amount){
                         await sendNoti();
                         await _saveSlip(true)
@@ -92,10 +92,10 @@ export default function AddingSlip({ navigation, route }) {
                         await _saveSlip(false)
                         alert("the amount in slip is not equal to the total amount of the expense price.") 
                     }
-                } else {
-                    await _saveSlip(false)
-                    alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
-                }
+                // } else {
+                //     await _saveSlip(false)
+                //     alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
+                // }
             } else{
                 alert("Fail to validate the slip.")
                 // show unsuccessmodal()
