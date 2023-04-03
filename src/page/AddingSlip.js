@@ -79,8 +79,7 @@ export default function AddingSlip({ navigation, route }) {
             const apiResponse = await callapi(transRef);
             if(apiResponse && apiResponse.status == 'Success'){
                 
-                // const t_check = timecheck(timestamp, apiResponse.time)
-                const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
+                // const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
                 // console.log("dt_check",dt_check)
                 // if(dt_check>=0){
                     if(apiResponse.amount == amount){

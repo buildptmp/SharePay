@@ -35,6 +35,7 @@ export async function getpaymentInfo(transRef=""){
     transRef = transRef? transRef:"202303143qO8X3qczVArfqJ"
     url = `https://api-sandbox.partners.scb/partners/sandbox/v1/payment/billpayment/transactions/${transRef}?sendingBank=${sendingBank}`
     access_key = await get_access_key();
+    // access_key = "e14eafba-2da6-4cea-bc22-0e66cd2f14e5"
     // console.log("access_key",typeof access_key,access_key)
 
     try{
