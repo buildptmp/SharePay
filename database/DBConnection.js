@@ -23,8 +23,8 @@ import { AirbnbRating } from 'react-native-elements';
 const db = initializeFirestore(app, {
     experimentalForceLongPolling: true,
 });
-// const preText = "Test-";
-const preText = "Tester-";
+const preText = "Test-";
+// const preText = "Tester-";
 /* User management*/
 
 export function addUser(uid, phoneNum) {
@@ -699,10 +699,13 @@ export function timecheck(t_create,t_slip){
   time_create = time.toLocaleTimeString('it-IT')
   // console.log("time_create"+ time_create, "time_slip", t_slip)
   if(time_create<t_slip){
+    // console.log("time", 1)
     return 1;
   } else if(time_create==t_slip){
+    // console.log("time", 0)
     return 0;
   } else {
+    // console.log("time", -1)
     return -1;
   }
 }
@@ -710,11 +713,14 @@ export function datetimecheck(dt_create,d_slip,t_slip){
   date_create = formatDate(dt_create) 
   // console.log("date_create"+ date_create, "date_slip", d_slip)
   if(date_create<d_slip){
+    // console.log("date", 1)
     return 1;
   } else if(date_create==d_slip){
     const check = timecheck(dt_create,t_slip)
+    // console.log("date", 0)
     return check;
   } else{
+    // console.log("date", -1)
     return -1;
   }
 }

@@ -214,7 +214,7 @@ async function setDebtRating(detail,debtorid,debtorname,rate){
 }
 function ListComponent({e,t,index}) {
     const navigation = useNavigation();
-    const [rating, setRating] = useState(1);
+    const [rating, setRating] = useState(5);
     const [ratedByUser, setRatedByUser] = useState(false);
     const currentUser = auth().currentUser
     const currname = currentUser?.displayName

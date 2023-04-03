@@ -81,7 +81,7 @@ export default function AddingSlip({ navigation, route }) {
                 
                 // const t_check = timecheck(timestamp, apiResponse.time)
                 const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
-                // console.log(t_check, d_check)
+                // console.log("dt_check",dt_check)
                 if(dt_check>=0){
                     if(apiResponse.amount == amount){
                         await sendNoti();
