@@ -97,7 +97,7 @@ export const Styles = StyleSheet.create({
     },
 
     descinput: {
-        height: 80,
+        height: 65,
         width: '100%',
         marginBottom: 10,
         borderWidth: 1,
@@ -328,7 +328,7 @@ export const Styles = StyleSheet.create({
         flexDirection: 'column', 
         // justifyContent: 'center', 
         alignItems: 'center',
-        paddingTop: 70,
+        paddingTop: 30,
     },
 
     dropDownBtnStyle: {

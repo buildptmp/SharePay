@@ -48,7 +48,7 @@ export default function UserRegister({ navigation }) {
         <View style={Styles.containerRegis}>
 
             <Text style={{color:'black'}}>Phone Number</Text>
-            <View style={{flexDirection: 'row' , marginBottom:20}}>
+            <View style={{flexDirection: 'row'}}>
                 <SelectDropdown
                     defaultValue={countryCode}
                     data={countriesCode}

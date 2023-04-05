@@ -46,7 +46,7 @@ export default function GroupCreate({ navigation }) {
         
         <View style={Styles.container}>
             {/* <View style={[{flex:1}]} /> */}
-            <TouchableOpacity onPress={chooseFile}>
+            <TouchableOpacity onPress={chooseFile} style={{flex:0.8}}>
                 <Image style = {Styles.image_picker} source={{uri: pickerRes.uri}}></Image>
             </TouchableOpacity>
             

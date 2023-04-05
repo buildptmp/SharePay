@@ -35,7 +35,7 @@ export function addUser(uid, phoneNum) {
   };
   setDoc(doc(db, preText+'Users', uid), _data).catch(err => {console.log(err.message)})
 }
-export function updateUser(uid, name, image, bio="") {
+export async function updateUser(uid, name, image, bio="") {
   let _data = {
     name : name,
     image : image
@@ -44,7 +44,7 @@ export function updateUser(uid, name, image, bio="") {
     _data.bio = bio
   }
   console.log(_data)
-  if(Object.keys(_data).length > 0){updateDoc(doc(db, preText+'Users', uid), _data)
+  if(Object.keys(_data).length > 0){ await updateDoc(doc(db, preText+'Users', uid), _data)
   .catch(err => {console.log(err.message)})}
 }
 export async function getUserFromPhoneNum(phoneNum){
