@@ -16,7 +16,6 @@ export default function UserSelect({ navigation }) {
         //{ routeName: 'Login', displayText: 'Log in', },
         { routeName: 'Register', displayText: 'Register / Log in', },
     ]
-    
 
     function onAuthStateChanged(user) {
         if (user) {
@@ -25,7 +24,7 @@ export default function UserSelect({ navigation }) {
                 const time = new Date(Date.now());
                 if(time.toLocaleString().split(", ")[1] == "7:00:00 AM"){
                     
-                // if(time.toLocaleString().split(", ")[1] == "4:31:00 PM"){
+                // if(time.toLocaleString().split(", ")[1] == "4:44:20 PM"){
                     if(sendOneTime){
                         sendOneTime = false
                         await sendPersonalDebtReminder(user.uid)

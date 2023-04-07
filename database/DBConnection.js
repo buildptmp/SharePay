@@ -211,8 +211,8 @@ export async function getPersonalDebtAndDebtorListAllGroup(uid){
 
     const data = await getPersonalDebtAndDebtorListbyGid(g.gid,uid);
 
-    if(data.debtor.length>0) {debtorList.push({title:g.name,data:data.debtor}); havedata = true}
-    if(data.creditor.length>0) {creditorList.push({title:g.name,data:data.creditor}); havedata = true}
+    if(data.debtor.length>0) {debtorList.push({id:g.gid,title:g.name,data:data.debtor}); havedata = true}
+    if(data.creditor.length>0) {creditorList.push({id:g.gid,title:g.name,data:data.creditor}); havedata = true}
   }
   // console.log("debtorList: ", debtorList)
   // console.log("creditorList: ", creditorList)

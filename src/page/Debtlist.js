@@ -157,44 +157,33 @@ function DebtList({data, page}) {
 }
 
 function DebtorList({data}) {
-    const navigation = useNavigation();
-    //   if (ratedByUser) {
-    //     return null;
-    //   }
+    const navigation = useNavigation();  
+    let data_use = data;
 
-
-    // const [debtStatus, setdebtStatus] = useState("");
-    // const [showDebtorRating, setShowDebtorRating] = useState(false);
-
-    // useEffect(() => {
-    //         if(debtStatus === 'paid'){
-    //             setShowDebtorRating(true);
-    //             }
-    //         else {
-    //             setShowDebtorRating(false);
-    //         }
-    // }, [debtStatus]);
-    
+    const handleRatingGiven = (gid, debtorid, debtStatus) =>{
+        // let temp = data_use
+        // console.log(temp)
+        if (debtStatus == "paid"){
+            const group = data_use.findIndex((obj => obj.id == gid))
+            // console.log(group)
+            const debtor = data_use[group].data.findIndex((obj => obj.debtorid == debtorid))
+            // console.log(debtor)
+            data_use[group].data[debtor].ratedByUser = true
+        }
+    }
 
     return (
         <SafeAreaView style={{paddingBottom:80}}>
-            {data.map((e, index) => {
+            {data_use.map((e, index) => {
                 return (
                     <React.Fragment key={index}>
                         <Text style={{fontWeight: 'bold', marginLeft: 10, marginRight: 10, fontSize:18, marginBottom:5,color:'black'}} key={e+index}>{e.title}</Text>
                         { e.data && e.data.map((t,index) => {
                             return(
-                                <ListComponent e={e} t={t} index={index} key={t+index}/>
+                                <ListComponent e={e} t={t} index={index} key={t+index} handleRatingGiven={handleRatingGiven}/>
                             )
                         })
                         }                        
-                        {/* <TouchableOpacity 
-                            style={Styles.btnginfo}
-                            onPress= {(Rating)}
-                            >
-                            <Text style={Styles.text}> Show Rating </Text>
-                        </TouchableOpacity> */}
-                        
                     </React.Fragment>
                 )
             })}
@@ -212,10 +201,10 @@ async function setDebtRating(detail,debtorid,debtorname,rate){
     }
     alert("Give rating successful")
 }
-function ListComponent({e,t,index}) {
+function ListComponent({e,t,index, handleRatingGiven}) {
     const navigation = useNavigation();
     const [rating, setRating] = useState(5);
-    const [ratedByUser, setRatedByUser] = useState(false);
+    const [ratedByUser, setRatedByUser] = useState((t.ratedByUser? false:true))
     const currentUser = auth().currentUser
     const currname = currentUser?.displayName
     const uid = currentUser?.uid
@@ -223,7 +212,7 @@ function ListComponent({e,t,index}) {
     return (
         <View style={{backgroundColor:'white',}}>
             {
-                !ratedByUser &&
+                !(t.ratedByUser || ratedByUser)  &&
                 <>
                 <TouchableOpacity style={[Styles.box,{borderBottomColor:'white'}]} 
                     onPress={()=>{navigation.navigate('Detail',{detail: t.detail, DebtOrDebtor: "Debtor", DebtOrDebtorName:t.debtorName, DebtOrDebtorId:t.debtorid, group:{gid:t.gid,name:e.title},currUser:{uid:uid,name:currname}})}}
@@ -262,8 +251,11 @@ function ListComponent({e,t,index}) {
                     <TouchableOpacity 
                         style={[Styles.btnrate, {margin:30}]}
                         onPress={async()=>{
+                            // console.log(handleRatingGiven)
+                            // handleRatingGiven(e.id, t.debtorid, t.debtStatus)
                             handleRating(rating, t.debtorid)
                             await setDebtRating(t.detail,t.debtorid,t.debtorName,rating)
+                            handleRatingGiven(e.id, t.debtorid, t.debtStatus)
                             setRatedByUser(true);
                         }}
                     >
