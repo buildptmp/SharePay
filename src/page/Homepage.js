@@ -61,16 +61,17 @@ export default function Homepage({page, navigation, route}){
             <Pressable 
                 style={Styles.btnaddex}
                 onPress= {()=>{
-                    from = {uid:"1tmvjTfbUSRTCdTMldSpVZXhXLP2",name:"J"}
+                    from = {uid:"DzUU0ymLI6MuvtTHNGyRrqySKtI3",name:"prypiee"}
                     to = {uid: "NZA9HHxQTmaGyANy0071ybo7WDr2",name:"Pop"}
-                    gid = "7LYCdIH5J2zHCNh88GAW"
+                    gid = "5rM4vY15ugAsRQqfoDrj"
                     ex = []
-                    for(let n=0;n<5;n++){
-                        ex.push({ename:`test-${n}`,priceToPay:10*n})
-                    }
+                    // for(let n=0;n<5;n++){
+                        ex.push({ename:`Sushi`,priceToPay:200})
+                        ex.push({ename:`Salmon sasimi`,priceToPay:500})
+                    // }
                     
-                    // sendDebtClearNoti(to,gid,"My moon")
-                    // sendPaidDebtNoti(from,to,gid,"My moon",ex)
+                    // sendDebtClearNoti(to,gid,"Japan trip")
+                    sendPaidDebtNoti(from,to,gid,"Japan trip",ex)
                     alert("Sent noti")
                     
                 }}

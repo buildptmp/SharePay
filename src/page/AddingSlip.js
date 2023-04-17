@@ -25,10 +25,11 @@ import LoadingModal from '../components/LoadingModal';
 export default function AddingSlip({ navigation, route }) {
     const {amount,timestamp, data, slip, status} = route.params;
     const [pickerRes, setPickerRes] = useState({uri:""});
-    const [transRef, setTransRef] = useState("202304011aanwkXJlMkPZAF");
+    const [transRef, setTransRef] = useState("202304178uvMtBPS9SkbMil");
     // "2023032937wGEyNrQmdwKsq" 500
     // "202303143qO8X3qczVArfqJ" 1000
     // "202304011aanwkXJlMkPZAF" 250
+    // "202304178uvMtBPS9SkbMil"
     const [apiRespose, setResponse] = useState("");
     const [slipURL, setSlip] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
@@ -79,9 +80,9 @@ export default function AddingSlip({ navigation, route }) {
             const apiResponse = await callapi(transRef);
             if(apiResponse && apiResponse.status == 'Success'){
                 
-                // const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
-                // console.log("dt_check",dt_check)
-                // if(dt_check>=0){
+                const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
+                console.log("dt_check",dt_check)
+                if(dt_check>=0){
                     if(apiResponse.amount == amount){
                         await sendNoti();
                         await _saveSlip(true)
@@ -91,10 +92,11 @@ export default function AddingSlip({ navigation, route }) {
                         await _saveSlip(false)
                         alert("the amount in slip is not equal to the total amount of the expense price.") 
                     }
-                // } else {
-                //     await _saveSlip(false)
-                //     alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
-                // }
+                } else {
+                    await _saveSlip(false)
+                    alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.")
+                    // alert("This slip's timestamp is OLD-TIME than the slip creation's timestamp.\n\nIf you have paid for the debt, please contact the owner to change the debt status for you.")
+                }
             } else{
                 alert("Fail to validate the slip.")
                 // show unsuccessmodal()
@@ -132,7 +134,7 @@ export default function AddingSlip({ navigation, route }) {
             }
 
             if(slip.status){
-                setTransRef("")
+                setTransRef(" ")
             }
         }
         // console.log(transRef)
