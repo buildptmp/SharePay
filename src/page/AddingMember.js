@@ -271,9 +271,9 @@ import { Button,
                         <Pressable 
                             style={[Styles.btnitif_v2, {marginTop:10}]}
                             onPress={_addMember}
-                            disabled={checkInGroup.status=="pending"}
-                            >
-                            <Text style={Styles.text}>{ checkInGroup.status=="pending" ? checkInGroup.status:"Add Member"}</Text>
+                            disabled={checkInGroup.status=="pending" || checkInGroup.status=="accepted" }
+                        >
+                            <Text style={Styles.text}>{ checkInGroup.status=="pending" || checkInGroup.status=="accepted" ? checkInGroup.status:"Add Member"}</Text>
                         </Pressable>{ checkInGroup.status=="declined" ? <Text style={{color:'grey'}}>status: declined</Text>:null}
                     </View>
                     ): <Text style={{ color: 'black', fontSize: 18}}>Cannot find the account</Text>
