@@ -25,11 +25,8 @@ import LoadingModal from '../components/LoadingModal';
 export default function AddingSlip({ navigation, route }) {
     const {amount,timestamp, data, slip, status} = route.params;
     const [pickerRes, setPickerRes] = useState({uri:""});
-    const [transRef, setTransRef] = useState("202304178uvMtBPS9SkbMil");
-    // "2023032937wGEyNrQmdwKsq" 500
-    // "202303143qO8X3qczVArfqJ" 1000
-    // "202304011aanwkXJlMkPZAF" 250
-    // "202304178uvMtBPS9SkbMil"
+    const [transRef, setTransRef] = useState("");
+    // "2023041958Wqa1Js1a8KtcZ"
     const [apiRespose, setResponse] = useState("");
     const [slipURL, setSlip] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
@@ -80,8 +77,10 @@ export default function AddingSlip({ navigation, route }) {
             const apiResponse = await callapi(transRef);
             if(apiResponse && apiResponse.status == 'Success'){
                 
+                // The date and Time (part of the data responses) from SCB sometimes is inaccurate for the transaction. So when sending the date and time to check for the validity of the slip, it would cause the slip invalid at the time. 
                 const dt_check = datetimecheck(timestamp, apiResponse.date,apiResponse.time)
-                console.log("dt_check",dt_check)
+                // let dt_check = 1
+                // console.log("dt_check",dt_check)
                 if(dt_check>=0){
                     if(apiResponse.amount == amount){
                         await sendNoti();
