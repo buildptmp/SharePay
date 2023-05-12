@@ -10,14 +10,14 @@ The recommended version is fine.
 
 3. Install Java JDK 11.
 via https://www.oracle.com/java/technologies/downloads/#java11-windows.
-Please select x64 Installer.
+Please select `x64 Installer`.
 
 4. Install Android SDK Platforms and SDK Tools.
 
-5. Configure the ANDROID_HOME and platform-tool environment variable.
+5. Configure the `ANDROID_HOME` and `platform-tool` environment variable.
 For the step 4 and 5, please follow the guidelines the steps 2 to 4 from https://reactnative.dev/docs/0.70/environment-setup?guide=native.
 
-* One more environment variable that needed to be set it up, is JAVA_HOME. Under system variable, If you have not had JAVA_HOME, click new, and name it JAVA_HOME. And the value, basically the JDK path is C:\Program Files\Java\jdk-%your installed version%. For example, C:\Program Files\Java\jdk-17.0.1.
+* One more environment variable that needed to be set it up, is `JAVA_HOME`. Under system variable, If you have not had JAVA_HOME, click new, and name it `JAVA_HOME`. And the value, basically the JDK path is `C:\Program Files\Java\jdk-%your installed version%`. For example, `C:\Program Files\Java\jdk-17.0.1`.
 
 6. Create an emulator in Android Studio.
 via https://developer.android.com/studio/run/managing-avds. 
